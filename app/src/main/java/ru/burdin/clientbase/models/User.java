@@ -44,16 +44,18 @@ if ((this.surname == "" && this.name == "") || (this.surname == null && this.nam
      */
 
     private String phoneFormat (String phone) {
-    String result = PhoneNumberUtils.normalizeNumber(phone);
-if ("RU".equalsIgnoreCase(Locale.getDefault().getCountry())) {
-    if (result.substring(0, 2).equalsIgnoreCase("89")) {
-        result = "+7" + result.substring(1);
+        String result = PhoneNumberUtils.normalizeNumber(phone);
+if (result.length() > 0) {
+    if ("RU".equalsIgnoreCase(Locale.getDefault().getCountry())) {
+        if (result.substring(0, 2).equalsIgnoreCase("89")) {
+            result = "+7" + result.substring(1);
+        }
+        if (phone.charAt(0) == '9' && result.length() == 10) {
+            result = "+7" + result;
+        }
     }
-if (phone.charAt(0) == '9' && result.length() == 10){
-    result = "+7"+ result;
 }
-}
-    return result;
+        return result.length() >0? result : phone;
 }
 
 /*

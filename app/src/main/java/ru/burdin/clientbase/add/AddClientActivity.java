@@ -32,9 +32,13 @@ public class AddClientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_client);
         editTextName = findViewById(R.id.editTextName);
+        editTextName.setText("");
         editTextSurname = findViewById(R.id.editTextSurname);
+        editTextSurname.setText("");
         editTextPhone = findViewById(R.id.editTextPhone);
+        editTextPhone.setText("");
         editTextComment = findViewById(R.id.editTextComment);
+        editTextComment.setText("");
         bd = Bd.load(getApplicationContext());
             index = getIntent().getIntExtra(Bd.TABLE, -1);
         getIntent().removeExtra(Bd.TABLE);
@@ -54,41 +58,57 @@ public class AddClientActivity extends AppCompatActivity {
     }
 
     public void buttonSaveC(View view) {
-        if (check()) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(Bd.COLUMN_NAME, editTextName.getText().toString());
-            contentValues.put(Bd.COLUMN_SURNAME, editTextSurname.getText().toString());
-            contentValues.put(Bd.COLUMN_PHONE, editTextPhone.getText().toString());
-            contentValues.put(Bd.COLUMN_COMMENT, editTextComment.getText().toString());
-            if (index == -1) {
-                long id = bd.add(Bd.TABLE, contentValues);
-                if (id > 0) {
-                    if (bd.getUsers().add(new User(id, editTextName.getText().toString(), editTextSurname.getText().toString(), editTextPhone.getText().toString(), editTextComment.getText().toString()))) {
-                        bd.getUsers().sort(Comparator.naturalOrder());
+        try {
+            if (check()) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(Bd.COLUMN_NAME, notNull(editTextName));
+                contentValues.put(Bd.COLUMN_SURNAME, notNull(editTextSurname));
+                contentValues.put(Bd.COLUMN_PHONE, notNull(editTextPhone));
+                contentValues.put(Bd.COLUMN_COMMENT, notNull(editTextComment));
+                if (index == -1) {
+                    long id = bd.add(Bd.TABLE, contentValues);
+                    if (id > 0) {
+                        if (bd.getUsers().add(new User(id, notNull(editTextName), notNull(editTextSurname), notNull(editTextPhone), notNull(editTextComment)))) {
+                            bd.getUsers().sort(Comparator.naturalOrder());
+                        }
+                        Toast.makeText(getApplicationContext(), "Клиент успешно добавлен", Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(getApplicationContext(), "Клиент успешно добавлен", Toast.LENGTH_SHORT).show();
-                }
                 } else {
-                if (bd.update(Bd.TABLE, contentValues, user.getId()) == 1) {
-                    bd.getUsers().get(index).setName(editTextName.getText().toString());
-                    bd.getUsers().get(index).setSurname(editTextSurname.getText().toString());
-                    bd.getUsers().get(index).setPhone(editTextPhone.getText().toString());
-                    bd.getUsers().get(index).setComment(editTextComment.getText().toString());
+                    if (bd.update(Bd.TABLE, contentValues, user.getId()) == 1) {
+                        bd.getUsers().get(index).setName(editTextName.getText().toString());
+                        bd.getUsers().get(index).setSurname(editTextSurname.getText().toString());
+                        bd.getUsers().get(index).setPhone(editTextPhone.getText().toString());
+                        bd.getUsers().get(index).setComment(editTextComment.getText().toString());
+                    }
+                    Toast.makeText(getApplicationContext(), "Карточка клиента успешна обновлена", Toast.LENGTH_SHORT).show();
                 }
-            Toast.makeText(getApplicationContext(), "Карточка клиента успешна обновлена", Toast.LENGTH_SHORT).show();
+                finish();
+            }else {
+                Toast.makeText(getApplicationContext(), "Необходимо добавить номер телефона", Toast.LENGTH_SHORT).show();
             }
-finish();
+        }catch ( Exception e) {
+            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
-    }
+        }
+
+    /*
+   Проверка на длину
+     */
+private  String notNull ( EditText editText) {
+    return  editText.getText().length() == 0? " ":editText.getText().toString();
+}
 
     private boolean check() {
         boolean result = false;
-        if (editTextName.getText().length() > 0 || editTextSurname.getText().length() > 0 || editTextPhone.getText().length() > 0) {
+
+if (editTextPhone.getText().length() > 0){
             result = true;
         }
         return result;
     }
-
+/*
+Поменять местами имя и фамилия
+ */
     public void onClickButtonAddClientExchange(View view) {
     String exchange = editTextSurname.getText().toString();
     editTextSurname.setText(editTextName.getText().toString());
