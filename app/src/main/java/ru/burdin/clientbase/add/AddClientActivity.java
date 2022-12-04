@@ -100,7 +100,6 @@ private  String notNull ( EditText editText) {
 
     private boolean check() {
         boolean result = false;
-
 if (editTextPhone.getText().length() > 0){
             result = true;
         }
