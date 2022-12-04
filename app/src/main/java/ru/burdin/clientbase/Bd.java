@@ -32,7 +32,6 @@ public class Bd {
 private  static Bd bd;
 public static final String DATABASE_NAME = "clientBase.db";
     public static final int SCHEMA = 5;
-//public  static  final int SCHEMA_PROCEDURE = 3;
     public  static final String TABLE = "users";
     public  static  final String TABLE_PROCEDURE = "procedures";
     public  static  final String TABLE_EXPENSES = "expenses";
@@ -50,9 +49,9 @@ public  static  final  String COLUMN_PROCEDURE = "procedire";
 public  static  final  String COLUMN_EVENT_ID = "event_id";
 private  DatabaseHelper databaseHelper;
 private  SQLiteDatabase sqLiteDatabase;
-private ArrayList <User> users;
+private static ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
-private  ArrayList <Record> records;
+private  static ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
 private    Context staticContex;
 
@@ -64,8 +63,6 @@ private  Bd (Context context) {
                     collectProcedures();
         collectRecord();
         collectExpenses();
-sqLiteDatabase.close();
-databaseHelper.close();
 }
 
     public ArrayList<Expenses> getExpenses() {
@@ -113,7 +110,7 @@ public void  reStart (){
     load(staticContex);
 }
 
-    public ArrayList<User> getUsers() {
+    public static ArrayList<User> getUsers() {
     return  users;
     }
 
@@ -121,7 +118,7 @@ public void  reStart (){
         return procedures;
     }
 
-    public ArrayList<Record> getRecords() {
+    public static ArrayList<Record> getRecords() {
         return records;
     }
 /*
@@ -129,8 +126,6 @@ public void  reStart (){
  */
     public  long  add (String table, ContentValues contentValues) {
 AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
-        databaseHelper = new DatabaseHelper(staticContex);
-        sqLiteDatabase = databaseHelper.getReadableDatabase();
 
         long  result = 0;
     Supplier <Long>  supplier = ()-> sqLiteDatabase.insert(table, null, contentValues);
@@ -142,8 +137,6 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        sqLiteDatabase.close();
-        databaseHelper.close();
         return  result;
 }
 
@@ -161,7 +154,7 @@ private  void  collectProcedures () {
     procedures = new ArrayList<>();
     Cursor procedureCursor = sqLiteDatabase.rawQuery("select * from "+ TABLE_PROCEDURE, null);
     while (procedureCursor.moveToNext()) {
-    procedures.add(new Procedure(procedureCursor.getLong(0), procedureCursor.getString(1), procedureCursor.getDouble(2), procedureCursor.getLong(3)));
+    procedures.add(new Procedure(procedureCursor.getLong(0), procedureCursor.getString(1) + "", procedureCursor.getDouble(2), procedureCursor.getLong(3)));
     }
 procedureCursor.close();
     }
@@ -170,7 +163,7 @@ private  void  collectRecord () {
     records = new ArrayList<>();
 Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
 while (cursorRecord.moveToNext()) {
-records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4),cursorRecord.getDouble(5), cursorRecord.getString(6), cursorRecord.getLong(7)));
+records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7)));
     }
     cursorRecord.close();
 }
@@ -179,15 +172,13 @@ private  void collectExpenses () {
     expenses = new ArrayList<>();
     Cursor cursorExpenses =sqLiteDatabase.rawQuery("select * from "+ TABLE_EXPENSES, null);
 while (cursorExpenses.moveToNext()) {
-    expenses.add(new Expenses(cursorExpenses.getLong(0), cursorExpenses.getLong(1), cursorExpenses.getString(2), cursorExpenses.getDouble(3)));
+    expenses.add(new Expenses(cursorExpenses.getLong(0), cursorExpenses.getLong(1), cursorExpenses.getString(2) + "", cursorExpenses.getDouble(3)));
 }
 cursorExpenses.close();
 }
 
 public  int delete (String table, long id) {
 AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
-    databaseHelper = new DatabaseHelper(staticContex);
-    sqLiteDatabase = databaseHelper.getReadableDatabase();
     Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
     int result = 0;
       asyncTaskBd.execute(supplier);
@@ -198,24 +189,16 @@ AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
-    sqLiteDatabase.close();
-    databaseHelper.close();
     return  result;
 }
 
 public     int update  (String table, ContentValues contentValues, long id) {
     AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
-    databaseHelper = new DatabaseHelper(staticContex);
-    sqLiteDatabase = databaseHelper.getReadableDatabase();
     Supplier <Integer> supplier =()-> sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
 
     int result = -1;
     asyncTaskBd.execute(supplier);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         result = supplier.get();
-    }
-    sqLiteDatabase.close();
-    databaseHelper.close();
     return result;
 }
 

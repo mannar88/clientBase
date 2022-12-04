@@ -1,19 +1,35 @@
 package ru.burdin.clientbase.cards;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import ru.burdin.clientbase.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.setting.CalendarSetting;
@@ -22,6 +38,7 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class CardSessionActivity extends AppCompatActivity {
 
@@ -39,6 +56,8 @@ private  long recordId = -1;
 private CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
 public  static  final  int TRANSFER_INT = 67;
+Activity context;
+DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +78,8 @@ calendarSetting = CalendarSetting.load(this);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
-        }
+this.context = this;
+}
 
     @Override
     protected void onStart() {
@@ -73,8 +93,8 @@ calendarSetting = CalendarSetting.load(this);
     private  void  setScreenInfo (Record record) {
         indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
         user = bd.getUsers().get(indexUser);
-        DateFormat dateFormatTime = new SimpleDateFormat("HH:mm dd.MM.YYYY");
-        textViewDate.setText("Время записи: "  + dateFormatTime.format(new Date(record.getStart())));
+
+        textViewDate.setText("Время записи: "  + dateFormat.format(new Date(record.getStart())));
         textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
         textViewProcedure.setText("Услуги: " + record.getProcedure());
         textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
@@ -96,11 +116,89 @@ calendarSetting = CalendarSetting.load(this);
     Дублирование записи
      */
     public void onClickButtonCardSessionDooble(View view) {
-Intent intent = new Intent(this, ListSessionActivity.class);
-intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
-intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
-    startActivityForResult(intent,ListSessionActivity.CLASS_INDEX);
+DateFormat dateFormat = new SimpleDateFormat("EEEE, dd-MM-YYYY HH:mm");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Calendar calendar = new GregorianCalendar();
+calendar.setTimeInMillis(record.getStart());
+String [] times = new String[30];
+long[] longs = new  long[30];
+int i =0;
+while (times[times.length -1] == null) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        Record recordTrue = new Record(record);
+        recordTrue.setStart(calendar.getTimeInMillis());
+        if (!Bd.getRecords().contains(recordTrue)) {
+            times[i] = dateFormat.format(calendar.getTime());
+            longs[i++] = calendar.getTimeInMillis();
+        }
+        }
+builder.setPositiveButton("Дублировать однократно", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        Intent intent = new Intent(getApplicationContext(), ListSessionActivity.class);
+        intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
+        intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
+        startActivityForResult(intent,ListSessionActivity.CLASS_INDEX);
     }
+});
+    builder.setNegativeButton("Дублировать пакетно без изменения времени", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+doubPacket(times, longs);
+        }
+    });
+    builder.create().show();
+    }
+
+    /*
+    Пакетное время для дублирования
+     */
+    private  void  doubPacket (String[] times, long [] longs) {
+Set<Long> longHashSet = new HashSet<>();
+    boolean [] booleans = new  boolean[times.length];
+AlertDialog.Builder builder = new AlertDialog.Builder(this);builder.setMultiChoiceItems(times, booleans, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+
+                if (b) {
+longHashSet.add(longs[i]);
+            }else {
+longHashSet.remove(longs[i]);
+                }
+
+            }
+        });
+        builder.setPositiveButton("Дублировать", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (longHashSet.size() > 0) {
+for (Long l : longHashSet) {
+    Record recordNew = new Record(record);
+    recordNew.setStart(l);
+    CalendarSetting calendarSetting =  CalendarSetting.load(getApplicationContext());
+    String name = user.getSurname() + " " + user.getName();
+    long evant = calendarSetting.addRecordCalender(recordNew, name);
+    ContentValues contentValues = new ContentValues();
+    contentValues.put(Bd.COLUMN_TIME, recordNew.getStart());
+    contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
+    contentValues.put(Bd.COLUMN_ID_USER, user.getId());
+    contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
+    contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
+    contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
+    contentValues.put(Bd.COLUMN_EVENT_ID, evant);
+    recordNew.setIdUser(bd.add(Bd.TABLE_SESSION, contentValues));
+    recordNew.setIdUser(user.getId());
+    Bd.getRecords().add(recordNew);
+}
+Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Ниччего не выбрано", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    builder.create().show();;}
+
 
     /*
 Редактирование записи
@@ -112,18 +210,58 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
 }
 
     /*
-Удаляет запись
+Кнопка ка для удаления записи
  */
     public void onClickButtonCardSessionDelete(View view) {
-int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
-if (resultDelete == 1) {
-long id =  bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
-if(calendarSetting.delete(id) == 0) {
-    Toast.makeText(this, "Не удалось удалить запись в календаре", Toast.LENGTH_SHORT).show();
-}
-Toast.makeText(this, "Запись удалена", Toast.LENGTH_SHORT).show();
-finish();
-}
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Удалить запись из расписания?");
+            builder.setPositiveButton("Удалить без уведомления", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+ if (delete()) {
+     finish();
+ }
+                }
+            });
+            builder.setNegativeButton("Удалить и уведомить клиента по SMS", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+    Record recordNotification = new Record(record);
+   if (delete()) {
+       if (SendSMS.permission(context)) {
+           SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(3), SendSMS.TEMPLETS.get(3)), recordNotification, R.id.radioButtonAddSessionSMS);
+       }
+       finish();
+   }
+                                    }
+            });
+            builder.setNeutralButton("Удалить и уведомить по WHatsApp", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Record recordNotification = new Record(record);
+                    if (delete()) {
+                        SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(3), SendSMS.TEMPLETS.get(3)), recordNotification, R.id.radioButtonAddSessionWAthsApp);
+                        finish();
+                    }
+                }
+            });
+            builder.create().show();
+        }
+
+
+    /*
+    метод удаления сеанса
+     */
+    private  boolean   delete () {
+        int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
+        if (resultDelete == 1) {
+            long id = bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
+            if (calendarSetting.delete(id) == 0) {
+                Toast.makeText(getApplicationContext(), "Не удалось удалить запись в календаре", Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(getApplicationContext(), "Запись удалена", Toast.LENGTH_SHORT).show();
+        }
+        return  resultDelete == 0? false:true;
     }
 
     /*
@@ -138,7 +276,7 @@ finish();
                 Toast.makeText(this, "Запись дублирована", Toast.LENGTH_LONG).show();
             break;
                 case AddSessionActivity.CLASS_INDEX:
-            setScreenInfo(record);
+                setScreenInfo(record);
                     Toast.makeText(getApplicationContext(), "Запись изменена", Toast.LENGTH_SHORT).show();
             break;
                 case TRANSFER_INT:
@@ -148,6 +286,29 @@ if (recordId != -1) {
     record = bd.getRecords().get(index);
 setScreenInfo(record);
 Toast.makeText(this, "Запись успешно перенесена", Toast.LENGTH_SHORT).show();
+AlertDialog.Builder builder = new AlertDialog.Builder(this);
+builder.setTitle("Уведомить клиента о переносе?");
+builder.setPositiveButton("Нет, пусть будет нежданчик", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+   dialogInterface.cancel();
+    }
+});
+builder.setNegativeButton("Уведомить по SMS", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        if (SendSMS.permission(context)){
+        SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionSMS);
+    }
+    }
+});
+builder.setNeutralButton("Уведомить по WhatsApp", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+   SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionWAthsApp);
+    }
+});
+builder.create().show();
 }
             //            setScreenInfo(record);
 
@@ -164,5 +325,17 @@ Toast.makeText(this, "Запись успешно перенесена", Toast.L
         intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
         intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
         startActivityForResult(intent,TRANSFER_INT);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+if (requestCode == SendSMS.PERMISSION_SMS) {
+    if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionSMS);
+    }else {
+        StaticClass.getDialog(context, "на отправку SMS");
+    }
+}
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

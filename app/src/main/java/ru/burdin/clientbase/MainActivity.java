@@ -3,6 +3,7 @@ package ru.burdin.clientbase;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Bd bd;
 private CalendarSetting calendarSetting;
-Activity activity;
+private  Activity activity;
+private  TimeReceiver timeReceiver ;
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,12 +35,10 @@ Activity activity;
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-//            bd = Bd.load(this);
+            bd = Bd.load(this);
             calendarSetting = CalendarSetting.load(this);
-        }catch (Exception e) {
-            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
+timeReceiver = TimeReceiver.load(this);
+            this.registerReceiver(timeReceiver, new IntentFilter(                "android.intent.action.TIME_TICK"));
 }
 
     public void onClickButtonRecord(View view) {

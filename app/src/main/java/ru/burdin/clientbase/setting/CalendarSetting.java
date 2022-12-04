@@ -45,36 +45,35 @@ public class CalendarSetting {
     public long id = 0;
     private String name;
     private Map<String, Long> calendars = new LinkedHashMap<>();
-    private static Activity activity;
+    private Context context;
     private boolean checkBoxCalender;
     public   final static  String EMPTY = "Не найдены доступные календари";
     private Bd bd;
     public   static final int Calender_PERMISSION = 2;
 
 
-
-    private CalendarSetting(Activity activity) {
-        this.activity = activity;
-        if (requestSinglePermission()) {
+    private CalendarSetting(Context context) {
+        this.context = context;
+        if        (requestSinglePermission()) {
             initCalendars();
         }
 
         if (calendars.size() == 0) {
             calendars.put(EMPTY, 0l);
         }
-            id = Preferences.getLong(activity, Preferences.APP_PREFERENCES_ID_CALENDER, 0);
-            name = Preferences.getString(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, EMPTY);
-            checkBoxCalender = Preferences.getBoolean (activity, Preferences.APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
+            id = Preferences.getLong(context, Preferences.APP_PREFERENCES_ID_CALENDER, 0);
+            name = Preferences.getString(context, Preferences.APP_PREFERENCES_NAME_CALENDAR, EMPTY);
+            checkBoxCalender = Preferences.getBoolean (context, Preferences.APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
 
-        bd = Bd.load(activity);
+        bd = Bd.load(context);
     }
 
     /*
     Инициализация объекта
      */
-    public static CalendarSetting load(Activity activity) {
+    public static CalendarSetting load(Context context) {
         if (calendarSetting == null) {
-            calendarSetting = new CalendarSetting(activity);
+            calendarSetting = new CalendarSetting(context);
         }
         return calendarSetting;
     }
@@ -98,7 +97,7 @@ calendars.clear();
                                 CalendarContract.Calendars._ID,
                                 CalendarContract.Calendars.NAME,
                                 CalendarContract.Calendars.ACCOUNT_TYPE};
-                Cursor calCursor = activity.getContentResolver().
+                Cursor calCursor = context.getContentResolver().
                         query(CalendarContract.Calendars.CONTENT_URI,
                                 projection,
                                 CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL + " > 400",
@@ -121,9 +120,9 @@ calendars.clear();
             calendars.put(EMPTY, 0l);
         }
         } catch (ExecutionException e) {
-            Toast.makeText(activity.getApplicationContext(), "Что-то пошло не так с запросом календарей", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(), "Что-то пошло не так с запросом календарей", Toast.LENGTH_SHORT).show();
         } catch (InterruptedException e) {
-            Toast.makeText(activity.getApplicationContext(), "Что-то пошло не так с запросом календарей", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(), "Что-то пошло не так с запросом календарей", Toast.LENGTH_SHORT).show();
             }
     }
 
@@ -144,8 +143,8 @@ calendars.clear();
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 name = namesCalender.get(i);
 id = calendars.get(name);
-Preferences.set(activity, Preferences.APP_PREFERENCES_ID_CALENDER, id);
-                Preferences.set(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
+Preferences.set(context, Preferences.APP_PREFERENCES_ID_CALENDER, id);
+                Preferences.set(context, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
             }
 
             @Override
@@ -188,15 +187,15 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
                         calenderAxtivity.recreate();
                     name = calendars.keySet().stream().findFirst().get();
                     id = calendars.get(name);
-                    Preferences.set(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
-                    Preferences.set(activity,Preferences.APP_PREFERENCES_ID_CALENDER, id);
+                    Preferences.set(context, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
+                    Preferences.set(context,Preferences.APP_PREFERENCES_ID_CALENDER, id);
                     }else  {
                         spinner.setEnabled(b);
                     }
 
                 }
 
-                Preferences.set(activity, Preferences.APP_PREFERENCES_CheckBox, checkBoxCalender);
+                Preferences.set(context, Preferences.APP_PREFERENCES_CheckBox, checkBoxCalender);
             }
         });
     }
@@ -211,7 +210,7 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
             Supplier<Long> supplier = new Supplier<Long>() {
                 @Override
                 public Long get() {
-                    Uri uri = activity.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, getContentValues(record, surname));
+                    Uri uri = context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, getContentValues(record, surname));
                     return Long.parseLong(uri.getLastPathSegment());
                 }
             };
@@ -219,9 +218,9 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                Toast.makeText(activity.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                Toast.makeText(activity.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         }        return  result;
     }
@@ -237,16 +236,16 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
                 @Override
                 public Long get() {
                     Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, record.getEvent_id());
-                    return (long) activity.getContentResolver().update(uri, getContentValues(record,nameSurname ), null, null);
+                    return (long) context.getContentResolver().update(uri, getContentValues(record,nameSurname ), null, null);
                 }
             };
             asyncTasCalender.execute(supplier);
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                Toast.makeText(activity.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                Toast.makeText(activity.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }
         return  (int)result;
@@ -264,16 +263,16 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
                 @Override
                 public Long get() {
                     Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id);
-                    return (long) activity.getContentResolver().delete(deleteUri, null, null);
+                    return (long) context.getContentResolver().delete(deleteUri, null, null);
                 }
             };
             asyncTasCalender.execute(supplier);
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                Toast.makeText(activity.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                Toast.makeText(activity.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }
         return  (int) result;
@@ -285,22 +284,24 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
         ContentValues contentValues = new ContentValues();
         contentValues.put(CalendarContract.Events.DTSTART, record.getStart());
         contentValues.put(CalendarContract.Events.DTEND, record.getStart() + record.getEnd());
-        contentValues.put(CalendarContract.Events.TITLE, activity.getResources().getString(R.string.app_name) + " " +nameSurname + " " + record.getProcedure());
+        contentValues.put(CalendarContract.Events.TITLE, context.getResources().getString(R.string.app_name) + " " +nameSurname + " " + record.getProcedure());
         contentValues.put(CalendarContract.Events.DESCRIPTION, "");
         contentValues.put(CalendarContract.Events.CALENDAR_ID, this.id);
         contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getDisplayName());
+
         return contentValues;
     }
 
     /*
 Проверка разрешения
  */
-    private static boolean requestSinglePermission() {
+    private  boolean requestSinglePermission() {
 
         String calenderPermission = Manifest.permission.READ_CALENDAR;
         String calenderPermission1 = Manifest.permission.WRITE_CALENDAR;
-        int hasPermission = activity.checkSelfPermission(calenderPermission);
-        int hasPermission2 =activity.checkSelfPermission(calenderPermission1);
+
+        int hasPermission =context.checkSelfPermission(calenderPermission);
+        int hasPermission2 =context.checkSelfPermission(calenderPermission1);
         return hasPermission  == PackageManager.PERMISSION_GRANTED && hasPermission2 == PackageManager.PERMISSION_GRANTED;
     }
 

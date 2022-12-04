@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.TimeReceiver;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -31,7 +33,7 @@ public class SettingActivity extends AppCompatActivity {
    private ArrayAdapter <?> arrayAdapter;
     private CalendarSetting calendars;
     public static final int REQUEST_PERMISSIONS = 101;
-
+private RadioGroup radioGroup;
 
     private Bd bd;
 private  WorkScheduleSetting workScheduleSetting;
@@ -111,4 +113,8 @@ checkBoxCalender.setChecked(false);
     }
 
 
+    public void onClickButtonSettingTemplets(View view) {
+    Intent intent = new Intent(this, TemplatesActivity.class);
+    startActivity(intent);
+    }
 }

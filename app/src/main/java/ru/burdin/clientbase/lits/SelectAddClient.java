@@ -56,7 +56,7 @@ bd = Bd.load(activity);
 
     public void getDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setCancelable(false);
+        builder.setCancelable(true);
         builder.setPositiveButton("Заполнить в ручную", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

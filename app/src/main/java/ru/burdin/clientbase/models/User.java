@@ -34,7 +34,10 @@ public User() {
         this.surname = notNull(surname);
         this.phone = phoneFormat(phone);
         this.comment = notNull(comment);
-    }
+if ((this.surname == "" && this.name == "") || (this.surname == null && this.name == null)) {
+    this.surname = phone;
+}
+}
 
     /*
     Исправляет номера телефона
@@ -130,12 +133,12 @@ break;
         String formattedNumber = phone.substring(1);
         try{
             Intent sendIntent =new Intent("android.intent.action.MAIN");
-            sendIntent.setComponent(new ComponentName("com.whatsapp1", "com.whatsapp.Conversation"));
+            sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.setType("text/plain");
             sendIntent.putExtra(Intent.EXTRA_TEXT,"");
             sendIntent.putExtra("jid", formattedNumber +"@s.whatsapp.net");
-            sendIntent.setPackage("com2.whatsapp");
+            sendIntent.setPackage("com.whatsapp");
             activity.startActivity(sendIntent);
         }
         catch(Exception e)      {

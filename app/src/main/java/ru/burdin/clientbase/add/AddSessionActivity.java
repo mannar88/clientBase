@@ -2,15 +2,22 @@ package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,12 +29,14 @@ import java.util.function.Consumer;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.SendSMS;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.CalendarSetting;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class AddSessionActivity extends AppCompatActivity {
 
@@ -46,6 +55,10 @@ private  int indexListSession;
 private  int indexRecord = -1;
 private CalendarSetting calendarSetting;
 public  static  final  int CLASS_INDEX = 1;
+private RadioGroup radioGroupMessange;
+RadioButton radioButtonNotChck;
+private RadioButton radioButtonSMS;
+private RadioButton radioButtonWhatsApp;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +70,12 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
+radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
+radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
+radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
+radioButtonWhatsApp = findViewById(R.id.radioButtonAddSessionWAthsApp);
+
+radioGroupMessange.check(radioButtonNotChck.getId());
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
 if (savedInstanceState == null) {
@@ -88,6 +107,7 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
         buttonAddProcedure.setText("Ещё добавить услугу");
     }
     updateProcedure();
+SendSMS.setNow(radioGroupMessange, this, radioButtonSMS.getId());
 }
 
 /*
@@ -137,11 +157,12 @@ public void onClickButtonSessionSave(View view) {
 if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
-    setResult(RESULT_OK);
-    finish();
+                setResult(RESULT_OK);
+SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)),record, radioGroupMessange.getCheckedRadioButtonId());
+                finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();
-}
+            }
 } else {
             if (!bd.getRecords().contains(record)) {
 try {
@@ -166,7 +187,7 @@ contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                             record.getComment(),
 record.getEvent_id()                            ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
-
+SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(0), SendSMS.TEMPLETS.get(0)), record, radioGroupMessange.getCheckedRadioButtonId());
                     finish();
 
                 }else {
@@ -254,5 +275,16 @@ resultTime = resultTime + procedure.getTimeEnd();
     editTextSetTimeFinish.setText(Long.toString(TimeUnit.MILLISECONDS.toMinutes(resultTime)));
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+if (requestCode == SendSMS.PERMISSION_SMS) {
+    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
+    }else {
+        radioGroupMessange.check(radioButtonNotChck.getId());
+        StaticClass.getDialog(this, "отправку SMS");
+    }
+}
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }
