@@ -22,6 +22,7 @@ public  static  final  String SELECT_RADIO_BUTTON_NOTIFICETION_CLIENT = "selectR
     public  static  final  String  APP_PREFERENCES_TEMPLETES_DELETE = "app_preferenses_templetes_delete";
 public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION = "check_SMS_notification";
 public  static  final String APP_PREFERENSES_TIME_NOTIFICATION_SMS = "time_notification_SMS";
+public  static  final  String APP_PREFERENCAES_TEMLETES_NOTIFICATION_HOUR = "notification_hours";
 
 public  static SharedPreferences  getSharedPreferences (Context context) {
         return   context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);

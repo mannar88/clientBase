@@ -1,5 +1,6 @@
 package ru.burdin.clientbase.add;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -107,7 +108,6 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
         buttonAddProcedure.setText("Ещё добавить услугу");
     }
     updateProcedure();
-SendSMS.setNow(radioGroupMessange, this, radioButtonSMS.getId());
 }
 
 /*
@@ -119,9 +119,24 @@ public  void  onClickSetUser (View view) {
     startActivityForResult(intent,StaticClass.LIST_USERS);
 }
 
-/*
-Сохраняет  или редактирует запись в БД и в списке
- */
+    @Override
+    protected void onResume() {
+        super.onResume();
+radioGroupMessange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+        if (i == R.id.radioButtonAddSessionSMS) {
+            if (!SendSMS.permission(getApplicationContext())) {
+                requestPermissions(new  String[]{Manifest.permission.SEND_SMS}, SendSMS.PERMISSION_SMS);
+            }
+        }
+    }
+});
+}
+
+    /*
+    Сохраняет  или редактирует запись в БД и в списке
+     */
 public void onClickButtonSessionSave(View view) {
     if ( userIndex > -1 && editTextSetTimeFinish.getText().length() > 0 && editTextSetPrices.getText().length() > 0) {
         Record record = new Record(this.record.getStart());
