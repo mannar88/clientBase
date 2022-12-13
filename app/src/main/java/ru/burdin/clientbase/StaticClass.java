@@ -1,5 +1,6 @@
 package ru.burdin.clientbase;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,9 +10,12 @@ import android.provider.Settings;
 import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.burdin.clientbase.models.Model;
 import ru.burdin.clientbase.models.User;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public final class StaticClass  {
     public  static  final  int LIST_USERS = 0;
@@ -25,6 +29,25 @@ public  static  final  String   POSITION_LIST_USERS  = "position_list_users";
 public  static  final  String NEWRECORDISCARD = "newRecordCardUser";
 public  static  final  String NEWRECORD = "newRecord";
 public  static final  String NUMBER_PHONE = "number_phone";
+
+    /*
+    Поиск сервиса смс
+     */
+    public static boolean searchSMSServese (Context context) {
+        boolean result = true;
+        ActivityManager am = (ActivityManager) context
+                .getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> rs = am.getRunningServices(50);
+        for (int i = 0; i < rs.size(); i++) {
+            if (SMSService.class.getName().equalsIgnoreCase(rs.get(i).service.getClassName()))
+            {               result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+
 
 /*
     Ищет индекс в коллекции по его id

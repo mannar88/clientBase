@@ -15,15 +15,14 @@ public  static  final  String  APP_PREFERENCES_START_WORK_HOUR = "start_work_hou
     public  static  final  String  APP_PREFERENCES_FINISH_HOUR = "ffinish_hour";
     public  static  final  String  APP_PREFERENCES_FINISH_MINUTES ="finish_minutes";
     public  static  final  String  APP_PREFERENCES_WORK_INTERVAL ="work_interval";
-public  static  final  String SELECT_RADIO_BUTTON_NOTIFICETION_CLIENT = "selectRadioButtonNotificetionClient";
     public  static  final  String  APP_PREFERENCES_TEMPLETES_NOW = "app_preferenses_templetes_now";
     public  static  final  String  APP_PREFERENCES_TEMPLETESNOTIFICATION = "app_preferenses_templetes_notification";
     public  static  final  String  APP_PREFERENCES_TEMPLETES_READ = "app_preferenses_templetes_read";
     public  static  final  String  APP_PREFERENCES_TEMPLETES_DELETE = "app_preferenses_templetes_delete";
-//public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION = "check_SMS_notification";
 public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1 = "check_SMS_notification_1";
 public  static  final String APP_PREFERENSES_TIME_NOTIFICATION_SMS = "time_notification_SMS";
 public  static  final  String APP_PREFERENCAES_TEMLETES_NOTIFICATION_HOUR = "notification_hours";
+public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";
 
 public  static SharedPreferences  getSharedPreferences (Context context) {
         return   context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);

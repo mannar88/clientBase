@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import okhttp3.internal.Util;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class User implements Comparable, Model  {
 
@@ -105,15 +107,21 @@ if (result.length() > 0) {
     Позвонить
      */
 public  void call(Activity activity) {
+    if (!Preferences.getBoolean(activity.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_LINEPHONE, false)) {
         String callPermission = Manifest.permission.CALL_PHONE;
-        int hasPermission =activity.checkSelfPermission(callPermission);
-        String [] permissions = new  String[] {callPermission};
+        int hasPermission = activity.checkSelfPermission(callPermission);
+        String[] permissions = new String[]{callPermission};
         if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-          activity.requestPermissions(permissions, CALL_PERMISSION);
-        }else  {
+            activity.requestPermissions(permissions, CALL_PERMISSION);
+        } else {
             Intent intentColl = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + this.phone));
-           activity.startActivity(intentColl);
+            activity.startActivity(intentColl);
         }
+    }else {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+            activity.startActivity(intent);
+    }
+
 }
 
 /*

@@ -25,6 +25,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
+        <service
+            android:name=".SMSService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <activity android:name=".setting.TemplatesActivity" />
         <activity android:name=".InfoActivity" />
