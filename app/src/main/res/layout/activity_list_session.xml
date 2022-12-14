@@ -52,8 +52,7 @@ app:layout_constraintTop_toBottomOf="@+id/buttonBackDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxListSessionUsers"
+                app:layout_constraintTop_toBottomOf="@+id/checkBoxListSessionUsers"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constrainedHeight="true"
         />

@@ -49,9 +49,9 @@ public  static  final  String COLUMN_PROCEDURE = "procedire";
 public  static  final  String COLUMN_EVENT_ID = "event_id";
 private  DatabaseHelper databaseHelper;
 private  SQLiteDatabase sqLiteDatabase;
-private static ArrayList <User> users;
+private  ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
-private  static ArrayList <Record> records;
+private   ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
 private    Context staticContex;
 
@@ -110,7 +110,7 @@ public void  reStart (){
     load(staticContex);
 }
 
-    public static ArrayList<User> getUsers() {
+    public  ArrayList<User> getUsers() {
     return  users;
     }
 
@@ -118,7 +118,7 @@ public void  reStart (){
         return procedures;
     }
 
-    public static ArrayList<Record> getRecords() {
+    public  ArrayList<Record> getRecords() {
         return records;
     }
 /*

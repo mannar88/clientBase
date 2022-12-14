@@ -128,7 +128,7 @@ while (times[times.length -1] == null) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         Record recordTrue = new Record(record);
         recordTrue.setStart(calendar.getTimeInMillis());
-        if (!Bd.getRecords().contains(recordTrue)) {
+        if (!bd.getRecords().contains(recordTrue)) {
             times[i] = dateFormat.format(calendar.getTime());
             longs[i++] = calendar.getTimeInMillis();
         }
@@ -189,7 +189,7 @@ for (Long l : longHashSet) {
     contentValues.put(Bd.COLUMN_EVENT_ID, evant);
     recordNew.setIdUser(bd.add(Bd.TABLE_SESSION, contentValues));
     recordNew.setIdUser(user.getId());
-    Bd.getRecords().add(recordNew);
+    bd.getRecords().add(recordNew);
 }
 Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
                 }else {

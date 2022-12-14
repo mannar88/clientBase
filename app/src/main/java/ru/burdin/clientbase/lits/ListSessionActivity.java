@@ -75,7 +75,8 @@ private CalendarSetting calendarSetting;
 private  int indexListRecord;
 public  static  final  int CLASS_INDEX = 2;
     private Intent intentTransfer = new Intent();
-Activity activity;@Override
+Activity activity;
+@Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_session);
@@ -91,7 +92,7 @@ dateAndTime.setTimeInMillis(savedInstanceState.getLong("dateAndTime"));
             }
 indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
         textViewDay = findViewById(R.id.textViewDate);
-        textViewTime = findViewById(R.id.textViewTime);
+                textViewTime = findViewById(R.id.textViewTime);
 textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
 checkBoxUsers = findViewById(R.id.checkBoxListSessionUsers);
  recyclerViewTime = findViewById(R.id.listTime);
@@ -194,8 +195,8 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
                                 name = user.getSurname() + " " + user.getName();
                             }
                         }
-                        viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()) + "  " + name + " " + recordsEnpty.get(MyAdapter.count).getProcedure());
-                    } else {
+                        viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()) + "  " + name + " " + recordsEnpty.get(MyAdapter.count).getProcedure() + " Удерживайте для связи с клиентом");
+                                        } else {
                         viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()));
                     }
                         }
@@ -247,7 +248,7 @@ MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, con
 dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() - TimeUnit.DAYS.toMillis(1));
     textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()) + " Щёлкните для установки даты");
     recUpdate();
-
+        view.announceForAccessibility(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
      }
 
 /*
@@ -257,6 +258,7 @@ public void onClickButtonNextDay (View view) {
 dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() + TimeUnit.DAYS.toMillis(1));
     textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()) + " Щёлкните для установки даты");
     recUpdate();
+    view.announceForAccessibility(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
 }
 
 /*
