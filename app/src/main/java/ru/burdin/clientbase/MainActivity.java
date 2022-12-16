@@ -1,5 +1,6 @@
 package ru.burdin.clientbase;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -7,7 +8,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -51,9 +55,29 @@ if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_
 if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, R.id.radioButtonTempleetsNotificationNotCheck) == R.id.radioButtonTempleetsNotificationNotCheck && !StaticClass.searchSMSServese(this)) {
     startService(new Intent(this, SMSService.class));
 }
+//Установка флажка автоматического экспорта
+Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));
 }
 
-    public void onClickButtonRecord(View view) {
+/*
+Проверка на разрешение файловой системы
+ */
+private  boolean permission () {
+    boolean result = false;
+    if (Build.VERSION.SDK_INT < 30) {
+        int permission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            result = true;
+        }
+    }else {
+if (Environment.isExternalStorageManager()){
+    result = true;
+}
+    }
+    return  result;
+}
+
+public void onClickButtonRecord(View view) {
 Intent intent = new Intent(this, ListSessionActivity.class);
 startActivity(intent);
     }

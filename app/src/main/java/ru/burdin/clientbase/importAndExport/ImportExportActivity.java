@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,22 +21,44 @@ import java.util.concurrent.ExecutionException;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class ImportExportActivity extends AppCompatActivity {
 
 private BdImportExport bdExportImport;
 private  Bd bd;
+private CheckBox checkBoxAutoExport;
+private Activity activity;
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_export);
 bdExportImport = new BdImportExport(getDatabasePath(Bd.DATABASE_NAME).getPath());
 bd = Bd.load(this);
+checkBoxAutoExport = findViewById(R.id.checkBoxImportExportAutoExport);
+checkBoxAutoExport.setChecked(Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
+activity = this;
 }
 
-/*
-Кнопка импорта БД
- */
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+checkBoxAutoExport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (b) {
+            bdExportImport.requestMultiplePermissions(activity);
+        }
+        Preferences.set(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, b);
+    }
+});
+}
+
+    /*
+    Кнопка импорта БД
+     */
     public void onClickButtonImport(View view) {
         if (bdExportImport.requestMultiplePermissions(this)) {
             try {
@@ -81,6 +106,8 @@ switch (requestCode) {
     case  BdImportExport.REQUEST_PERMISSIONS_ALL:
         if ( !Environment.isExternalStorageManager()) {
     StaticClass.getDialog(this, "на чтение и запись файловой системы");
+        checkBoxAutoExport.setChecked(false);
+        Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false);
         }
 break;
 }

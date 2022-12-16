@@ -22,10 +22,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import ru.burdin.clientbase.importAndExport.BdImportExport;
 import ru.burdin.clientbase.models.Expenses;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class Bd {
 
@@ -54,6 +56,7 @@ private  ArrayList <Procedure> procedures;
 private   ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
 private    Context staticContex;
+private BdImportExport bdImportExport;
 
 private  Bd (Context context) {
     this.staticContex = context;
@@ -63,6 +66,7 @@ private  Bd (Context context) {
                     collectProcedures();
         collectRecord();
         collectExpenses();
+bdImportExport = new BdImportExport(context.getDatabasePath(Bd.DATABASE_NAME).getPath());
 }
 
     public ArrayList<Expenses> getExpenses() {
@@ -137,10 +141,36 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        autoExport(result);
         return  result;
 }
 
-private  void  collectListUsers () {
+/*
+Автоматическиий экспорт БД на устройство
+ */
+private  void  autoExport (Long result ) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (result != 0 && Preferences.getBoolean(staticContex, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) {
+                    try {
+                        bdImportExport.exportBd();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+Thread thread = new Thread(runnable);
+thread.start();
+    }
+
+/*
+Сбор в список клиентов
+ */
+    private  void  collectListUsers () {
 users = new ArrayList<>();
     Cursor userCursor = sqLiteDatabase.rawQuery("select * from "+ TABLE, null);
     while (userCursor.moveToNext()) {
@@ -150,6 +180,9 @@ userCursor.close();
 users.sort(Comparator.naturalOrder());
 }
 
+/*
+Сбор в список процедуры
+ */
 private  void  collectProcedures () {
     procedures = new ArrayList<>();
     Cursor procedureCursor = sqLiteDatabase.rawQuery("select * from "+ TABLE_PROCEDURE, null);
@@ -159,7 +192,10 @@ private  void  collectProcedures () {
 procedureCursor.close();
     }
 
-private  void  collectRecord () {
+/*
+Сбор в список сеансы
+ */
+    private  void  collectRecord () {
     records = new ArrayList<>();
 Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
 while (cursorRecord.moveToNext()) {
@@ -168,6 +204,9 @@ records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorR
     cursorRecord.close();
 }
 
+/*
+Сбор в список расходы
+ */
 private  void collectExpenses () {
     expenses = new ArrayList<>();
     Cursor cursorExpenses =sqLiteDatabase.rawQuery("select * from "+ TABLE_EXPENSES, null);
@@ -189,6 +228,7 @@ AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
+    autoExport((long)result);
     return  result;
 }
 
@@ -199,7 +239,8 @@ public     int update  (String table, ContentValues contentValues, long id) {
     int result = -1;
     asyncTaskBd.execute(supplier);
         result = supplier.get();
-    return result;
+    autoExport((long)result);
+        return result;
 }
 
 private  class  DatabaseHelper extends SQLiteOpenHelper {

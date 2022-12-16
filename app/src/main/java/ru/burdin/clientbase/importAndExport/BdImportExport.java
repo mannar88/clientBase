@@ -2,6 +2,7 @@ package ru.burdin.clientbase.importAndExport;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -25,7 +26,7 @@ import ru.burdin.clientbase.setting.SettingActivity;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
- class BdImportExport {
+public    class BdImportExport {
 
     private  File file_Bd;
 private  File file_export;

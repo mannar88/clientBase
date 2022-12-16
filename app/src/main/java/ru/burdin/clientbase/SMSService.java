@@ -22,7 +22,7 @@ import android.widget.Toast;
     public int onStartCommand(Intent intent, int flags, int startId) {
         registerReceiver(timeReceiver, new IntentFilter(                "android.intent.action.TIME_TICK"));
         Toast.makeText(this, "Сервис по отправки SMS запущен", Toast.LENGTH_SHORT).show();
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_STICKY;
     }
 
         @Override

@@ -63,8 +63,13 @@ break;
         String  number ="https://t.me/ViktorBurdin";
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
         startActivity(intent);
-break;
+        break;
 case 5:
+    String  cannal ="https://t.me/ClientB_ase";
+    Intent intentCannal = new Intent(Intent.ACTION_VIEW, Uri.parse(cannal));
+    startActivity(intentCannal);
+break;
+case 7:
 String group = "https://t.me/+LRWaSmfAmahkYmVi";
     Intent intentGroup = new Intent(Intent.ACTION_VIEW, Uri.parse(group));
     startActivity(intentGroup);

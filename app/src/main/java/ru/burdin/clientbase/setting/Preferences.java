@@ -23,6 +23,7 @@ public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1 = "check_
 public  static  final String APP_PREFERENSES_TIME_NOTIFICATION_SMS = "time_notification_SMS";
 public  static  final  String APP_PREFERENCAES_TEMLETES_NOTIFICATION_HOUR = "notification_hours";
 public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";
+public  final  static  String APP_PREFERENSES_CHECK_AUTO_IMPORT = "auto_import";
 
 public  static SharedPreferences  getSharedPreferences (Context context) {
         return   context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);

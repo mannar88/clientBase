@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
 app:layout_constraintBottom_toBottomOf="parent"
     tools:context=".importAndExport.ImportExportActivity">
-<Button
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/checkBoxImportExportAutoExport"
+        android:text="Автоматически экспортировать БД на устройства после изменения"
+        />
+
+    <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/buttonImport"
     android:text="Импорт"
     android:onClick="onClickButtonImport"
-/>
+app:layout_constraintTop_toBottomOf="@+id/checkBoxImportExportAutoExport"
+        />
 
     <Button
         android:layout_width="match_parent"
