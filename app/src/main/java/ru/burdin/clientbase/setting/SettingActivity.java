@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
-import ru.burdin.clientbase.TimeReceiver;
 
 public class SettingActivity extends AppCompatActivity {
 

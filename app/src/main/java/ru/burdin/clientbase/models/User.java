@@ -46,6 +46,9 @@ if ((this.surname == "" && this.name == "") || (this.surname == null && this.nam
      */
 
     private String phoneFormat (String phone) {
+        if (phone.length() < 10) {
+            phone ="+7000000000";
+        }
         String result = PhoneNumberUtils.normalizeNumber(phone);
 if (result.length() > 0) {
     if ("RU".equalsIgnoreCase(Locale.getDefault().getCountry())) {

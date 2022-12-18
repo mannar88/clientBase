@@ -58,7 +58,7 @@ public class AddClientActivity extends AppCompatActivity {
     }
 
     public void buttonSaveC(View view) {
-        try {
+            if (editTextPhone.getText().length() > 0 || editTextSurname.getText().length() > 0 || editTextName.getText().length() > 0) {
             if (check()) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(Bd.COLUMN_NAME, notNull(editTextName));
@@ -84,12 +84,12 @@ public class AddClientActivity extends AppCompatActivity {
                 }
                 finish();
             }else {
-                Toast.makeText(getApplicationContext(), "Необходимо добавить номер телефона", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Проверте правильно ли написан номер", Toast.LENGTH_SHORT).show();
             }
-        }catch ( Exception e) {
-            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
-        }
+            } else {
+                    Toast.makeText(getApplicationContext(), "Хоть одно поле должно быть заполнено", Toast.LENGTH_SHORT).show();
+                }
+            }
 
     /*
    Проверка на длину
@@ -100,7 +100,7 @@ private  String notNull ( EditText editText) {
 
     private boolean check() {
         boolean result = false;
-if (editTextPhone.getText().length() > 0){
+if (editTextPhone.getText().length() > 9 || editTextPhone.getText().length() == 0){
             result = true;
         }
         return result;
