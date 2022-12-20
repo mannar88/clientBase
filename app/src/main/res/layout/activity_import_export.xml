@@ -31,4 +31,13 @@ app:layout_constraintTop_toBottomOf="@+id/checkBoxImportExportAutoExport"
         android:onClick="onClickButtonExport"
 app:layout_constraintTop_toBottomOf="@+id/buttonImport"
         />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonImportExportTCP"
+android:text="Сервер"
+android:onClick="onClickButtonImportExportTCp"
+app:layout_constraintTop_toBottomOf="@+id/buttonExport"
+/>
 </androidx.constraintlayout.widget.ConstraintLayout>

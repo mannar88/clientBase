@@ -76,18 +76,18 @@ bdImportExport = new BdImportExport(context.getDatabasePath(Bd.DATABASE_NAME).ge
 Создание объекта База данных
  */
     public  static  Bd load (Context context) {
-//staticContex = context;
-        Supplier <Bd> bdSupplier = new Supplier<Bd>() {
-    @Override
-    public Bd get() {
-if (bd == null) {
+    Supplier <Bd> supplier = new Supplier<Bd>() {
+        @Override
+        public Bd get() {
+if (bd == null || bd.databaseHelper == null || bd.sqLiteDatabase == null
+|| bd.users == null || bd.records == null || bd.procedures == null || bd.expenses == null) {
     bd = new Bd(context);
 }
-        return bd;
-    }
-};
- AsyncTaskBd <Bd> asyncTaskBd = new  AsyncTaskBd<>();
-asyncTaskBd.execute(bdSupplier);
+            return bd;
+        }
+    };
+    AsyncTaskBd <Bd> asyncTaskBd = new AsyncTaskBd<>();
+    asyncTaskBd.execute(supplier);
         Bd result = null;
         try {
             result = asyncTaskBd.get();
@@ -96,8 +96,8 @@ asyncTaskBd.execute(bdSupplier);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
-}
+        return  result;
+    }
 
 private  Bd getBd () {
     if (bd == null) {

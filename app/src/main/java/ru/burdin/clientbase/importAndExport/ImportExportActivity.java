@@ -1,21 +1,26 @@
 package ru.burdin.clientbase.importAndExport;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.NetworkOnMainThreadException;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 import ru.burdin.clientbase.Bd;
@@ -114,4 +119,20 @@ break;
     }
 
 
+    public void onClickButtonImportExportTCp(View view) throws UnknownHostException, IOException {
+
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try (Socket socket = new Socket("78.153.4.192", 2016)) {
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+Thread thread = new Thread(runnable);
+thread.start();
+}
 }
