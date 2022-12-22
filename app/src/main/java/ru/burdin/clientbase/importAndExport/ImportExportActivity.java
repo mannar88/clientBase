@@ -119,20 +119,14 @@ break;
     }
 
 
-    public void onClickButtonImportExportTCp(View view) throws UnknownHostException, IOException {
-
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try (Socket socket = new Socket("78.153.4.192", 2016)) {
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-Thread thread = new Thread(runnable);
-thread.start();
+    public void onClickButtonImportExportTCp(View view) {
+Tcp tcp = new Tcp();
+tcp.execute();
+try {
+Toast.makeText(getApplicationContext(), tcp.get(), Toast.LENGTH_SHORT).show();
+}catch (Exception e) {
+    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
 }
+
+    }
 }
