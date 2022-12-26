@@ -7,7 +7,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,17 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import ru.burdin.clientbase.SendSMS;
+import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.setting.CalendarSetting;
@@ -285,11 +281,7 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
                     Toast.makeText(getApplicationContext(), "Запись изменена", Toast.LENGTH_SHORT).show();
             break;
                 case TRANSFER_INT:
-            recordId = data.getLongExtra(TRANSFER, -1);
-if (recordId != -1) {
-    int index = StaticClass.indexList(recordId, bd.getRecords());
-    record = bd.getRecords().get(index);
-setScreenInfo(record);
+            setScreenInfo(record);
 Toast.makeText(this, "Запись успешно перенесена", Toast.LENGTH_SHORT).show();
 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 builder.setTitle("Уведомить клиента о переносе?");
@@ -316,10 +308,8 @@ builder.setNeutralButton("Уведомить по WhatsApp", new DialogInterface
     }
 });
 builder.create().show();
-}
-            //            setScreenInfo(record);
-
-            }
+break;
+      }
         }
     }
 
@@ -329,7 +319,7 @@ builder.create().show();
     public void onClickButtonCardSessionTransfer(View view) {
     Intent intent = new Intent(this, ListSessionActivity.class);
         intent.putExtra(TRANSFER,record.getId());
-        intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
+        intent.putExtra(StaticClass.KEY, StaticClass.TRANSFER);
         intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
         startActivityForResult(intent,TRANSFER_INT);
     }

@@ -27,10 +27,12 @@ public class Tcp extends AsyncTask <Void, Void,String> {
 String result = "Test";
         try {
             socket = new Socket("78.153.4.192", 2016);
-            send("test=test" + "\r\n\r\n"  );
-              result = getString();
+            if (socket.isConnected()) {
+                send("test=test" + "\r\n\r\n");
+                result = getString();
 
-result = result == null? "Ничего нету": result;
+                result = result == null ? "Ничего нету" : result;
+            }
 out.close();
 in.close();
 socket.close();
@@ -43,13 +45,19 @@ result = e.toString();
     private   String getString () throws IOException {
         String result = null;
 if (!socket.isClosed()) {
-    in = new BufferedReader(
-                 new InputStreamReader(socket.getInputStream())
-         );
-    for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
-        result = str;
+    boolean sendCheck = false;
+    while (!sendCheck) {
+        if (!out.checkError()) {
+            sendCheck = true;
+        }
+        in = new BufferedReader(
+                new InputStreamReader(socket.getInputStream())
+        );
+        for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
+            result = str;
+        }
     }
-}else {
+    }else {
     result = "socket для чтения закрыт";
 }
             return  result;

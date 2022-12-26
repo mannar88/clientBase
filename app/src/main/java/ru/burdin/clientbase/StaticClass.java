@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.burdin.clientbase.models.Model;
-import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.notificationSMS.SMSService;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -29,6 +29,7 @@ public  static  final  String   POSITION_LIST_USERS  = "position_list_users";
 public  static  final  String NEWRECORDISCARD = "newRecordCardUser";
 public  static  final  String NEWRECORD = "newRecord";
 public  static final  String NUMBER_PHONE = "number_phone";
+    public static final String TRANSFER = "transfer";
 
     /*
     Поиск сервиса смс

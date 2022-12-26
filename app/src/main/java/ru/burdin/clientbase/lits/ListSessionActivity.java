@@ -40,6 +40,10 @@ import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.lits.actionListSassion.BusyTime;
+import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
+import ru.burdin.clientbase.lits.actionListSassion.FreeSession;
+import ru.burdin.clientbase.lits.actionListSassion.TransferSession;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.cards.CardSessionActivity;
 import ru.burdin.clientbase.MyAdapter;
@@ -234,7 +238,19 @@ builder.create().show();
 
         String key = getIntent().getStringExtra(StaticClass.KEY);
         consumerHashMap.get(key).accept(record);
-    getIntent().removeExtra(StaticClass.KEY);}
+    if (key.equals(StaticClass.DUPLICATION) && DoubleSession.checkDouble){
+        DoubleSession.checkDouble = false;
+        setResult(RESULT_OK);
+        finish();
+    }
+if (key.equals(StaticClass.TRANSFER)&& TransferSession.checkTransfer) {
+    TransferSession.checkTransfer = false;
+    setResult(RESULT_OK);
+finish();
+}
+    getIntent().removeExtra(StaticClass.KEY);
+
+    }
 };
 MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, consumer);
         recyclerViewTime.setAdapter(myAdapter);
@@ -265,96 +281,14 @@ dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() + TimeUnit.DAYS.toMill
 Устанавливает в хэшмапу обработчик нажатия по списку
  */
 private  void setConsumerHashMap() {
-//    Если запись свободна
-         Consumer <Record> recordEmpty = new Consumer<Record>() {
-        @Override
-        public void accept(Record record) {
-        intent.putExtra(StaticClass.TIMEFREE, record.getStart());
-startActivity(intent);
-        }
-    };
-         consumerHashMap.put(StaticClass.NEWRECORD, recordEmpty);
-
-//    если запись существует
-         Consumer <Record> recordUser =new Consumer<Record>() {
-        @Override
-        public void accept(Record record) {
-                                    intentCardSession.putExtra(StaticClass.POSITION_LIST_RECORDS, record.getId());
-startActivity(intentCardSession);
-        }
-    };
-    consumerHashMap.put(StaticClass.CARDSESSION, recordUser);
-//    Если дублирование записи
-Consumer <Record> duplication = new Consumer<Record>() {
-    @Override
-    public void accept(Record record) {
-        Record recordDup = new Record();
-        recordDup.setStart(record.getStart());
-        recordDup.setEnd(bd.getRecords().get(indexListRecord).getEnd());
-        recordDup.setIdUser(bd.getRecords().get(indexListRecord).getIdUser());
-        recordDup.setProcedure(bd.getRecords().get(indexListRecord).getProcedure());
-        recordDup.setPrice(bd.getRecords().get(indexListRecord).getPrice());
-        recordDup.setComment(bd.getRecords().get(indexListRecord).getComment());
-        long transfer = getIntent().getLongExtra(CardSessionActivity.TRANSFER, -1);
-        if (!bd.getRecords().contains(recordDup) ||transfer > -1) {
-            String surnameAndName = bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getSurname() + " " + bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getName();
-            recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup, surnameAndName));
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(Bd.COLUMN_TIME, recordDup.getStart());
-            contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
-            contentValues.put(Bd.COLUMN_ID_USER, recordDup.getIdUser());
-            contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
-            contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
-            contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
-            contentValues.put(Bd.COLUMN_EVENT_ID, recordDup.getEvent_id());
-            long id = bd.add(Bd.TABLE_SESSION, contentValues);
-            if (id > 0) {
-if (transfer > -1) {
-    calendarSetting.delete(bd.getRecords().get(indexListRecord).getEvent_id());
-    bd.delete(Bd.TABLE_SESSION, transfer);
-    bd.getRecords().remove(indexListRecord);
-    getIntent().removeExtra(CardSessionActivity.TRANSFER);
-    intentTransfer.putExtra(CardSessionActivity.TRANSFER,id);
-}
-                if (bd.getRecords().add(new Record(
-                        id,
-                        recordDup.getStart(),
-                        recordDup.getEnd(),
-                        recordDup.getIdUser(),
-                        recordDup.getProcedure(),
-                        recordDup.getPrice(),
-                        recordDup.getComment(),
-                recordDup.getEvent_id()
-                        ))) {
-                    if (transfer == -1) {
-                        setResult(RESULT_OK);
-                    }else{
-                        setResult(RESULT_OK, intentTransfer);
-                    }
-                        indexListRecord = 0;
-
-                    finish();
-                }
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "Запись пересекаетсяс другим клиентом", Toast.LENGTH_SHORT).show();
-        }
-    }
-};
-consumerHashMap.put(StaticClass.DUPLICATION, duplication);
-//Если новая запись из карточки клиента
- Consumer <Record> consumerNewRecord = new Consumer<Record>() {
-    @Override
-    public void accept(Record record) {
-        int index = getIntent().getExtras().getInt(StaticClass.POSITION_LIST_USERS);
-        intent.putExtra(StaticClass.POSITION_LIST_USERS, index);
-consumerHashMap.get(StaticClass.NEWRECORD).accept(record);
-getIntent().removeExtra(StaticClass.POSITION_LIST_USERS);
-finish();
-    }
-};
-
- consumerHashMap.put(StaticClass.NEWRECORDISCARD, consumerNewRecord);
+//Если запись свободна
+    consumerHashMap.put(StaticClass.NEWRECORD, new FreeSession(this));
+//Если запись уже существует
+    consumerHashMap.put(StaticClass.CARDSESSION, new BusyTime(this));
+    // Дублирование
+    consumerHashMap.put(StaticClass.DUPLICATION, new DoubleSession(this, indexListRecord, calendarSetting));
+// Перенос
+consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(this, getIntent().getLongExtra(CardSessionActivity.TRANSFER, 1), calendarSetting));
 }
 
     @Override

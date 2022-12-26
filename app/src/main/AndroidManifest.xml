@@ -29,7 +29,7 @@
         android:theme="@style/Theme.ClientBase">
 
         <receiver
-            android:name=".StartServiceReceiver"
+            android:name=".notificationSMS.StartServiceReceiver"
             android:exported="false">
          <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -37,7 +37,7 @@
         </receiver>
 
         <service
-            android:name=".SMSService"
+            android:name=".notificationSMS.SMSService"
             android:enabled="true"
             android:exported="true" />
 

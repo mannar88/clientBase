@@ -1,9 +1,8 @@
-    package ru.burdin.clientbase;
+    package ru.burdin.clientbase.notificationSMS;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -14,7 +13,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.models.Record;
+import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.Preferences;
 
     public class SMSService extends Service {

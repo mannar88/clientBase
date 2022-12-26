@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
@@ -123,7 +124,7 @@ break;
 Tcp tcp = new Tcp();
 tcp.execute();
 try {
-Toast.makeText(getApplicationContext(), tcp.get(), Toast.LENGTH_SHORT).show();
+Toast.makeText(getApplicationContext(), tcp.get(1, TimeUnit.SECONDS), Toast.LENGTH_SHORT).show();
 }catch (Exception e) {
     Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
 }
