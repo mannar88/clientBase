@@ -37,7 +37,7 @@ Record record1 = bd.getRecords().remove(index);
         ContentValues contentValues = new ContentValues();
         contentValues.put(Bd.COLUMN_TIME, record.getStart());
         contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
-        contentValues.put(Bd.COLUMN_ID_USER,record1.getId());
+        contentValues.put(Bd.COLUMN_ID_USER,record1.getIdUser());
         contentValues.put(Bd.COLUMN_PROCEDURE, record1.getProcedure());
         contentValues.put(Bd.COLUMN_PRICE, record1.getPrice());
         contentValues.put(Bd.COLUMN_COMMENT, record1.getComment());

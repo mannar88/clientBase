@@ -30,6 +30,7 @@ public  static  final  String NEWRECORDISCARD = "newRecordCardUser";
 public  static  final  String NEWRECORD = "newRecord";
 public  static final  String NUMBER_PHONE = "number_phone";
     public static final String TRANSFER = "transfer";
+    public static final String IISTORUNEWRECORD = "history_new_record";
 
     /*
     Поиск сервиса смс

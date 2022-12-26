@@ -48,7 +48,7 @@ private  ArrayList <Record> records;
     public void onClickButtonListHistoryAndRecordNewRecord(View view) {
     Intent intent = new Intent(this, ListSessionActivity.class);
         intent.putExtra(StaticClass.POSITION_LIST_USERS, StaticClass.indexList(getIntent().getExtras().getLong(Bd.TABLE), bd.getUsers()));
-intent.putExtra(StaticClass.KEY, StaticClass.NEWRECORDISCARD);
+intent.putExtra(StaticClass.KEY, StaticClass.IISTORUNEWRECORD);
         startActivity(intent);
     }
     /*

@@ -43,6 +43,7 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.lits.actionListSassion.BusyTime;
 import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
 import ru.burdin.clientbase.lits.actionListSassion.FreeSession;
+import ru.burdin.clientbase.lits.actionListSassion.HistoryNewSession;
 import ru.burdin.clientbase.lits.actionListSassion.TransferSession;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.cards.CardSessionActivity;
@@ -64,30 +65,24 @@ public class ListSessionActivity extends AppCompatActivity {
   private   ArrayList <Date> dates;
 private RecyclerView recyclerViewTime;
 private MyAdapter myAdapter;
-LinearLayoutManager linearLayoutManager;
 private List <Record> recordsEnpty = new ArrayList<>();
-private   Intent intent;
 public  static  final  String SETTIME = "setTime";
     private  Bd bd;
 private  int countUser;
 private  double sum;
-private  Intent intentCardSession;
 private CheckBox checkBoxUsers;
 private  boolean checbox = false;
 private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
 private CalendarSetting calendarSetting;
 private  int indexListRecord;
 public  static  final  int CLASS_INDEX = 2;
-    private Intent intentTransfer = new Intent();
-Activity activity;
+private  Activity activity;
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_session);
-activity = this;
         bd = Bd.load(getApplicationContext());
      calendarSetting = CalendarSetting.load(this);
-        intentCardSession = new Intent(this, CardSessionActivity.class);
         if (savedInstanceState == null) {
             dateAndTime =Calendar.getInstance();
         }else  {
@@ -100,9 +95,6 @@ indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
 textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
 checkBoxUsers = findViewById(R.id.checkBoxListSessionUsers);
  recyclerViewTime = findViewById(R.id.listTime);
-linearLayoutManager = new LinearLayoutManager(this);
-recyclerViewTime.setLayoutManager(linearLayoutManager);
-intent = new Intent(this, AddSessionActivity.class);
 checkBoxUsers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -110,6 +102,7 @@ checbox = b;
         recUpdate();
     }
 });
+activity = this;
 }
 
 /*
@@ -196,7 +189,7 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
                         String name = "";
                         for (User user : bd.getUsers()) {
                             if (recordsEnpty.get(MyAdapter.count).getIdUser() == user.getId()) {
-                                name = user.getSurname() + " " + user.getName();
+                                name = user.getSurname() + " " + user.getName() + "";
                             }
                         }
                         viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()) + "  " + name + " " + recordsEnpty.get(MyAdapter.count).getProcedure() + " Удерживайте для связи с клиентом");
@@ -210,7 +203,7 @@ MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUse
     public void onLongClick(Record record, int position) {
     if (record.getId() != 0) {
         User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
         builder.setNegativeButton("Позвонить", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -229,27 +222,33 @@ builder.create().show();
 
     @Override
     public void onUserClick(Record record, int position) {
-        if (getIntent().getStringExtra(StaticClass.KEY) == null) {
-            getIntent().putExtra(StaticClass.KEY, StaticClass.NEWRECORD);
-        }
-        if (record.getId() !=0) {
+
+
+        if (record.getId() !=0 && getIntent().getStringExtra(StaticClass.KEY) == null) {
                 getIntent().putExtra(StaticClass.KEY, StaticClass.CARDSESSION);
         }
 
+        if (getIntent().getStringExtra(StaticClass.KEY) == null){
+            getIntent().putExtra(StaticClass.KEY, StaticClass.NEWRECORD);
+        }
         String key = getIntent().getStringExtra(StaticClass.KEY);
         consumerHashMap.get(key).accept(record);
     if (key.equals(StaticClass.DUPLICATION) && DoubleSession.checkDouble){
         DoubleSession.checkDouble = false;
+        getIntent().removeExtra(StaticClass.KEY);
         setResult(RESULT_OK);
         finish();
     }
 if (key.equals(StaticClass.TRANSFER)&& TransferSession.checkTransfer) {
+    getIntent().removeExtra(StaticClass.KEY);
     TransferSession.checkTransfer = false;
     setResult(RESULT_OK);
 finish();
 }
-    getIntent().removeExtra(StaticClass.KEY);
 
+if (getIntent().getStringExtra(StaticClass.KEY) == StaticClass.NEWRECORD || getIntent().getStringExtra(StaticClass.KEY) == StaticClass.CARDSESSION){
+    getIntent().removeExtra(StaticClass.KEY);
+}
     }
 };
 MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, consumer);
@@ -289,6 +288,8 @@ private  void setConsumerHashMap() {
     consumerHashMap.put(StaticClass.DUPLICATION, new DoubleSession(this, indexListRecord, calendarSetting));
 // Перенос
 consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(this, getIntent().getLongExtra(CardSessionActivity.TRANSFER, 1), calendarSetting));
+//Новая запись из истории
+    consumerHashMap.put(StaticClass.IISTORUNEWRECORD,new HistoryNewSession(this, getIntent().getIntExtra (StaticClass.POSITION_LIST_USERS, -0), activity));
 }
 
     @Override
@@ -300,4 +301,5 @@ consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(this, getIntent().
         }
 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
 }
