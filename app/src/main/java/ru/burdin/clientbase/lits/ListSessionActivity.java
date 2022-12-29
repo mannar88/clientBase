@@ -81,6 +81,7 @@ private  Activity activity;
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_session);
+        activity = this;
         bd = Bd.load(getApplicationContext());
      calendarSetting = CalendarSetting.load(this);
         if (savedInstanceState == null) {
@@ -102,7 +103,6 @@ checbox = b;
         recUpdate();
     }
 });
-activity = this;
 }
 
 /*
@@ -203,27 +203,26 @@ MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUse
     public void onLongClick(Record record, int position) {
     if (record.getId() != 0) {
         User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setNegativeButton("Позвонить", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 user.call(activity);
             }
         });
-        builder.setPositiveButton("Написать", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            builder.setPositiveButton("Написать", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
                 user.send(activity);
-            }
-        });
-builder.create().show();
-    }
+                }
+            });
+            builder.create().show();
+
+        }
     }
 
     @Override
     public void onUserClick(Record record, int position) {
-
-
         if (record.getId() !=0 && getIntent().getStringExtra(StaticClass.KEY) == null) {
                 getIntent().putExtra(StaticClass.KEY, StaticClass.CARDSESSION);
         }

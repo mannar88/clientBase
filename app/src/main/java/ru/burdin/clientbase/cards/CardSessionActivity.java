@@ -25,7 +25,9 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
+import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
@@ -156,12 +158,12 @@ Set<Long> longHashSet = new HashSet<>();
 AlertDialog.Builder builder = new AlertDialog.Builder(this);builder.setMultiChoiceItems(times, booleans, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-
-                if (b) {
-longHashSet.add(longs[i]);
-            }else {
-longHashSet.remove(longs[i]);
-                }
+if (b ) {
+    longHashSet.add(longs[i]);
+}
+if (!b && longHashSet.contains(longs[i])){
+    longHashSet.remove(longs[i]);
+}
 
             }
         });
@@ -170,24 +172,10 @@ longHashSet.remove(longs[i]);
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (longHashSet.size() > 0) {
 for (Long l : longHashSet) {
-    Record recordNew = new Record(record);
-    recordNew.setStart(l);
-    CalendarSetting calendarSetting =  CalendarSetting.load(getApplicationContext());
-    String name = user.getSurname() + " " + user.getName();
-    long evant = calendarSetting.addRecordCalender(recordNew, name);
-    ContentValues contentValues = new ContentValues();
-    contentValues.put(Bd.COLUMN_TIME, recordNew.getStart());
-    contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
-    contentValues.put(Bd.COLUMN_ID_USER, user.getId());
-    contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
-    contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
-    contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
-    contentValues.put(Bd.COLUMN_EVENT_ID, evant);
-    recordNew.setIdUser(bd.add(Bd.TABLE_SESSION, contentValues));
-    recordNew.setIdUser(user.getId());
-    bd.getRecords().add(recordNew);
+    Consumer<Record> doubleSession = new DoubleSession(getApplicationContext(), StaticClass.indexList(recordId, bd.getRecords()), calendarSetting);
+doubleSession.accept(new Record(l));
 }
-Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
+    Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getApplicationContext(), "Ниччего не выбрано", Toast.LENGTH_SHORT).show();
                 }

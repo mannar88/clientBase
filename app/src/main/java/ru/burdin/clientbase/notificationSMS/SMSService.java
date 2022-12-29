@@ -18,6 +18,7 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.Preferences;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
     public class SMSService extends Service {
 
@@ -43,10 +44,10 @@ import ru.burdin.clientbase.setting.Preferences;
             records.clear();
 
             Calendar calendar = Calendar.getInstance();
-            if (check != R.id.radioButtonTempleetsNotificationDay) {
+            if (check != TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR) {
                 if (dateFormat2.format(new Date()).equalsIgnoreCase(Preferences.getString(context.getApplicationContext(), Preferences.APP_PREFERENSES_TIME_NOTIFICATION_SMS, ""))) {
                     DateFormat dateFormat = new SimpleDateFormat("dd-MM-YY");
-                    if (check == R.id.radioButtonTempleetsNotificationNextDey) {
+                    if (check == TemplatesActivity.RADIO_BUTTON_NOTIFICATION_NEXT_DAY) {
                         calendar.add(Calendar.DAY_OF_MONTH, 1);
                     }
                     for (Record record : bd.getRecords()) {
@@ -71,32 +72,34 @@ import ru.burdin.clientbase.setting.Preferences;
         @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 //        registerReceiver(timeReceiver, new IntentFilter(                "android.intent.action.TIME_TICK"));
-        Toast.makeText(this, "Сервис по отправки SMS запущен", Toast.LENGTH_SHORT).show();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+        if (Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_START_SERVICE, false)) {
+            Toast.makeText(this, "Сервис по отправки SMS запущен", Toast.LENGTH_SHORT).show();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
 
-                while (check != R.id.radioButtonTempleetsNotificationNotCheck) {
-                    Context context = getApplicationContext();
-                    check = Preferences.getInt(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, R.id.radioButtonTempleetsNotificationNotCheck);
-                    bd = Bd.load(getApplicationContext());
-                    setListSession(getApplication().getApplicationContext());
-                    if (records.size() > 0 && checkBioolean) {
-                        records.forEach(
-                                record -> SendSMS.send(getApplicationContext(), Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)), record, R.id.radioButtonAddSessionSMS)
+                    while (check != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
+                        Context context = getApplicationContext();
+                        check = Preferences.getInt(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK);
+                        bd = Bd.load(getApplicationContext());
+                        setListSession(getApplication().getApplicationContext());
+                        if (records.size() > 0 && checkBioolean) {
+                            records.forEach(
+                                    record -> SendSMS.send(getApplicationContext(), Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)), record, R.id.radioButtonAddSessionSMS)
 
-                        );
+                            );
 
-                        checkBioolean = false;
+                            checkBioolean = false;
+                        }
+                        if (records.size() == 0) {
+                            checkBioolean = true;
+                        }
                     }
-                if (records.size() == 0) {
-                    checkBioolean = true;
                 }
-                }
-            }
             };
-        Thread thread = new Thread(runnable);
-        thread.start();
+            Thread thread = new Thread(runnable);
+            thread.start();
+        }
         return Service.START_STICKY;
     }
 

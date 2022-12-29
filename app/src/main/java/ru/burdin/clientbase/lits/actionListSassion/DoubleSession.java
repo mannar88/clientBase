@@ -18,7 +18,6 @@ public class DoubleSession implements Consumer<Record> {
     private  Bd bd;
     private int indexListRecord;
     private CalendarSetting calendarSetting;
-private Intent intentTransfer;
 public   static boolean checkDouble;
 
 

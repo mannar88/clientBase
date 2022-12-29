@@ -3,6 +3,7 @@ package ru.burdin.clientbase;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,16 +18,18 @@ import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.notificationSMS.SMSService;
+import ru.burdin.clientbase.notificationSMS.StartServiceReceiver;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.SettingActivity;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private Bd bd;
 private CalendarSetting calendarSetting;
 private  Activity activity;
-
+private StartServiceReceiver startServiceReceiver = new StartServiceReceiver();
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +42,13 @@ private  Activity activity;
         super.onResume();
             bd = Bd.load(this);
             calendarSetting = CalendarSetting.load(this);
-if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, R.id.radioButtonTempleetsNotificationNotCheck) != R.id.radioButtonTempleetsNotificationNotCheck &&StaticClass.searchSMSServese(this)) {
+        this.registerReceiver(startServiceReceiver, new IntentFilter(
+                "android.intent.action.TIME_TICK"));
+if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) >TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK  && StaticClass.searchSMSServese(this)
+&& Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_START_SERVICE, false)
+) {
     startService(new Intent(this, SMSService.class));
-}
-if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, R.id.radioButtonTempleetsNotificationNotCheck) == R.id.radioButtonTempleetsNotificationNotCheck && !StaticClass.searchSMSServese(this)) {
-    startService(new Intent(this, SMSService.class));
+
 }
 //Установка флажка автоматического экспорта
 Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));

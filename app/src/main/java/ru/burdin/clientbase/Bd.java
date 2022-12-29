@@ -18,6 +18,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -90,11 +92,11 @@ if (bd == null || bd.databaseHelper == null || bd.sqLiteDatabase == null
     asyncTaskBd.execute(supplier);
         Bd result = null;
         try {
-            result = asyncTaskBd.get();
+            result = asyncTaskBd.get(1, TimeUnit.DAYS.SECONDS);
         } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (InterruptedException | TimeoutException e) {
+            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
         return  result;
     }
@@ -135,11 +137,11 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
     Supplier <Long>  supplier = ()-> sqLiteDatabase.insert(table, null, contentValues);
     asyncTaskBd.execute(supplier);
         try {
-            result = asyncTaskBd.get();
+            result = asyncTaskBd.get(1, TimeUnit.DAYS.SECONDS);
         } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Toast.makeText(staticContex.getApplicationContext(),  "Не удалось добавить в базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (InterruptedException | TimeoutException e) {
+            Toast.makeText(staticContex.getApplicationContext(), "Не удалось добавить в базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
         autoExport(result);
         return  result;
@@ -222,11 +224,11 @@ AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     int result = 0;
       asyncTaskBd.execute(supplier);
     try {
-        result = asyncTaskBd.get();
+        result = asyncTaskBd.get(1, TimeUnit.DAYS.SECONDS);
     } catch (ExecutionException e) {
-        e.printStackTrace();
-    } catch (InterruptedException e) {
-        e.printStackTrace();
+        Toast.makeText(staticContex.getApplicationContext(), "Не удалось удалить из  базы " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (InterruptedException | TimeoutException e) {
+        Toast.makeText(staticContex.getApplicationContext(), "Не удалось удалить из  базы " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
     autoExport((long)result);
     return  result;
@@ -238,7 +240,15 @@ public     int update  (String table, ContentValues contentValues, long id) {
 
     int result = -1;
     asyncTaskBd.execute(supplier);
-        result = supplier.get();
+    try {
+        result = asyncTaskBd.get(1, TimeUnit.SECONDS);
+    } catch (ExecutionException e) {
+        Toast.makeText(staticContex.getApplicationContext(), "Не удалось обновить базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (InterruptedException e) {
+        Toast.makeText(staticContex.getApplicationContext(), "Не удалось обновить базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(staticContex.getApplicationContext(), "Не удалось обновить базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
     autoExport((long)result);
         return result;
 }
