@@ -17,6 +17,7 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.CalendarSetting;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class TransferSession implements Consumer<Record> {
 
@@ -41,7 +42,7 @@ public TransferSession(Context context, long id, CalendarSetting calendarSetting
 Record record1 = bd.getRecords().get(index);
 if (record.getId() ==  0) {
 record.setEnd(record1.getEnd());
-if (!bd.getRecords().contains(record)||record.equals(record1)) {
+if (!bd.getRecords().contains(record)||record.equals(record1) || Preferences.getBoolean(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
 ContentValues contentValues = new ContentValues();
 contentValues.put(Bd.COLUMN_TIME, record.getStart());
 contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());

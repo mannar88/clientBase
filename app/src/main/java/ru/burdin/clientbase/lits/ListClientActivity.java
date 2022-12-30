@@ -16,6 +16,7 @@ import android.widget.TextView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.add.AddClientActivity;
@@ -31,7 +32,7 @@ public class ListClientActivity extends AppCompatActivity {
 
     private Bd bd;
     private TextView textViewCount;
-    private ArrayList <User> users;
+    private List<User> users;
 private EditText editTextSerch;
     private  String addSession = "";
     private  Intent intent;

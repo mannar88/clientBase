@@ -177,7 +177,7 @@ SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(2), S
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();
             }
 } else {
-            if (!bd.getRecords().contains(record)) {
+            if (!bd.getRecords().contains(record) || Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
 try {
     long evant = calendarSetting.addRecordCalender(record, textViewSetUser.getText().toString());
     if (evant > 0) {

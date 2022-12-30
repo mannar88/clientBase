@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 private CalendarSetting calendarSetting;
 private  Activity activity;
 private StartServiceReceiver startServiceReceiver = new StartServiceReceiver();
+
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

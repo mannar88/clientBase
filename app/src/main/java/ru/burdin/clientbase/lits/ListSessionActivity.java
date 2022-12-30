@@ -153,7 +153,7 @@ recordsEnpty = bd.getRecords().stream()
         if (!checbox) {
 while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calendarFinish.getTime())) < 0 && dateAndTime.get(Calendar.HOUR_OF_DAY) != 0) {
             Record record = new Record(dateAndTime.getTimeInMillis());
-        if (!recordsEnpty.contains(record)) {
+        if (!recordsEnpty.contains(record) || Preferences.getBoolean(getApplicationContext(),Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
             recordsEnpty.add(record);
         }
         dateAndTime.add(Calendar.MINUTE, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_WORK_INTERVAL, "10")));

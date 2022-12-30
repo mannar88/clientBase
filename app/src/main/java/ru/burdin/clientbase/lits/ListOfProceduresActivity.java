@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -36,7 +37,7 @@ public class ListOfProceduresActivity extends AppCompatActivity {
     private MyAdapter myAdapter;
 private Bd bd;
 private TextView textView;
-public static ArrayList<Procedure> processes = new ArrayList<>();
+public static List<Procedure> processes = new ArrayList<>();
 private  Activity activity;
 
 @Override

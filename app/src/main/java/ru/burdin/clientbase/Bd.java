@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -53,10 +55,10 @@ public  static  final  String COLUMN_PROCEDURE = "procedire";
 public  static  final  String COLUMN_EVENT_ID = "event_id";
 private  DatabaseHelper databaseHelper;
 private  SQLiteDatabase sqLiteDatabase;
-private  ArrayList <User> users;
-private  ArrayList <Procedure> procedures;
-private   ArrayList <Record> records;
-private  ArrayList <Expenses> expenses;
+private  List <User> users;
+private  List <Procedure> procedures;
+private List<Record> records;
+private  List <Expenses> expenses;
 private    Context staticContex;
 private BdImportExport bdImportExport;
 
@@ -71,7 +73,7 @@ private  Bd (Context context) {
 bdImportExport = new BdImportExport(context.getDatabasePath(Bd.DATABASE_NAME).getPath());
 }
 
-    public ArrayList<Expenses> getExpenses() {
+    public List<Expenses> getExpenses() {
         return expenses;
     }
 /*
@@ -116,15 +118,15 @@ public void  reStart (){
     load(staticContex);
 }
 
-    public  ArrayList<User> getUsers() {
+    public  List<User> getUsers() {
     return  users;
     }
 
-    public ArrayList<Procedure> getProcedures() {
+    public List<Procedure> getProcedures() {
         return procedures;
     }
 
-    public  ArrayList<Record> getRecords() {
+    public  List<Record> getRecords() {
 
         return records;
     }
@@ -200,7 +202,7 @@ procedureCursor.close();
 Сбор в список сеансы
  */
     private  void  collectRecord () {
-    records = new ArrayList<>();
+    records = new CopyOnWriteArrayList<>();
 Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
 while (cursorRecord.moveToNext()) {
 records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7)));

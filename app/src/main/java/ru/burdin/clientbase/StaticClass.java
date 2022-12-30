@@ -55,7 +55,7 @@ public  static final  String NUMBER_PHONE = "number_phone";
 /*
     Ищет индекс в коллекции по его id
      */
-public  static  int indexList (long id, ArrayList <? extends Model> list){
+public  static  int indexList (long id, List <? extends Model> list){
     int result = -1;
     for (int i = 0; i < list.size(); i++) {
         if (list.get(i).getId() == id) {

@@ -11,6 +11,7 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.CalendarSetting;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class DoubleSession implements Consumer<Record> {
 
@@ -37,7 +38,7 @@ public   static boolean checkDouble;
         recordDup.setProcedure(bd.getRecords().get(indexListRecord).getProcedure());
         recordDup.setPrice(bd.getRecords().get(indexListRecord).getPrice());
         recordDup.setComment(bd.getRecords().get(indexListRecord).getComment());
-        if (!bd.getRecords().contains(recordDup) ) {
+        if (!bd.getRecords().contains(recordDup) || Preferences.getBoolean(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
             String surnameAndName = bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getSurname() + " " + bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getName();
             recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup, surnameAndName));
             ContentValues contentValues = new ContentValues();

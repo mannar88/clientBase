@@ -126,7 +126,7 @@ while (times[times.length -1] == null) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         Record recordTrue = new Record(record);
         recordTrue.setStart(calendar.getTimeInMillis());
-        if (!bd.getRecords().contains(recordTrue)) {
+        if (!bd.getRecords().contains(recordTrue) || Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
             times[i] = dateFormat.format(calendar.getTime());
             longs[i++] = calendar.getTimeInMillis();
         }

@@ -33,7 +33,7 @@ public class SettingActivity extends AppCompatActivity {
     private CalendarSetting calendars;
     public static final int REQUEST_PERMISSIONS = 101;
 private RadioGroup radioGroup;
-
+private  CheckBox checkBoxSettingIntersectionRecod;
     private Bd bd;
 private  WorkScheduleSetting workScheduleSetting;
 private  static List<String> nameCalendars;
@@ -44,14 +44,15 @@ private  static List<String> nameCalendars;
         bd = Bd.load(this);
         checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
-   workScheduleSetting = new WorkScheduleSetting(this);
+checkBoxSettingIntersectionRecod = findViewById(R.id.checkBoxSettingIntersectionRecods);
+        workScheduleSetting = new WorkScheduleSetting(this);
         calendars = CalendarSetting.load(this);
  nameCalendars = new ArrayList<>(calendars.getNameCalendar());
                 arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nameCalendars);
     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinnerGetCalendar.setAdapter(arrayAdapter);
 
-    }
+}
 
     @Override
     protected void onStart() {
@@ -61,6 +62,7 @@ spinnerGetCalendar.setSelection(calendars.indexSave(nameCalendars));
         checkBoxCalender.setChecked(calendars.getCheckBox());
         spinnerGetCalendar.setEnabled(calendars.getCheckBox());
         calendars.listenChexBox(checkBoxCalender, spinnerGetCalendar, this);
+checkBoxSettingIntersectionRecod.setChecked(Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false));
 }
 
     @Override
@@ -70,9 +72,15 @@ calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
 
 }
 
+    @Override
+    public void onBackPressed() {
+Preferences.set(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, checkBoxSettingIntersectionRecod.isChecked());
+        super.onBackPressed();
+    }
+
     /*
-    Ответна разрешение
-     */
+        Ответна разрешение
+         */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
         switch (requestCode) {
