@@ -1,6 +1,7 @@
 package ru.burdin.clientbase;
 
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -102,5 +103,12 @@ return  result;
         builder.create().show();
     }
 
+public  static  String  actvity (Context context) {
+    ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+// get the info from the currently running task
+    List< ActivityManager.RunningTaskInfo > taskInfo = am.getRunningTasks(1);
+    ComponentName componentInfo = taskInfo.get(0).topActivity;
+    return componentInfo.getPackageName();
+    }
 
 }

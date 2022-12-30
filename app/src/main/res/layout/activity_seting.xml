@@ -113,4 +113,13 @@ android:text="Интервал в минутах "
         app:layout_constraintTop_toBottomOf="@id/spinnerSettingFinishMinits"
         app:layout_constraintLeft_toRightOf="@id/textViewSettingInterval"
         />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/checkBoxSettingIntersectionRecods"
+        android:text="Разрешитьь пересечение записей"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSettingInterval"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

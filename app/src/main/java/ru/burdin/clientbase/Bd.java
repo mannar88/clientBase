@@ -125,9 +125,11 @@ public void  reStart (){
     }
 
     public  ArrayList<Record> getRecords() {
+
         return records;
     }
-/*
+
+    /*
 Добавить
  */
     public  long  add (String table, ContentValues contentValues) {

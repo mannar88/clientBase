@@ -231,8 +231,12 @@ MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUse
             getIntent().putExtra(StaticClass.KEY, StaticClass.NEWRECORD);
         }
         String key = getIntent().getStringExtra(StaticClass.KEY);
-        consumerHashMap.get(key).accept(record);
-    if (key.equals(StaticClass.DUPLICATION) && DoubleSession.checkDouble){
+        try {
+            consumerHashMap.get(key).accept(record);
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        if (key.equals(StaticClass.DUPLICATION) && DoubleSession.checkDouble){
         DoubleSession.checkDouble = false;
         getIntent().removeExtra(StaticClass.KEY);
         setResult(RESULT_OK);
@@ -286,7 +290,7 @@ private  void setConsumerHashMap() {
     // Дублирование
     consumerHashMap.put(StaticClass.DUPLICATION, new DoubleSession(this, indexListRecord, calendarSetting));
 // Перенос
-consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(this, getIntent().getLongExtra(CardSessionActivity.TRANSFER, 1), calendarSetting));
+consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(getApplicationContext(), getIntent().getLongExtra(CardSessionActivity.TRANSFER, 1), calendarSetting));
 //Новая запись из истории
     consumerHashMap.put(StaticClass.IISTORUNEWRECORD,new HistoryNewSession(this, getIntent().getIntExtra (StaticClass.POSITION_LIST_USERS, -0), activity));
 }

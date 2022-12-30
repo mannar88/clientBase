@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -42,7 +43,7 @@ private StartServiceReceiver startServiceReceiver = new StartServiceReceiver();
         super.onResume();
             bd = Bd.load(this);
             calendarSetting = CalendarSetting.load(this);
-        this.registerReceiver(startServiceReceiver, new IntentFilter(
+                    this.registerReceiver(startServiceReceiver, new IntentFilter(
                 "android.intent.action.TIME_TICK"));
 if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) >TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK  && StaticClass.searchSMSServese(this)
 && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_START_SERVICE, false)

@@ -310,6 +310,7 @@ break;
         intent.putExtra(StaticClass.KEY, StaticClass.TRANSFER);
         intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
         startActivityForResult(intent,TRANSFER_INT);
+
     }
 
     @Override

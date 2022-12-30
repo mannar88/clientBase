@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import ru.burdin.clientbase.Bd;
@@ -216,10 +218,10 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
             };
             asyncTasCalender.execute(supplier);
             try {
-                result = asyncTasCalender.get();
+                result = asyncTasCalender.get(1, TimeUnit.DAYS.SECONDS);
             } catch (ExecutionException e) {
                 Toast.makeText(context.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | TimeoutException e) {
                 Toast.makeText(context.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         }        return  result;
@@ -241,10 +243,10 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
             };
             asyncTasCalender.execute(supplier);
             try {
-                result = asyncTasCalender.get();
+                result = asyncTasCalender.get(1, TimeUnit.DAYS.SECONDS);
             } catch (ExecutionException e) {
                 Toast.makeText(context.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | TimeoutException e) {
                 Toast.makeText(context.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }
@@ -268,10 +270,10 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
             };
             asyncTasCalender.execute(supplier);
             try {
-                result = asyncTasCalender.get();
+                result = asyncTasCalender.get(1, TimeUnit.DAYS.SECONDS);
             } catch (ExecutionException e) {
                 Toast.makeText(context.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | TimeoutException e) {
                 Toast.makeText(context.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }

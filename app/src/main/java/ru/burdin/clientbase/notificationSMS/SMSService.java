@@ -3,6 +3,7 @@
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
@@ -23,14 +25,14 @@ import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.TemplatesActivity;
 
     public class SMSService extends Service {
-
+private List<Record> records = new ArrayList<>();
         private int check;
         private DateFormat dateFormat2 = new SimpleDateFormat("HH:mm");
-        private List<Record> records = new ArrayList<>();
         private boolean checkBioolean = true;
         private Bd bd;
 private  DateFormat dateFormat = new SimpleDateFormat("dd-MM-YY");
 private  Context context;
+private  List <Record>recordsCopy;
 
 public SMSService() {
     }
@@ -51,7 +53,7 @@ public SMSService() {
                 if (Preferences.getInt(context, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) == TemplatesActivity.RADIO_BUTTON_NOTIFICATION_NEXT_DAY) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
-                for (Record record : bd.getRecords()) {
+                for (Record record :recordsCopy) {
                     if (dateFormat.format(calendar.getTime()).equals(dateFormat.format(record.getStartDay()))) {
                         records.add(record);
                     }
@@ -64,7 +66,7 @@ public SMSService() {
             private  void  getNotificationHour() {
                 long time = Preferences.getLong(context, Preferences.APP_PREFERENCAES_TEMLETES_NOTIFICATION_HOUR, 0);
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY");
-                for (Record record : bd.getRecords()) {
+                for (Record record :recordsCopy) {
                     if (dateFormat.format(record.getStart() - time).equals(dateFormat.format(new Date()))) {
                         records.add(record);
                     }
@@ -76,26 +78,26 @@ public SMSService() {
  */
             private  void  getStart() throws InterruptedException {
                 while (Preferences.getInt(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != 0) {
+                    recordsCopy = List.copyOf(bd.getRecords());
                     records.clear();
-                    switch (Preferences.getInt(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)) {
-                        case TemplatesActivity.RADIO_BUTTON_NOTIFICATION_NEXT_DAY:
-                            getRecordNextDay();
-                            break;
-                        case  TemplatesActivity.RADIO_BUTTON_NOTIFICATION_TODAY:
-                    getRecordNextDay();
-                            break;
-                        case TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR:
-                    getNotificationHour();
-                            break;
-                    }
-                    if (records.size() > 0) {
-                                                    records.forEach(
+                        switch (Preferences.getInt(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)) {
+                            case TemplatesActivity.RADIO_BUTTON_NOTIFICATION_NEXT_DAY:
+                                getRecordNextDay();
+                                break;
+                            case TemplatesActivity.RADIO_BUTTON_NOTIFICATION_TODAY:
+                                getRecordNextDay();
+                                break;
+                            case TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR:
+                                getNotificationHour();
+                                break;
+                        }
+                        if (records.size() > 0) {
+                            records.forEach(
                                     record -> SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)), record, R.id.radioButtonAddSessionSMS)
                             );
-                        Thread.sleep(1000 * 60);
+                            Thread.sleep(1000 * 60);
+                        }
                     }
-                }
-
             }
 
             @Override
