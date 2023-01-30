@@ -111,4 +111,18 @@ public  static  String  actvity (Context context) {
     return componentInfo.getPackageName();
     }
 
+
+    public  static boolean longInBoolean ( long checkBox){
+        return  checkBox == 0? false:true;
+    }
+    public  static long booleaILong ( boolean checkBox) {
+        return  checkBox? 1:0;
+    }
+public  static boolean intInBoolean ( int checkBox){
+        return  checkBox == 0? false:true;
+}
+
+    public  static int booleaInInt ( boolean checkBox) {
+        return  checkBox? 1:0;
+    }
 }

@@ -140,7 +140,7 @@ Period period = periods.get(spinnerSelectPeriod.getSelectedItem());
             }
         }
     }
-    resStat.add("Клиентов: " + countClient.keySet().size() + ", из них новые: " + (countClient.keySet().size() - countOldRecord));
+    resStat.add("Клиентов: " + countClient.keySet().size());
     resStat.add("Записей: " + period.records.size() + "");
 //Подсчет суммы
 double sumPrise = period.records.stream()

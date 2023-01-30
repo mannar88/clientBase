@@ -37,7 +37,7 @@ public class Bd {
 
 private  static Bd bd;
 public static final String DATABASE_NAME = "clientBase.db";
-    public static final int SCHEMA = 5;
+    public static final int SCHEMA = 7;
     public  static final String TABLE = "users";
     public  static  final String TABLE_PROCEDURE = "procedures";
     public  static  final String TABLE_EXPENSES = "expenses";
@@ -53,8 +53,11 @@ public static final String DATABASE_NAME = "clientBase.db";
     public  static final  String COLUMN_ID_USER = "id_user";
 public  static  final  String COLUMN_PROCEDURE = "procedire";
 public  static  final  String COLUMN_EVENT_ID = "event_id";
-private  DatabaseHelper databaseHelper;
-private  SQLiteDatabase sqLiteDatabase;
+    public  static  final  String COLUMN_not_notification = "not_notification";
+    public  static  final  String COLUMN_ONE_IN_LINE = "one_in_line";
+
+    public   DatabaseHelper databaseHelper;
+public   SQLiteDatabase sqLiteDatabase;
 private  List <User> users;
 private  List <Procedure> procedures;
 private List<Record> records;
@@ -127,9 +130,23 @@ public void  reStart (){
     }
 
     public  List<Record> getRecords() {
-
-        return records;
+records.forEach(
+        record -> record.setPlaceInLine(0)
+);
+records.sort(Comparator.naturalOrder());
+for (Record record:records){
+    if (record.getPlaceInLine() == 0){
+        int count = 1;
+        for (Record record1:records){
+            if (record.getIdUser() == record1.getIdUser()) {
+                record1.setPlaceInLine(count++);
+            }
+            }
+        }
     }
+return records;
+
+}
 
     /*
 Добавить
@@ -205,9 +222,10 @@ procedureCursor.close();
     records = new CopyOnWriteArrayList<>();
 Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
 while (cursorRecord.moveToNext()) {
-records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7)));
+records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7), cursorRecord.getLong(8), cursorRecord.getInt(9)));
     }
-    cursorRecord.close();
+
+cursorRecord.close();
 }
 
 /*
@@ -284,7 +302,10 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 + COLUMN_PROCEDURE + " TEXT,"
                     + COLUMN_PRICE + " REAL,"
                     +COLUMN_COMMENT + " TEXT,"
-                            + COLUMN_EVENT_ID + " INTEGER);");
+                            + COLUMN_EVENT_ID + " INTEGER,"
+                            + COLUMN_not_notification + " INTEGER,"
+                            + COLUMN_ONE_IN_LINE + " INTEGER"
+ + ");");
 
             sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_EXPENSES + "(" + COLUMN_ID
                     + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -296,7 +317,10 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+if (i < 7){
+    sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD "+ COLUMN_not_notification + " INTEGER;");
+    sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD "+ COLUMN_ONE_IN_LINE + " INTEGER;");
+}
 }
     }
 

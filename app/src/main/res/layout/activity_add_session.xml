@@ -114,12 +114,27 @@ android:text="Не уведомлять клиента"
             android:layout_weight="1" />
     </RadioGroup>
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/checkBoxAddSessionNotNotification"
+        android:text="Не отправлять SMS при включенном сервисе отправки SMS"
+        app:layout_constraintTop_toBottomOf="@+id/radioBoxAddSessionMessage"
+        />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBoxAddSessionOneLine"
+        android:text="Отметить как первый в курсе"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxAddSessionNotNotification"
+    />
     <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/buttonSessionSave"
     android:onClick="onClickButtonSessionSave"
     android:text="Сохранить"
-    app:layout_constraintTop_toBottomOf="@+id/radioBoxAddSessionMessage"
+    app:layout_constraintTop_toBottomOf="@+id/checkBoxAddSessionOneLine"
     />
 </androidx.constraintlayout.widget.ConstraintLayout>

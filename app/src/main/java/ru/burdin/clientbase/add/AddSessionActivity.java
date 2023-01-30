@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,12 +23,14 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListClientActivity;
@@ -44,6 +47,8 @@ private  TextView textViewSetUser;
 private EditText editTextSetPrices;
 private  EditText editTextSetTimeFinish;
 private  EditText editTextSetComment;
+private CheckBox checkBoxNotNotification;
+private  CheckBox checkBoxOneLine;
 private  int index = -1;
 private Record record;
     private  static Bd bd;
@@ -73,7 +78,8 @@ radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
 radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
 radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
 radioButtonWhatsApp = findViewById(R.id.radioButtonAddSessionWAthsApp);
-
+checkBoxOneLine = findViewById(R.id.checkBoxAddSessionOneLine);
+checkBoxNotNotification = findViewById(R.id.checkBoxAddSessionNotNotification);
 radioGroupMessange.check(radioButtonNotChck.getId());
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
@@ -98,6 +104,7 @@ if (indexRecord != -1) {
     record = bd.getRecords().get(indexRecord);
     userIndex = StaticClass.indexList(record.getIdUser(), bd.getUsers());
     textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
+checkBoxOneLine.setChecked(StaticClass.intInBoolean(record.getOneLine()));
 }
 }
 textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
@@ -130,6 +137,11 @@ radioGroupMessange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeList
         }
     }
 });
+//Проверка на первый сеанс
+        List <Record> records = Analytics.listRecords(bd.getRecords(), bd.getUsers().get(userIndex).getId());
+        if (records.size() == 0 || record.getStart() <= records.get(records.size() -1).getStart()){
+            checkBoxOneLine.setEnabled(false);
+        }
 }
 
     /*
@@ -147,6 +159,8 @@ public void onClickButtonSessionSave(View view) {
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
         record.setComment(editTextSetComment.getText().toString());
+        record.setOneLine(StaticClass.booleaInInt(checkBoxOneLine.isChecked()));
+        record.setNotNotification(StaticClass.booleaInInt(checkBoxNotNotification.isChecked()));
         if (indexRecord !=-1) {
         record.setEvent_id(bd.getRecords().get(indexRecord).getEvent_id());
         }
@@ -158,6 +172,8 @@ public void onClickButtonSessionSave(View view) {
         contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
         contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
         contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
+        contentValues.put(Bd.COLUMN_ONE_IN_LINE, record.getOneLine());
+        contentValues.put(Bd.COLUMN_not_notification, record.getNotNotification());
         if (indexRecord != -1) {
             if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId()) == 1) {
     bd.getRecords().get(indexRecord).setStart(record.getStart());
@@ -167,7 +183,9 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setPrice(record.getPrice());
     bd.getRecords().get(indexRecord).setComment(record.getComment());
     bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
-if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
+bd.getRecords().get(indexRecord).setOneLine(record.getOneLine());
+bd.getRecords().get(indexRecord).setNotNotification(record.getNotNotification());
+    if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
                 setResult(RESULT_OK);
@@ -198,7 +216,10 @@ contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                             record.getProcedure(),
                             record.getPrice(),
                             record.getComment(),
-record.getEvent_id()                            ))) {
+record.getEvent_id(),
+                            record.getNotNotification(),
+                            record.getOneLine()
+                    ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
 SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(0), SendSMS.TEMPLETS.get(0)), record, radioGroupMessange.getCheckedRadioButtonId());
                     finish();

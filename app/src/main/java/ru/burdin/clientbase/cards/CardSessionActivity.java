@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
@@ -50,7 +53,10 @@ public class CardSessionActivity extends AppCompatActivity {
     private  TextView textViewPrice;
     private  TextView textViewTimeEnd;
     private  TextView textViewComment;
-private  int indexUser;
+private  TextView textViewPlaceOnTheList;
+private  CheckBox checkBoxPlaceOnTheList;
+private CheckBox checkBoxNotNotification;
+    private  int indexUser;
 private  long recordId = -1;
 private CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
@@ -77,7 +83,10 @@ calendarSetting = CalendarSetting.load(this);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
-this.context = this;
+textViewPlaceOnTheList = findViewById(R.id.textvIewCardSessionPlaceOnTheList);
+checkBoxPlaceOnTheList = findViewById(R.id.checkBoxCardSessionPlaceOnTheList);
+checkBoxNotNotification = findViewById(R.id.checkBoxCardSessionNotNotification);
+    this.context = this;
 }
 
     @Override
@@ -86,20 +95,54 @@ this.context = this;
         setScreenInfo(record);
 }
 
-    /*
+    @Override
+    protected void onResume() {
+        super.onResume();
+checkBoxPlaceOnTheList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        ContentValues contentValues = new ContentValues();
+    contentValues.put(Bd.COLUMN_ONE_IN_LINE, StaticClass.booleaILong(b));
+        if (bd.update(bd.TABLE_SESSION, contentValues, record.getId()) == 1){
+record.setOneLine(StaticClass.booleaInInt(b));
+            int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
+textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
+        }
+    }
+});
+        checkBoxNotNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        ContentValues contentValues = new ContentValues();
+    long res = StaticClass.booleaILong(b);
+    contentValues.put(Bd.COLUMN_not_notification, res);
+    if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId()) == 1) {
+record.setNotNotification(res);
+            }
+    }
+});
+    }
+
+/*
     Устанавливает информацию на экран
      */
     private  void  setScreenInfo (Record record) {
         indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
         user = bd.getUsers().get(indexUser);
-
+int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
         textViewDate.setText("Время записи: "  + dateFormat.format(new Date(record.getStart())));
         textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
         textViewProcedure.setText("Услуги: " + record.getProcedure());
         textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
         textViewTimeEnd.setText("Продолжительность услуги: " + TimeUnit.MILLISECONDS.toMinutes(record.getEnd()) + " минут");
         textViewComment.setText("Комментарии: "+  record.getComment());
-
+textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
+checkBoxPlaceOnTheList.setChecked(StaticClass.intInBoolean(record.getOneLine()));
+if (arr[2] == 1){
+checkBoxPlaceOnTheList.setChecked(true);
+    checkBoxPlaceOnTheList.setEnabled(false);
+}
+checkBoxNotNotification.setChecked(StaticClass.longInBoolean(record.getNotNotification()));
     }
 
     /*
@@ -109,7 +152,8 @@ this.context = this;
         Intent intent = new Intent(this, CardUserActivity.class);
         intent.putExtra(Bd.TABLE,indexUser );
         startActivity(intent);
-    }
+     }
+
 
     /*
     Дублирование записи
@@ -323,5 +367,10 @@ if (requestCode == SendSMS.PERMISSION_SMS) {
     }
 }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

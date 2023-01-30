@@ -12,6 +12,14 @@
         android:id="@+id/buttonListHistoryAndRecordNewRecord"
         android:onClick="onClickButtonListHistoryAndRecordNewRecord"
         android:text="Добавить новую запись"
+
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewListHistoryRecord"
+        app:layout_constraintTop_toBottomOf="@+id/buttonListHistoryAndRecordNewRecord"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -19,7 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/buttonListHistoryAndRecordNewRecord"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toBottomOf="@+id/textViewListHistoryRecord"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         />
 
 

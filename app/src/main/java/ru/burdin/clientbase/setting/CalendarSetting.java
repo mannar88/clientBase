@@ -286,7 +286,7 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
         ContentValues contentValues = new ContentValues();
         contentValues.put(CalendarContract.Events.DTSTART, record.getStart());
         contentValues.put(CalendarContract.Events.DTEND, record.getStart() + record.getEnd());
-        contentValues.put(CalendarContract.Events.TITLE, context.getResources().getString(R.string.app_name) + " " +nameSurname + " " + record.getProcedure());
+        contentValues.put(CalendarContract.Events.TITLE,  nameSurname + " " + record.getProcedure() + " " + context.getResources().getString(R.string.app_name));
         contentValues.put(CalendarContract.Events.DESCRIPTION, "");
         contentValues.put(CalendarContract.Events.CALENDAR_ID, this.id);
         contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getDisplayName());

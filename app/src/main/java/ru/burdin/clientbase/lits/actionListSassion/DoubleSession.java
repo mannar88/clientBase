@@ -59,7 +59,9 @@ public   static boolean checkDouble;
                         recordDup.getProcedure(),
                         recordDup.getPrice(),
                         recordDup.getComment(),
-                        recordDup.getEvent_id()
+                        recordDup.getEvent_id(),
+0,
+0
                 ))) {
 checkDouble= true;
                 }

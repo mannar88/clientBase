@@ -48,13 +48,36 @@ android:onClick="onClickTextViewCardSessionNameUser"
     app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionTimeEnd"
 />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/textvIewCardSessionPlaceOnTheList"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionComment"
+        />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBoxCardSessionPlaceOnTheList"
+        android:text="Сделать записсь первой в курсе"
+        app:layout_constraintTop_toBottomOf="@+id/textvIewCardSessionPlaceOnTheList"
+        />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/checkBoxCardSessionNotNotification"
+    android:text="Блокировка автоматической рассылки SMS"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxCardSessionPlaceOnTheList"
+    />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonCardSessionDooble"
         android:text="Дублировать запись"
         android:onClick="onClickButtonCardSessionDooble"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionComment"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxCardSessionNotNotification"
         />
 
     <Button

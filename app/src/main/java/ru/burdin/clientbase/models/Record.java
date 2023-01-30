@@ -1,17 +1,8 @@
 package ru.burdin.clientbase.models;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 
 public class Record implements Comparable, Model {
@@ -22,6 +13,36 @@ private  long id;
     private String procedure;
     private double price;
     private  long event_id;
+    private  int oneLine;
+private  int placeInLine;
+    private  long notNotification;
+
+
+    public int getPlaceInLine() {
+        return placeInLine;
+    }
+
+    public void setPlaceInLine(int placeInLine) {
+        this.placeInLine = placeInLine;
+    }
+
+    public int getOneLine() {
+        return oneLine;
+    }
+
+    public void setOneLine(int oneLine) {
+        this.oneLine = oneLine;
+    }
+
+    public long getNotNotification() {
+        return notNotification;
+    }
+
+    public void setNotNotification(long notNotification) {
+        this.notNotification = notNotification;
+    }
+
+
 
     public long getEvent_id() {
         return event_id;
@@ -49,7 +70,9 @@ private  long id;
         this.comment = record.getComment();
         this.price = record.getPrice();
         this.procedure = record.getProcedure();
-}
+this.oneLine = record.oneLine;
+this.notNotification = record.notNotification;
+    }
 
     public Record(long start) {
         this.start = start;
@@ -87,7 +110,7 @@ private  long id;
         this.procedure = procedure;
     }
 
-    public Record(long id, long start, long end, long idUser,  String procedure, double price,   String comment, Long event_id) {
+    public Record(long id, long start, long end, long idUser,  String procedure, double price,   String comment, Long event_id, long notNotification, int oneLine) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -96,6 +119,8 @@ private  long id;
         this.price = price;
         this.event_id = event_id;
         this.comment = comment;
+    this.notNotification = notNotification;
+        this.oneLine = oneLine;
     }
 
     public double getPrice() {

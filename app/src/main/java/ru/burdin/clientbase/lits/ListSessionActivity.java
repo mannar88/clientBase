@@ -192,7 +192,8 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
                                 name = user.getSurname() + " " + user.getName() + "";
                             }
                         }
-                        viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()) + "  " + name + " " + recordsEnpty.get(MyAdapter.count).getProcedure() + " Удерживайте для связи с клиентом");
+                        viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()) + "  " + name + " " + recordsEnpty.get(MyAdapter.count).getProcedure()
+                                + " Удерживайте для связи с клиентом");
                                         } else {
                         viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()));
                     }

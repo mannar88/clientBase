@@ -93,13 +93,19 @@ public SMSService() {
                         }
                         if (records.size() > 0) {
                             records.forEach(
-                                    record -> SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)), record, R.id.radioButtonAddSessionSMS)
+                                    record ->
+                                            sendSMS(record)
                             );
                             Thread.sleep(1000 * 60);
                         }
                     }
             }
 
+private  void  sendSMS (Record record){
+                if (record.getNotNotification() == 0){
+                    SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)), record, R.id.radioButtonAddSessionSMS);
+                }
+}
             @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 bd = Bd.load(getApplicationContext());
