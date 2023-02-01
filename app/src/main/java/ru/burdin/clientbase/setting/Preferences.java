@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 
 public class Preferences {
 
-private static final String APP_PREFERENCES = "preferenses";
+    //Пауза между SMS
+    public static final String PAUSE_SMS = "pauseSMS";
+    private static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
     public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";
     public static final String APP_PREFERENCES_CheckBox = "checkBox_calender";
@@ -21,13 +23,14 @@ public  static  final  String  APP_PREFERENCES_START_WORK_HOUR = "start_work_hou
     public  static  final  String  APP_PREFERENCES_TEMPLETES_DELETE = "app_preferenses_templetes_delete";
 public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1 = "check_SMS_notification_1";
 public  static  final String APP_PREFERENSES_TIME_NOTIFICATION_SMS = "time_notification_SMS";
-public  static  final  String APP_PREFERENCAES_TEMLETES_NOTIFICATION_HOUR = "notification_hours";
+//Время отправки SMS уведомлений
+public  static  final  String TIME_SMS_NOTIFICATION = "time_sms_notification";
 public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";
 public  final  static  String APP_PREFERENSES_CHECK_AUTO_IMPORT = "auto_import";
-public  final  static  String APP_PREFERENSES_CHECK_AUTO_START_SERVICE = "auto_start_service";
 public  static  final  String APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD ="checkBoxSettingIntersectionRecod";
 
-public  static SharedPreferences  getSharedPreferences (Context context) {
+
+    public  static SharedPreferences  getSharedPreferences (Context context) {
         return   context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
     }

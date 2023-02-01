@@ -127,22 +127,24 @@ public  void  onClickSetUser (View view) {
     @Override
     protected void onResume() {
         super.onResume();
-radioGroupMessange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-    @Override
-    public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        if (i == R.id.radioButtonAddSessionSMS) {
-            if (!SendSMS.permission(getApplicationContext())) {
-                requestPermissions(new  String[]{Manifest.permission.SEND_SMS}, SendSMS.PERMISSION_SMS);
+        radioGroupMessange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i == R.id.radioButtonAddSessionSMS) {
+                    if (!SendSMS.permission(getApplicationContext())) {
+                        requestPermissions(new String[]{Manifest.permission.SEND_SMS}, SendSMS.PERMISSION_SMS);
+                    }
+                }
+            }
+        });
+//Проверка на первый сеанс
+        if (userIndex != -1) {
+            List<Record> records = Analytics.listRecords(bd.getRecords(), bd.getUsers().get(userIndex).getId());
+            if (records.size() == 0 || record.getStart() <= records.get(records.size() - 1).getStart()) {
+                checkBoxOneLine.setEnabled(false);
             }
         }
     }
-});
-//Проверка на первый сеанс
-        List <Record> records = Analytics.listRecords(bd.getRecords(), bd.getUsers().get(userIndex).getId());
-        if (records.size() == 0 || record.getStart() <= records.get(records.size() -1).getStart()){
-            checkBoxOneLine.setEnabled(false);
-        }
-}
 
     /*
     Сохраняет  или редактирует запись в БД и в списке

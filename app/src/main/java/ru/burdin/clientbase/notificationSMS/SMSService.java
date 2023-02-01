@@ -64,7 +64,7 @@ public SMSService() {
 Набор записей от конкретного времени
  */
             private  void  getNotificationHour() {
-                long time = Preferences.getLong(context, Preferences.APP_PREFERENCAES_TEMLETES_NOTIFICATION_HOUR, 0);
+                long time = Preferences.getLong(context, Preferences.TIME_SMS_NOTIFICATION, 0);
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY");
                 for (Record record :recordsCopy) {
                     if (dateFormat.format(record.getStart() - time).equals(dateFormat.format(new Date()))) {
@@ -108,21 +108,8 @@ private  void  sendSMS (Record record){
 }
             @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-bd = Bd.load(getApplicationContext());
-        if (Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_START_SERVICE, false)) {
-            Toast.makeText(this, "Сервис по отправки SMS запущен", Toast.LENGTH_SHORT).show();
-context = getApplicationContext();
-            Thread thread = new Thread(() -> {
-                try {
-                    getStart();
-                } catch (InterruptedException e) {
-                    Toast.makeText(this,e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-thread.start();
-        }
-        return Service.START_STICKY;
-    }
+return  super.onStartCommand(intent, flags, startId);
+            }
 
         @Override
         public void onDestroy() {

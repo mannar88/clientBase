@@ -10,11 +10,10 @@ import android.provider.Settings;
 
 import androidx.appcompat.app.AlertDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.burdin.clientbase.models.Model;
-import ru.burdin.clientbase.notificationSMS.SMSService;
+import ru.burdin.clientbase.notificationSMS.SMSNotificationReceiver;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -32,6 +31,7 @@ public  static  final  String NEWRECORD = "newRecord";
 public  static final  String NUMBER_PHONE = "number_phone";
     public static final String TRANSFER = "transfer";
     public static final String IISTORUNEWRECORD = "history_new_record";
+public  static  Intent intent;
 
     /*
     Поиск сервиса смс
@@ -40,10 +40,12 @@ public  static final  String NUMBER_PHONE = "number_phone";
         boolean result = true;
         ActivityManager am = (ActivityManager) context
                 .getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> rs = am.getRunningServices(50);
+
+
+        List <ActivityManager.RunningServiceInfo> rs = am.getRunningServices(50);
         for (int i = 0; i < rs.size(); i++) {
-            if (SMSService.class.getName().equalsIgnoreCase(rs.get(i).service.getClassName()))
-            {               result = false;
+            if (SMSNotificationReceiver.class.getName().equalsIgnoreCase(rs.get(i).service.getClassName())) {
+                result = false;
                 break;
             }
         }
