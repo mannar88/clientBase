@@ -35,6 +35,7 @@ private  int count;
 
 @Override
     public void onReceive(Context context, Intent intent) {
+    Toast.makeText(context.getApplicationContext(), "Начало работы SMS рассылки", Toast.LENGTH_SHORT).show();
     bd = Bd.load(context);
     if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
     Toast.makeText(context.getApplicationContext(), "SMS уведомления включены", Toast.LENGTH_SHORT).show();
@@ -47,7 +48,7 @@ private  int count;
                 TimeUnit.HOURS.toMillis(24),
                 pendingIntent);
     }else {
-        Toast.makeText(context.getApplicationContext(), "Сработало " + count++, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context.getApplicationContext(), "База загружена", Toast.LENGTH_SHORT).show();
 Runnable runnable = new Runnable() {
     @Override
     public void run() {

@@ -160,7 +160,7 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
     }
 }
     if (dateAndTime.get(Calendar.DAY_OF_MONTH) != calendarFinish.get(Calendar.DAY_OF_MONTH)) {
-        dateAndTime.set(Calendar.DAY_OF_MONTH, calendarFinish.get(Calendar.DAY_OF_MONTH));
+//        dateAndTime.set(Calendar.DAY_OF_MONTH, calendarFinish.get(Calendar.DATE));
     }
         recordsEnpty.sort(Comparator.naturalOrder());
     }
@@ -264,8 +264,9 @@ MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, con
     Переводит дату на прошлый день
      */
      public void onClickButtonBackDay(View view) {
-dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() - TimeUnit.DAYS.toMillis(1));
-    textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()) + " Щёлкните для установки даты");
+//dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() - TimeUnit.DAYS.toMillis(1));
+    dateAndTime.add(Calendar.DATE, -1);
+textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()) + " Щёлкните для установки даты");
     recUpdate();
         view.announceForAccessibility(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
      }

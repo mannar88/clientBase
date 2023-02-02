@@ -2,6 +2,9 @@ package ru.burdin.clientbase;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,15 +15,19 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.importAndExport.ImportExportActivity;
 import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
+import ru.burdin.clientbase.notificationSMS.SMSNotificationReceiver;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.SettingActivity;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,16 +46,25 @@ private  Activity activity;
 }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
+            Intent intent = new Intent(getApplicationContext(), SMSNotificationReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    getApplicationContext(), TemplatesActivity.RQS_TIME, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Preferences.getLong(this, Preferences.TIME_SMS_NOTIFICATION, new Date().getTime()),
+                    TimeUnit.HOURS.toMillis(24),
+                    pendingIntent);
+        }
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
             bd = Bd.load(this);
             calendarSetting = CalendarSetting.load(this);
-//if (!startServiceReceiver.isStart()) {
-//    startServiceReceiver.setStart(true);
-//    this.registerReceiver(startServiceReceiver, new IntentFilter(
-//            "android.intent.action.TIME_TICK"));
-//Toast.makeText(this, "Включился", Toast.LENGTH_SHORT).show();
-//}
 //Установка флажка автоматического экспорта
 Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));
 }
