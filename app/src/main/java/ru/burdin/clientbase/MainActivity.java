@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,24 +49,23 @@ private  Activity activity;
     @Override
     protected void onStart() {
         super.onStart();
-        if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
-            Intent intent = new Intent(getApplicationContext(), SMSNotificationReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    getApplicationContext(), TemplatesActivity.RQS_TIME, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Preferences.getLong(this, Preferences.TIME_SMS_NOTIFICATION, new Date().getTime()),
-                    TimeUnit.HOURS.toMillis(24),
-                    pendingIntent);
-        }
 
-    }
+}
 
     @Override
     protected void onResume() {
         super.onResume();
             bd = Bd.load(this);
             calendarSetting = CalendarSetting.load(this);
-//Установка флажка автоматического экспорта
+//        if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
+//            Intent intent = new Intent(getApplicationContext(), SMSNotificationReceiver.class);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+//                    getApplicationContext(), TemplatesActivity.RQS_TIME, intent, 0);
+//            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//            Toast.makeText(this, (alarmManager.getNextAlarmClock() == null )+ "", Toast.LENGTH_SHORT).show();
+//        }
+
+            //Установка флажка автоматического экспорта
 Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));
 }
 

@@ -36,18 +36,20 @@ private  int count;
 @Override
     public void onReceive(Context context, Intent intent) {
     Toast.makeText(context.getApplicationContext(), "Начало работы SMS рассылки", Toast.LENGTH_SHORT).show();
-    bd = Bd.load(context);
-    if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+    if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")
+&& Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK
+    ) {
     Toast.makeText(context.getApplicationContext(), "SMS уведомления включены", Toast.LENGTH_SHORT).show();
         Intent intent1 = new Intent(context.getApplicationContext(), SMSNotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-               context.getApplicationContext(), TemplatesActivity.RQS_TIME, intent1, 0);
+               context.getApplicationContext(), TemplatesActivity.RQS_TIME, intent1, PendingIntent.FLAG_MUTABLE);
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Preferences.getLong(context, Preferences.TIME_SMS_NOTIFICATION, 0),
                 TimeUnit.HOURS.toMillis(24),
                 pendingIntent);
     }else {
+        bd = Bd.load(context);
         Toast.makeText(context.getApplicationContext(), "База загружена", Toast.LENGTH_SHORT).show();
 Runnable runnable = new Runnable() {
     @Override
