@@ -29,44 +29,43 @@ public class SMSNotificationReceiver extends BroadcastReceiver {
 
     private List<Record> recordsCopy;
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-YY");
-private Bd bd;
+    private DateFormat dateFormatStartSMS = new SimpleDateFormat("HH:mm");
+    private Bd bd;
 private  List <Record> records = new ArrayList<>();
 private  int count;
 
 @Override
     public void onReceive(Context context, Intent intent) {
-    Toast.makeText(context.getApplicationContext(), "Начало работы SMS рассылки", Toast.LENGTH_SHORT).show();
-    if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")
-&& Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK
-    ) {
-    Toast.makeText(context.getApplicationContext(), "SMS уведомления включены", Toast.LENGTH_SHORT).show();
-        Intent intent1 = new Intent(context.getApplicationContext(), SMSNotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-               context.getApplicationContext(), TemplatesActivity.RQS_TIME, intent1, PendingIntent.FLAG_MUTABLE);
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+    if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
+        Toast.makeText(context.getApplicationContext(), "Начало работы SMS рассылки", Toast.LENGTH_SHORT).show();
+        SendSMS.startAlarm(context.getApplicationContext());
+        if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+            Toast.makeText(context.getApplicationContext(), "SMS уведомления включены", Toast.LENGTH_SHORT).show();
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Preferences.getLong(context, Preferences.TIME_SMS_NOTIFICATION, 0),
-                TimeUnit.HOURS.toMillis(24),
-                pendingIntent);
-    }else {
-        bd = Bd.load(context);
-        Toast.makeText(context.getApplicationContext(), "База загружена", Toast.LENGTH_SHORT).show();
-Runnable runnable = new Runnable() {
-    @Override
-    public void run() {
-        recordsCopy = List.copyOf(bd.getRecords());
-    getRecord(context.getApplicationContext());
-        try {
-            sendSMS(context.getApplicationContext());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } else {
+            if (dateFormatStartSMS.format(new Date()).equals(Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:00"))) {
+Toast.makeText(context.getApplicationContext(), "Начало отправки SMS уведомлений", Toast.LENGTH_SHORT).show();
+                bd = Bd.load(context);
+                Toast.makeText(context.getApplicationContext(), "База загружена", Toast.LENGTH_SHORT).show();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        recordsCopy = List.copyOf(bd.getRecords());
+                        getRecord(context.getApplicationContext());
+//                        try {
+//    sendSMS(context.getApplicationContext());
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+                    }
+                };
+                Thread thread = new Thread(runnable);
+                thread.start();
+            Toast.makeText(context.getApplicationContext(), "Отправка SMS", Toast.LENGTH_SHORT).show();
+            }
         }
     }
-};
-  Thread thread = new Thread(runnable);
-  thread.start();
-    }
-        }
+}
 
 /*
 Отправка SMS

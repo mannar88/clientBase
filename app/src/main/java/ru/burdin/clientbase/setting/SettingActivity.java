@@ -41,6 +41,7 @@ private  static List<String> nameCalendars;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seting);
+        setTitle("Настройки");
         bd = Bd.load(this);
         checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);

@@ -27,6 +27,7 @@ public  static  final String APP_PREFERENSES_TIME_NOTIFICATION_SMS = "time_notif
 public  static  final  String TIME_SMS_NOTIFICATION = "time_sms_notification";
 public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";
 public  final  static  String APP_PREFERENSES_CHECK_AUTO_IMPORT = "auto_import";
+//Булевое разрешение пересечения записи
 public  static  final  String APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD ="checkBoxSettingIntersectionRecod";
 
 

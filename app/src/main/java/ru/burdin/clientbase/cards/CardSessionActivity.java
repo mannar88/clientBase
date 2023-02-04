@@ -64,10 +64,13 @@ public  static  final  int TRANSFER_INT = 67;
 Activity context;
 DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
 
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_card_session);
+    setTitle("");
+
     bd = Bd.load(getApplicationContext());
 calendarSetting = CalendarSetting.load(this);
     recordId = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);

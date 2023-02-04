@@ -81,6 +81,7 @@ private  Activity activity;
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_session);
+        setTitle("");
         activity = this;
         bd = Bd.load(getApplicationContext());
      calendarSetting = CalendarSetting.load(this);

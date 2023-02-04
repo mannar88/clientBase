@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,7 @@ import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.notificationSMS.SMSNotificationReceiver;
+import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.SettingActivity;
@@ -35,14 +37,16 @@ public class MainActivity extends AppCompatActivity {
     private Bd bd;
 private CalendarSetting calendarSetting;
 private  Activity activity;
-
+private  AlarmManager alarmManager;
 
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+if (savedInstanceState == null && Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
+SendSMS.startAlarm(this);
+}
 
 }
 
@@ -57,13 +61,6 @@ private  Activity activity;
         super.onResume();
             bd = Bd.load(this);
             calendarSetting = CalendarSetting.load(this);
-//        if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
-//            Intent intent = new Intent(getApplicationContext(), SMSNotificationReceiver.class);
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-//                    getApplicationContext(), TemplatesActivity.RQS_TIME, intent, 0);
-//            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//            Toast.makeText(this, (alarmManager.getNextAlarmClock() == null )+ "", Toast.LENGTH_SHORT).show();
-//        }
 
             //Установка флажка автоматического экспорта
 Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));
@@ -131,10 +128,8 @@ startActivity(intent);
 Инфо
  */
     public void onClickButtonInfo(View view) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 1);
 
-        //    Intent intent = new Intent(this, InfoActivity.class);
-//    startActivity(intent);
+            Intent intent = new Intent(this, InfoActivity.class);
+    startActivity(intent);
     }
 }
