@@ -26,7 +26,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.analytics.Analytics;
@@ -71,8 +73,16 @@ DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
     setContentView(R.layout.activity_card_session);
     setTitle("");
 
-    bd = Bd.load(getApplicationContext());
-calendarSetting = CalendarSetting.load(this);
+    try {
+        bd = Bd.load(getApplicationContext());
+    } catch (InterruptedException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+    calendarSetting = CalendarSetting.load(this);
     recordId = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
     if (recordId != -1) {
         record = bd.getRecords().get(StaticClass.indexList(recordId, bd.getRecords()));

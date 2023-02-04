@@ -29,6 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
@@ -36,6 +38,8 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.models.User;
+
+import static com.parse.Parse.getApplicationContext;
 
 class SelectAddClient {
 
@@ -47,7 +51,16 @@ public  static  final  int PERMISSION_PHONE_BOOK = 6;
 private  static  final  String  CLIENT = " клиент ";
 public SelectAddClient(ListClientActivity activity) {
     this.activity =(ListClientActivity)activity;
-bd = Bd.load(activity);
+    try {
+        bd = Bd.load(activity);
+    } catch (InterruptedException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+
 }
 
     /*
@@ -284,7 +297,16 @@ try {
   Добавление контакта вбазу
    */
   private  void  setContact (String[] name, String phone) {
-      Bd bd = Bd.load(activity);
+      Bd bd = null;
+      try {
+          bd = Bd.load(activity);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      } catch (ExecutionException e) {
+          e.printStackTrace();
+      } catch (TimeoutException e) {
+          e.printStackTrace();
+      }
       ContentValues contentValues =new ContentValues();
       for (int i = 0; i < name.length; i++) {
           if (i == 0) {

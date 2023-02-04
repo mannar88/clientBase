@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.MyAdapter.OnUserClickListener;
@@ -44,8 +46,16 @@ private  Activity activity;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_procedures);
-    bd = Bd.load(getApplicationContext());
-        recyclerViewProcedure = findViewById(R.id.listProcedures);
+    try {
+        bd = Bd.load(getApplicationContext());
+    } catch (InterruptedException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+    recyclerViewProcedure = findViewById(R.id.listProcedures);
     editTextName = findViewById(R.id.editextProcedur);
     editTextPrice = findViewById(R.id.edittextPrice);
     editTextTimeEnd = findViewById(R.id.editTextTimeEnd);

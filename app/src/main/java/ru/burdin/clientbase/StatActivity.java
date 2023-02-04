@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.models.Expenses;
@@ -46,8 +48,16 @@ private  Bd bd;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stat);
-bd = Bd.load(this);
-        spinnerSelectPeriod = findViewById(R.id.spinnerStatSelectPeriod);
+    try {
+        bd = Bd.load(this);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    } catch (TimeoutException e) {
+        e.printStackTrace();
+    }
+    spinnerSelectPeriod = findViewById(R.id.spinnerStatSelectPeriod);
 buttonBack = findViewById(R.id.buttonStatBack);
 textViewPeriod = findViewById(R.id.textViewStat);
 buttonNext = findViewById(R.id.buttonStatNext);

@@ -34,7 +34,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -83,8 +85,16 @@ protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_list_session);
         setTitle("");
         activity = this;
+    try {
         bd = Bd.load(getApplicationContext());
-     calendarSetting = CalendarSetting.load(this);
+    } catch (InterruptedException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+    calendarSetting = CalendarSetting.load(this);
         if (savedInstanceState == null) {
             dateAndTime =Calendar.getInstance();
         }else  {

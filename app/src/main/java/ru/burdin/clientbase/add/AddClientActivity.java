@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Comparator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
@@ -39,8 +41,16 @@ public class AddClientActivity extends AppCompatActivity {
         editTextPhone.setText("");
         editTextComment = findViewById(R.id.editTextComment);
         editTextComment.setText("");
-        bd = Bd.load(getApplicationContext());
-            index = getIntent().getIntExtra(Bd.TABLE, -1);
+        try {
+            bd = Bd.load(getApplicationContext());
+        } catch (InterruptedException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (TimeoutException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+        index = getIntent().getIntExtra(Bd.TABLE, -1);
         getIntent().removeExtra(Bd.TABLE);
         if (index > -1) {
             user = bd.getUsers().get(index);

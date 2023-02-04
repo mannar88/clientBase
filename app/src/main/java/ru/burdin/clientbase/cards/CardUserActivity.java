@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
@@ -39,7 +41,15 @@ public class CardUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bd = Bd.load(getApplicationContext());
+        try {
+            bd = Bd.load(getApplicationContext());
+        } catch (InterruptedException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (TimeoutException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
         setContentView(R.layout.activity_card_user);
         textViewNameAndSurname = findViewById(R.id.cardNameAndSurname);
         textViewPhone = findViewById(R.id.cardPhone);

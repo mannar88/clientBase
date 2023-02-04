@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.importAndExport.ImportExportActivity;
 import ru.burdin.clientbase.lits.ListClientActivity;
@@ -45,7 +47,8 @@ private  AlarmManager alarmManager;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 if (savedInstanceState == null && Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
-SendSMS.startAlarm(this);
+SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
+
 }
 
 }
@@ -59,8 +62,16 @@ SendSMS.startAlarm(this);
     @Override
     protected void onResume() {
         super.onResume();
+        try {
             bd = Bd.load(this);
-            calendarSetting = CalendarSetting.load(this);
+        } catch (InterruptedException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (TimeoutException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+        calendarSetting = CalendarSetting.load(this);
 
             //Установка флажка автоматического экспорта
 Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));

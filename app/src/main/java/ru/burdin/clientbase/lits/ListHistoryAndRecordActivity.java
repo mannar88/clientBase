@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.Bd;
@@ -36,8 +39,17 @@ private  List <List<Record>> numberOfCourse;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_history_and_record);
-    bd = Bd.load(getApplicationContext());
-    textViewListHistoryRecord = findViewById(R.id.textViewListHistoryRecord);
+        try {
+            bd = Bd.load(getApplicationContext());
+        } catch (InterruptedException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (TimeoutException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        textViewListHistoryRecord = findViewById(R.id.textViewListHistoryRecord);
     recyclerView = findViewById(R.id.listHistory);
     intentCardSession = new Intent( this, CardSessionActivity.class);
     }

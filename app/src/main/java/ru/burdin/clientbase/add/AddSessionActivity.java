@@ -24,7 +24,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.Bd;
@@ -84,8 +86,17 @@ radioGroupMessange.check(radioButtonNotChck.getId());
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
 if (savedInstanceState == null) {
+    try {
         bd = Bd.load(this);
-        procedures = new ArrayList<>();
+    } catch (InterruptedException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    procedures = new ArrayList<>();
     }else  {
     userIndex = savedInstanceState.getInt(StaticClass.POSITION_LIST_USERS, -1);
     }

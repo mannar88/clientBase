@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
@@ -32,31 +34,37 @@ public class SMSNotificationReceiver extends BroadcastReceiver {
     private DateFormat dateFormatStartSMS = new SimpleDateFormat("HH:mm");
     private Bd bd;
 private  List <Record> records = new ArrayList<>();
-private  int count;
 
 @Override
     public void onReceive(Context context, Intent intent) {
     if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
-        Toast.makeText(context.getApplicationContext(), "Начало работы SMS рассылки", Toast.LENGTH_SHORT).show();
-        SendSMS.startAlarm(context.getApplicationContext());
+        SendSMS.startAlarm(context.getApplicationContext(), Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:"));
         if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             Toast.makeText(context.getApplicationContext(), "SMS уведомления включены", Toast.LENGTH_SHORT).show();
 
         } else {
-            if (dateFormatStartSMS.format(new Date()).equals(Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:00"))) {
 Toast.makeText(context.getApplicationContext(), "Начало отправки SMS уведомлений", Toast.LENGTH_SHORT).show();
-                bd = Bd.load(context);
+                try {
+                    bd = Bd.load(context.getApplicationContext());
+                } catch (InterruptedException e) {
+                    Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } catch (ExecutionException e) {
+                    Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } catch (TimeoutException e) {
+                    Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+
                 Toast.makeText(context.getApplicationContext(), "База загружена", Toast.LENGTH_SHORT).show();
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
                         recordsCopy = List.copyOf(bd.getRecords());
                         getRecord(context.getApplicationContext());
-//                        try {
-//    sendSMS(context.getApplicationContext());
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+                        try {
+    sendSMS(context.getApplicationContext());
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 };
                 Thread thread = new Thread(runnable);
@@ -64,7 +72,6 @@ Toast.makeText(context.getApplicationContext(), "Начало отправки S
             Toast.makeText(context.getApplicationContext(), "Отправка SMS", Toast.LENGTH_SHORT).show();
             }
         }
-    }
 }
 
 /*

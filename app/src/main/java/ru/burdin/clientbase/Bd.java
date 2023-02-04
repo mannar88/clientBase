@@ -82,7 +82,7 @@ bdImportExport = new BdImportExport(context.getDatabasePath(Bd.DATABASE_NAME).ge
 /*
 Создание объекта База данных
  */
-    public  static  Bd load (Context context) {
+    public  static  Bd load (Context context) throws InterruptedException, ExecutionException, TimeoutException {
     Supplier <Bd> supplier = new Supplier<Bd>() {
         @Override
         public Bd get() {
@@ -96,13 +96,7 @@ if (bd == null || bd.databaseHelper == null || bd.sqLiteDatabase == null
     AsyncTaskBd <Bd> asyncTaskBd = new AsyncTaskBd<>();
     asyncTaskBd.execute(supplier);
         Bd result = null;
-        try {
-            result = asyncTaskBd.get(1, TimeUnit.DAYS.SECONDS);
-        } catch (ExecutionException e) {
-            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (InterruptedException | TimeoutException e) {
-            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
+            result = asyncTaskBd.get(3, TimeUnit.DAYS.SECONDS);
         return  result;
     }
 
@@ -116,7 +110,7 @@ private  Bd getBd () {
 /*
 Пересоздание объекта База данных
  */
-public void  reStart (){
+public void  reStart () throws InterruptedException, ExecutionException, TimeoutException {
     bd = null;
     load(staticContex);
 }

@@ -23,6 +23,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
@@ -41,8 +42,16 @@ private Activity activity;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_export);
 bdExportImport = new BdImportExport(getDatabasePath(Bd.DATABASE_NAME).getPath());
-bd = Bd.load(this);
-checkBoxAutoExport = findViewById(R.id.checkBoxImportExportAutoExport);
+    try {
+        bd = Bd.load(this);
+    } catch (InterruptedException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+    checkBoxAutoExport = findViewById(R.id.checkBoxImportExportAutoExport);
 checkBoxAutoExport.setChecked(Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
 activity = this;
 }
@@ -70,14 +79,16 @@ checkBoxAutoExport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChange
             try {
                 Toast.makeText(getApplicationContext(), bdExportImport.inport(), Toast.LENGTH_SHORT).show();
                 bd.reStart();
-            } catch (ExecutionException e) {
-                Toast.makeText(getApplicationContext(), e.getLocalizedMessage() + " ExecutionException", Toast.LENGTH_SHORT).show();
+
             } catch (InterruptedException e) {
-            Toast.makeText(this, e.getLocalizedMessage() + " InterruptedException", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
             }
         }
     }
-
 /*
 Кнопка экспорта БД
  */

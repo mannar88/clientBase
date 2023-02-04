@@ -12,11 +12,14 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.add.AddClientActivity;
@@ -42,7 +45,15 @@ private  RecyclerView recyclerViewClient;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_client);
          intent = new Intent(this, CardUserActivity.class);
-        bd = Bd.load(getApplicationContext());
+        try {
+            bd = Bd.load(getApplicationContext());
+        } catch (InterruptedException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        } catch (TimeoutException e) {
+            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
         try {
             addSession = getIntent().getExtras().getString(AddSessionActivity.class.getName());
         } catch (Exception e) {
