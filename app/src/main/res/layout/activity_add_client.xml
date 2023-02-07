@@ -49,12 +49,20 @@ android:id="@+id/editTextComment"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone"
     />
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/checkboxAddClientRecord"
+        android:text="Открыть запись после сохранения"
+        app:layout_constraintTop_toBottomOf="@+id/editTextComment"
+        />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonSaveClient"
         android:onClick="buttonSaveC"
-        app:layout_constraintTop_toBottomOf="@+id/editTextComment"
+        app:layout_constraintTop_toBottomOf="@+id/checkboxAddClientRecord"
         android:text="Сохранить"
         />
 

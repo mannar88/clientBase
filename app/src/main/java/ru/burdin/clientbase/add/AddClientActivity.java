@@ -1,10 +1,10 @@
 package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.User;
 
 public class AddClientActivity extends AppCompatActivity {
@@ -28,6 +29,7 @@ public class AddClientActivity extends AppCompatActivity {
     private Bd bd;
     private User user;
     private int index = -1;
+private CheckBox checkBoxRecord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class AddClientActivity extends AppCompatActivity {
         editTextPhone.setText("");
         editTextComment = findViewById(R.id.editTextComment);
         editTextComment.setText("");
+checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
         try {
             bd = Bd.load(getApplicationContext());
         } catch (InterruptedException e) {
@@ -82,6 +85,12 @@ public class AddClientActivity extends AppCompatActivity {
                             bd.getUsers().sort(Comparator.naturalOrder());
                         }
                         Toast.makeText(getApplicationContext(), "Клиент успешно добавлен", Toast.LENGTH_SHORT).show();
+                        if (checkBoxRecord.isChecked()) {
+                            Intent intent = new Intent(this, ListSessionActivity.class);
+                            intent.putExtra(StaticClass.POSITION_LIST_USERS, StaticClass.indexList(id, bd.getUsers()));
+                            intent.putExtra(StaticClass.KEY, StaticClass.IISTORUNEWRECORD);
+                            startActivity(intent);
+                        }
                     }
                 } else {
                     if (bd.update(Bd.TABLE, contentValues, user.getId()) == 1) {
