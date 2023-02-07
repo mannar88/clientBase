@@ -1,7 +1,6 @@
 package ru.burdin.clientbase.lits;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -37,11 +36,12 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.cards.CardUserActivity;
+import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.models.User;
 
 import static com.parse.Parse.getApplicationContext;
 
-class SelectAddClient {
+public class SelectAddClient            {
 
     private  Bd bd;
     private  List<String> resultContact = new ArrayList<>();

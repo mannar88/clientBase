@@ -1,4 +1,4 @@
-package ru.burdin.clientbase.lits;
+package ru.burdin.clientbase.lits.listClient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,13 +25,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
-import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.lits.SelectAddClient;
 import ru.burdin.clientbase.models.User;
 
 public class ListClientActivity extends AppCompatActivity {
@@ -40,13 +43,18 @@ private EditText editTextSerch;
     private  String addSession = "";
     private  Intent intent;
 private  RecyclerView recyclerViewClient;
-    @Override
+Spinner spinnerSort;
+private ArrayAdapter <String> adapter;
+private  ListClient listClient;
+
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_client);
          intent = new Intent(this, CardUserActivity.class);
         try {
             bd = Bd.load(getApplicationContext());
+
         } catch (InterruptedException e) {
             Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         } catch (ExecutionException e) {
@@ -59,12 +67,16 @@ private  RecyclerView recyclerViewClient;
         } catch (Exception e) {
 
         }
- recyclerViewClient = findViewById(R.id.list);
-        textViewCount = findViewById(R.id.textCountUsers);
+ listClient = new ListClient(bd.getUsers(), bd.getRecords());
+        recyclerViewClient = findViewById(R.id.list);
+        spinnerSort = findViewById(R.id.spinerListClientSort);
+    adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClient.getKeysString());
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+spinnerSort.setAdapter(adapter);
+    textViewCount = findViewById(R.id.textCountUsers);
 editTextSerch = findViewById(R.id.editTextListClientSearsh);
-users = bd.getUsers();
-    listenerSearch();
-    }
+users = listClient.getListUsers((String) spinnerSort.getSelectedItem());
+}
 
 
     /*
@@ -87,9 +99,9 @@ selectAddClient.getDialog();
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-if (charSequence.length() > 0) {
-users = new ArrayList<>();
-String result = "";
+List <User> usersSerch = new ArrayList<>();
+            if (charSequence.length() > 0) {
+ String result = "";
     if (charSequence.charAt(0) == '+' || charSequence.charAt(0) == '8') {
         for (int j = 0; j < charSequence.length(); j++) {
             if ((charSequence.charAt(j) == '+' && j == 0) || Character.isDigit(charSequence.charAt(j))) {
@@ -106,16 +118,17 @@ String result = "";
         editTextSerch.setSelection(result.length());
     }
     String text = charSequence.toString();
-    for (User user : bd.getUsers()){
+    for (User user : users){
         if (user.getSurname().toLowerCase().contains(text.toLowerCase()) || user.getName().toLowerCase().contains(text.toLowerCase()) || user.getPhone().contains(charSequence)
         ){
-users.add(user);
+usersSerch.add(user);
     }
 }
 }else  {
-    users = bd.getUsers();
-}
-        updateList();
+usersSerch = users;
+            }
+        users = usersSerch;
+updateList();
         }
 
         @Override
@@ -131,6 +144,27 @@ users.add(user);
     protected void onResume() {
         super.onResume();
         updateList();
+spinnerSortSetOnItemSelectedListener();
+        listenerSearch();
+    }
+
+    /*
+    Слушатель спинер сортировки
+     */
+    private void spinnerSortSetOnItemSelectedListener() {
+        spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                users = listClient.getListUsers(listClient.getKeysString()[i]);
+                editTextSerch.setText("");
+                updateList();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     /*
@@ -158,9 +192,9 @@ MyAdapter.OnUserClickListener <User> onUserClickListener = new MyAdapter.OnUserC
 
     }
 };
-MyAdapter myAdapter = new MyAdapter(this, users , onUserClickListener, consumer);
+MyAdapter myAdapter = new MyAdapter(this, users, onUserClickListener, consumer);
 recyclerViewClient.setAdapter(myAdapter);
-textViewCount.setText("Всего клиентов: " + users.size() );
+textViewCount.setText("Всего клиентов: " +users.size() );
 
     }
 

@@ -35,7 +35,7 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.StaticClass;
-import ru.burdin.clientbase.lits.ListClientActivity;
+import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;

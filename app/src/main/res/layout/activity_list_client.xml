@@ -22,11 +22,18 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonRecordClient"
         />
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/spinerListClientSort"
+        app:layout_constraintTop_toBottomOf="@+id/editTextListClientSearsh"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textCountUsers"
-        app:layout_constraintTop_toBottomOf="@+id/editTextListClientSearsh"
+        app:layout_constraintTop_toBottomOf="@+id/spinerListClientSort"
         />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -55,8 +55,11 @@
         <activity android:name=".lits.ListSessionActivity" />
         <activity android:name=".lits.ListOfProceduresActivity" />
         <activity android:name=".cards.CardUserActivity" />
-        <activity android:name=".add.AddClientActivity" />
-        <activity android:name=".lits.ListClientActivity" />
+        <activity
+            android:name=".add.AddClientActivity"
+android:exported="false">
+        </activity>
+        <activity android:name=".lits.listClient.ListClientActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

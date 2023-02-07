@@ -12,15 +12,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-
-import ru.burdin.clientbase.lits.ListClientActivity;
-
-import static ru.burdin.clientbase.BuildConfig.VERSION_CODE;
 
 public class InfoActivity extends AppCompatActivity {
 

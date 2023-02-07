@@ -3,8 +3,6 @@ package ru.burdin.clientbase;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,19 +13,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.importAndExport.ImportExportActivity;
-import ru.burdin.clientbase.lits.ListClientActivity;
+import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
-import ru.burdin.clientbase.notificationSMS.SMSNotificationReceiver;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
@@ -46,7 +39,8 @@ private  AlarmManager alarmManager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-if (savedInstanceState == null && Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
+
+        if (savedInstanceState == null && Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
 SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
 
 }
