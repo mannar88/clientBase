@@ -1,7 +1,5 @@
 package ru.burdin.clientbase.notificationSMS;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +9,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -19,9 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
-import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
-import ru.burdin.clientbase.notificationSMS.SMSService;
 import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.TemplatesActivity;
 

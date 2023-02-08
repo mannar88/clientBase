@@ -38,11 +38,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".notificationSMS.SMSService"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".setting.TemplatesActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".importAndExport.ImportExportActivity" />

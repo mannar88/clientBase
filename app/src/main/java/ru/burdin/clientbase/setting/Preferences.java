@@ -22,7 +22,8 @@ public  static  final  String  APP_PREFERENCES_START_WORK_HOUR = "start_work_hou
     public  static  final  String  APP_PREFERENCES_TEMPLETES_READ = "app_preferenses_templetes_read";
     public  static  final  String  APP_PREFERENCES_TEMPLETES_DELETE = "app_preferenses_templetes_delete";
 public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1 = "check_SMS_notification_1";
-public  static  final String APP_PREFERENSES_TIME_NOTIFICATION_SMS = "time_notification_SMS";
+//Запоминает текст за каое время отправлять смс
+public  static  final String STRING_SMS_NOTIFICATION_HOUR = "   stringSMSHour";
 //Время отправки SMS уведомлений
 public  static  final  String TIME_SMS_NOTIFICATION = "time_sms_notification";
 public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";

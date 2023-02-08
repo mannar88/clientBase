@@ -39,10 +39,15 @@ private  AlarmManager alarmManager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState == null && Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
-SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
-
+        if (savedInstanceState == null) {
+switch (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)){
+    case TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK:
+    break;
+    case TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR:
+        break;
+        default:
+        SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
+}
 }
 
 }
