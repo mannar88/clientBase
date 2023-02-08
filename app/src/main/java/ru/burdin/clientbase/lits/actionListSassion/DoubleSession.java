@@ -12,8 +12,10 @@ import java.util.function.Consumer;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
+import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
 public class DoubleSession implements Consumer<Record> {
 
@@ -74,6 +76,10 @@ public   static boolean checkDouble;
 0,
 0
                 ))) {
+recordDup.setId(id);
+                    if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) == TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR) {
+                        SendSMS.startHourAlarmMenedjer(context, recordDup);
+                    }
 checkDouble= true;
                 }
             }

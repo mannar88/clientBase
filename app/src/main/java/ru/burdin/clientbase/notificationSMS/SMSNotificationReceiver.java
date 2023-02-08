@@ -32,14 +32,30 @@ private  List <Record> records = new ArrayList<>();
 
 @Override
     public void onReceive(Context context, Intent intent) {
-    if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) {
-        SendSMS.startAlarm(context.getApplicationContext(), Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:"));
+    if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) != TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK
+    ) {
         if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             Toast.makeText(context.getApplicationContext(), "SMS уведомления включены", Toast.LENGTH_SHORT).show();
+if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)== TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR) {
+    try {
+        bd = Bd.load(context.getApplicationContext());
+    } catch (InterruptedException e) {
+        Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (ExecutionException e) {
+        Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    } catch (TimeoutException e) {
+        Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+    SendSMS.multiStartSMSAlarms(context.getApplicationContext(), bd.getRecords());
+    }else {
+    SendSMS.startAlarm(context.getApplicationContext(), Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:"));
+    }
 
         } else {
 Toast.makeText(context.getApplicationContext(), "Начало отправки SMS уведомлений", Toast.LENGTH_SHORT).show();
-                try {
+            SendSMS.startAlarm(context.getApplicationContext(), Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:"));
+
+            try {
                     bd = Bd.load(context.getApplicationContext());
                 } catch (InterruptedException e) {
                     Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();

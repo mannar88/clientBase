@@ -41,6 +41,7 @@ import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
 public class AddSessionActivity extends AppCompatActivity {
 
@@ -198,7 +199,8 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
 bd.getRecords().get(indexRecord).setOneLine(record.getOneLine());
 bd.getRecords().get(indexRecord).setNotNotification(record.getNotNotification());
-    if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
+SendSMS.startHourAlarmMenedjer(this, bd.getRecords().get(indexRecord));
+if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
                 setResult(RESULT_OK);
@@ -235,6 +237,9 @@ record.getEvent_id(),
                     ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
 SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(0), SendSMS.TEMPLETS.get(0)), record, radioGroupMessange.getCheckedRadioButtonId());
+if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) == TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR) {
+    SendSMS.startHourAlarmMenedjer(this, bd.getRecords().get(StaticClass.indexList(res, bd.getRecords())));
+}
                     finish();
 
                 }else {

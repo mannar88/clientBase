@@ -305,6 +305,7 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
             if (calendarSetting.delete(id) == 0) {
                 Toast.makeText(getApplicationContext(), "Не удалось удалить запись в календаре", Toast.LENGTH_SHORT).show();
             }
+            SendSMS.deleteHourAlarm(getApplicationContext(), record);
             Toast.makeText(getApplicationContext(), "Запись удалена", Toast.LENGTH_SHORT).show();
         }
         return  resultDelete == 0? false:true;

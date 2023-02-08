@@ -32,6 +32,7 @@ import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.setting.Preferences;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
 public class Bd {
 
@@ -159,7 +160,7 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
             Toast.makeText(staticContex.getApplicationContext(), "Не удалось добавить в базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
         autoExport(result);
-        return  result;
+                return  result;
 }
 
 /*

@@ -24,7 +24,9 @@ public  static  final  String  APP_PREFERENCES_START_WORK_HOUR = "start_work_hou
 public  static  final  String APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1 = "check_SMS_notification_1";
 //Запоминает текст за каое время отправлять смс
 public  static  final String STRING_SMS_NOTIFICATION_HOUR = "   stringSMSHour";
-//Время отправки SMS уведомлений
+// часы за сколько отправлять смс
+    public  static final  String COUNT_HOUR = "countHour";
+//Время отправки SMS уведомлений когда не зависимости сеанса
 public  static  final  String TIME_SMS_NOTIFICATION = "time_sms_notification";
 public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";
 public  final  static  String APP_PREFERENSES_CHECK_AUTO_IMPORT = "auto_import";
