@@ -29,12 +29,21 @@ android:onClick="onClickButtonSettingTemplets"
     app:layout_constraintTop_toBottomOf="@id/spinerSettingCalendar"
     />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonSettingInterfase"
+        android:onClick="onClickButtonSettingInterfase"
+        android:text="Интерфейс"
+        app:layout_constraintTop_toBottomOf="@id/buttonSettingTempltes"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 android:id="@+id/textViewSetting"
         android:text="Рабочий график"
-    app:layout_constraintTop_toBottomOf="@id/buttonSettingTempltes"
+    app:layout_constraintTop_toBottomOf="@id/buttonSettingInterfase"
         />
 
     <TextView

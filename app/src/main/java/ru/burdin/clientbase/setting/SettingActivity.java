@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import java.util.concurrent.TimeoutException;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.lits.ListSessionActivity;
+import ru.burdin.clientbase.setting.interfase.InterFaseSettingActivity;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -134,4 +137,15 @@ checkBoxCalender.setChecked(false);
     Intent intent = new Intent(this, TemplatesActivity.class);
     startActivity(intent);
     }
+
+    /*
+    Открывает окно настрой интерфейса
+     */
+    public void onClickButtonSettingInterfase(View view) {
+    Intent intent = new Intent(this, InterFaseSettingActivity.class);
+    startActivity(intent);
+
+    }
+
+
 }

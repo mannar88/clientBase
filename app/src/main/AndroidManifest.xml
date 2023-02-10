@@ -28,10 +28,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
+        <activity android:name=".setting.interfase.InterFaseSettingActivity"></activity>
+
         <receiver
             android:name=".notificationSMS.SMSHourNotificationReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
         <receiver
             android:name=".notificationSMS.SMSNotificationReceiver"
             android:exported="false">
@@ -49,20 +51,25 @@
         <activity android:name=".cards.CardSessionActivity" />
         <activity android:name=".lits.ListExpensesActivity" />
         <activity android:name=".add.AddSessionActivity" />
-        <activity android:name=".lits.ListSessionActivity" />
+        <activity
+        android:name=".lits.ListSessionActivity"
+            android:label="Расписание"
+            android:exported="true">
+        </activity>
         <activity android:name=".lits.ListOfProceduresActivity" />
         <activity android:name=".cards.CardUserActivity" />
         <activity
             android:name=".add.AddClientActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity android:name=".lits.listClient.ListClientActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+<category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

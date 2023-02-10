@@ -17,10 +17,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.importAndExport.ImportExportActivity;
-import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
+import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
@@ -37,7 +37,7 @@ private  AlarmManager alarmManager;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     try {
         bd = Bd.load(this);
@@ -48,9 +48,8 @@ private  AlarmManager alarmManager;
     } catch (TimeoutException e) {
         Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
-
     if (savedInstanceState == null) {
-            switch (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)){
+        switch (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)){
     case TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK:
     break;
     case TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR:
@@ -58,21 +57,27 @@ private  AlarmManager alarmManager;
         break;
         default:
         SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
+        }
+if (Preferences.getBoolean(this, Preferences.START_ACTIVITY_LIST_SESSION, false)) {
+    Intent intent = new Intent(this, ListSessionActivity.class) ;
+    startActivity(intent);
 }
-}
+
+     }
 
 }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
+    protected void onRestart () {
+        super.onRestart();
 }
 
     @Override
     protected void onResume() {
         super.onResume();
-        calendarSetting = CalendarSetting.load(this);
+
+
+       calendarSetting  = CalendarSetting.load(this);
 
             //Установка флажка автоматического экспорта
 Preferences.set(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, (permission() && Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));
@@ -97,7 +102,12 @@ if (Environment.isExternalStorageManager()){
     return  result;
 }
 
-public void onClickButtonRecord(View view) {
+    @Override
+    protected void onStop() {
+    super.onStop();
+    }
+
+    public void onClickButtonRecord(View view) {
 Intent intent = new Intent(this, ListSessionActivity.class);
 startActivity(intent);
 

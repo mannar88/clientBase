@@ -14,14 +14,14 @@
         <item>Кликнете сюда, что бы зайти в группу "Клиентская база</item>
     </string-array>
 
-<string-array name="templetesKey">
-    <item>Здесь представлены ключи, которые вы можете вставлять в шаблон для информативности сообщения:</item>
-<item>%n - имя клиента</item>
-<item>%s - фамилия клиента</item>
-<item>%t - время сеанса</item>
-<item>%d - дата сеанса</item>
-<item>%m - вид услуги</item>
-<item>%p - стоимость услуги</item>
-</string-array>
+    <string-array name="templetesKey">
+        <item>Здесь представлены ключи, которые вы можете вставлять в шаблон для информативности сообщения:</item>
+        <item>%n - имя клиента</item>
+        <item>%s - фамилия клиента</item>
+        <item>%t - время сеанса</item>
+        <item>%d - дата сеанса</item>
+        <item>%m - вид услуги</item>
+        <item>%p - стоимость услуги</item>
+    </string-array>
 
 </resources>

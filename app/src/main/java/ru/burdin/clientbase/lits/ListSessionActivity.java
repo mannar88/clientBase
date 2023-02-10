@@ -40,6 +40,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import ru.burdin.clientbase.MainActivity;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.lits.actionListSassion.BusyTime;
@@ -318,4 +319,9 @@ consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(getApplicationCont
 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+    }
 }
