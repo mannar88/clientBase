@@ -116,9 +116,10 @@ checkBoxPlaceOnTheList.setOnCheckedChangeListener(new CompoundButton.OnCheckedCh
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         ContentValues contentValues = new ContentValues();
     contentValues.put(Bd.COLUMN_ONE_IN_LINE, StaticClass.booleaILong(b));
-        if (bd.update(bd.TABLE_SESSION, contentValues, record.getId()) == 1){
+        int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
+    if (arr[2] > 1&&bd.update(bd.TABLE_SESSION, contentValues, record.getId()) == 1){
 record.setOneLine(StaticClass.booleaInInt(b));
-            int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
+        arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
 textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
         }
     }

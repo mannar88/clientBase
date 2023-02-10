@@ -140,8 +140,7 @@ startActivity(intent);
 Инфо
  */
     public void onClickButtonInfo(View view) {
-
-            Intent intent = new Intent(this, InfoActivity.class);
+                    Intent intent = new Intent(this, InfoActivity.class);
     startActivity(intent);
     }
 }

@@ -28,6 +28,10 @@ public  List <User> getListUsers (String key) {
     return  userMap.get(key);
 }
 
+/*
+Сортировка по сеансам
+ */
+
 private  List <User> sortSession (List <User> users, List <Record> records) {
 List <User> result = new ArrayList<>();
 records.sort(Comparator.reverseOrder());
@@ -37,6 +41,11 @@ if (index > -1 && !result.contains(users.get(index))) {
     result.add(users.get(index));
 }
 }
-    return  result;
+for (User user:users) {
+    if (!result.contains(user)) {
+        result.add(user);
+    }
+}
+return  result;
 }
 }

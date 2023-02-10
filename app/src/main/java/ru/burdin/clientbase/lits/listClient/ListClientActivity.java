@@ -117,15 +117,16 @@ List <User> usersSerch = new ArrayList<>();
         }
         editTextSerch.setSelection(result.length());
     }
-    String text = charSequence.toString();
-    for (User user : users){
-        if (user.getSurname().toLowerCase().contains(text.toLowerCase()) || user.getName().toLowerCase().contains(text.toLowerCase()) || user.getPhone().contains(charSequence)
+    String text =editTextSerch.getText().toString();
+
+    for (User user : bd.getUsers()){
+        if (user.getSurname().toLowerCase().contains(text.toLowerCase()) || user.getName().toLowerCase().contains(text.toLowerCase()) || user.getPhone().contains(text)
         ){
 usersSerch.add(user);
     }
 }
 }else  {
-usersSerch = users;
+usersSerch = listClient.getListUsers((String) spinnerSort.getSelectedItem());
             }
         users = usersSerch;
 updateList();
