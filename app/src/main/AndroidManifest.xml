@@ -54,7 +54,14 @@
         <activity
         android:name=".lits.ListSessionActivity"
             android:label="Расписание"
+            android:parentActivityName=".MainActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+
+            </intent-filter>
         </activity>
         <activity android:name=".lits.ListOfProceduresActivity" />
         <activity android:name=".cards.CardUserActivity" />
@@ -64,6 +71,7 @@
         <activity android:name=".lits.listClient.ListClientActivity" />
         <activity
             android:name=".MainActivity"
+            android:taskAffinity=""
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

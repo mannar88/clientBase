@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -323,5 +324,12 @@ super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     public void onBackPressed() {
 
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+Intent intent = new Intent(this, MainActivity.class);
+startActivity(intent);
+        return super.onOptionsItemSelected(item);
     }
 }
