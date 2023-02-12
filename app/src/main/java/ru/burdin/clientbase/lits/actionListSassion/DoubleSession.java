@@ -62,6 +62,7 @@ public   static boolean checkDouble;
             contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
             contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
             contentValues.put(Bd.COLUMN_EVENT_ID, recordDup.getEvent_id());
+            contentValues.put(Bd.COLUMN_PAY, recordDup.getPrice());
             long id = bd.add(Bd.TABLE_SESSION, contentValues);
             if (id > 0) {
                 if (bd.getRecords().add(new Record(
@@ -74,7 +75,8 @@ public   static boolean checkDouble;
                         recordDup.getComment(),
                         recordDup.getEvent_id(),
 0,
-0
+0,
+                        recordDup.getPrice()
                 ))) {
 recordDup.setId(id);
                     if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) == TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR) {

@@ -16,7 +16,7 @@ private  long id;
     private  int oneLine;
 private  int placeInLine;
     private  long notNotification;
-
+private  double pay;
 
     public int getPlaceInLine() {
         return placeInLine;
@@ -110,7 +110,15 @@ this.notNotification = record.notNotification;
         this.procedure = procedure;
     }
 
-    public Record(long id, long start, long end, long idUser,  String procedure, double price,   String comment, Long event_id, long notNotification, int oneLine) {
+    public double getPay() {
+        return pay;
+    }
+
+    public void setPay(double pay) {
+        this.pay = pay;
+    }
+
+    public Record(long id, long start, long end, long idUser, String procedure, double price, String comment, Long event_id, long notNotification, int oneLine, double pay) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -121,6 +129,7 @@ this.notNotification = record.notNotification;
         this.comment = comment;
     this.notNotification = notNotification;
         this.oneLine = oneLine;
+    this.pay = pay;
     }
 
     public double getPrice() {

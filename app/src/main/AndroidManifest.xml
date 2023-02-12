@@ -50,7 +50,7 @@
         <activity android:name=".lits.ListHistoryAndRecordActivity" />
         <activity android:name=".cards.CardSessionActivity" />
         <activity android:name=".lits.ListExpensesActivity" />
-        <activity android:name=".add.AddSessionActivity" />
+        <activity android:name=".add.AddSessionActivity"/>
         <activity
         android:name=".lits.ListSessionActivity"
             android:label="Расписание"
@@ -67,7 +67,18 @@
         <activity android:name=".cards.CardUserActivity" />
         <activity
             android:name=".add.AddClientActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="vnd.android.cursor.dir/person" />
+                <data android:mimeType="vnd.android.cursor.dir/contact" />
+                <data android:mimeType="vnd.android.cursor.dir/raw_contact" />
+
+            </intent-filter>
+
+                    </activity>
+
         <activity android:name=".lits.listClient.ListClientActivity" />
         <activity
             android:name=".MainActivity"

@@ -111,7 +111,8 @@ checkBoxNotNotification = findViewById(R.id.checkBoxCardSessionNotNotification);
     @Override
     protected void onResume() {
         super.onResume();
-checkBoxPlaceOnTheList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+Toast.makeText(this, record.getPay() + "", Toast.LENGTH_SHORT).show();
+        checkBoxPlaceOnTheList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         ContentValues contentValues = new ContentValues();

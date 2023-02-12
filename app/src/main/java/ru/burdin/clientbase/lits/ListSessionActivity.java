@@ -49,6 +49,7 @@ import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
 import ru.burdin.clientbase.lits.actionListSassion.FreeSession;
 import ru.burdin.clientbase.lits.actionListSassion.HistoryNewSession;
 import ru.burdin.clientbase.lits.actionListSassion.TransferSession;
+import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.cards.CardSessionActivity;
 import ru.burdin.clientbase.MyAdapter;
@@ -57,6 +58,7 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.setting.Preferences;
+import ru.burdin.clientbase.setting.TemplatesActivity;
 
 import static java.text.DateFormat.FULL;
 import static java.text.DateFormat.getDateInstance;
@@ -99,6 +101,17 @@ protected void onCreate(Bundle savedInstanceState) {
     calendarSetting = CalendarSetting.load(this);
         if (savedInstanceState == null) {
             dateAndTime =Calendar.getInstance();
+                            switch (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)){
+                    case TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK:
+                        break;
+                    case TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR:
+                        SendSMS.multiStartSMSAlarms(this, bd.getRecords());
+                        break;
+                    default:
+                        SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
+                }
+
+
         }else  {
         dateAndTime = new GregorianCalendar();
 dateAndTime.setTimeInMillis(savedInstanceState.getLong("dateAndTime"));

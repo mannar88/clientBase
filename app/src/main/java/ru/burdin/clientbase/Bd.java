@@ -38,7 +38,7 @@ public class Bd {
 
 private  static Bd bd;
 public static final String DATABASE_NAME = "clientBase.db";
-    public static final int SCHEMA = 7;
+    public static final int SCHEMA = 8;
     public  static final String TABLE = "users";
     public  static  final String TABLE_PROCEDURE = "procedures";
     public  static  final String TABLE_EXPENSES = "expenses";
@@ -56,7 +56,7 @@ public  static  final  String COLUMN_PROCEDURE = "procedire";
 public  static  final  String COLUMN_EVENT_ID = "event_id";
     public  static  final  String COLUMN_not_notification = "not_notification";
     public  static  final  String COLUMN_ONE_IN_LINE = "one_in_line";
-
+    public  static  final  String COLUMN_PAY ="pay";
     public   DatabaseHelper databaseHelper;
 public   SQLiteDatabase sqLiteDatabase;
 private  List <User> users;
@@ -217,7 +217,7 @@ procedureCursor.close();
     records = new CopyOnWriteArrayList<>();
 Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
 while (cursorRecord.moveToNext()) {
-records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7), cursorRecord.getLong(8), cursorRecord.getInt(9)));
+records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7), cursorRecord.getLong(8), cursorRecord.getInt(9), cursorRecord.getDouble(10)));
     }
 
 cursorRecord.close();
@@ -299,8 +299,9 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
                     +COLUMN_COMMENT + " TEXT,"
                             + COLUMN_EVENT_ID + " INTEGER,"
                             + COLUMN_not_notification + " INTEGER,"
-                            + COLUMN_ONE_IN_LINE + " INTEGER"
- + ");");
+                            + COLUMN_ONE_IN_LINE + " INTEGER,"
+                    + COLUMN_PAY + " REAL"
+                    + ");");
 
             sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_EXPENSES + "(" + COLUMN_ID
                     + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -316,8 +317,28 @@ if (i < 7){
     sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD "+ COLUMN_not_notification + " INTEGER;");
     sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD "+ COLUMN_ONE_IN_LINE + " INTEGER;");
 }
+if (i < 8) {
+    addPay(sqLiteDatabase);
 }
+}
+/*
+Добавляет колонку оплата
+ */
+    private void addPay(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD "+ COLUMN_PAY + " REAL;");
+        List<Record> records = new ArrayList<>();
+        Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
+        while (cursorRecord.moveToNext()) {
+            records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4) + "", cursorRecord.getDouble(5), cursorRecord.getString(6) + "", cursorRecord.getLong(7), cursorRecord.getLong(8), cursorRecord.getInt(9), 0.00));
+        }
+        cursorRecord.close();
+    for (Record record:records) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_PAY, record.getPrice());
+        sqLiteDatabase.update(TABLE_SESSION, contentValues, COLUMN_ID + "=" + record.getId(), null);
     }
+    }
+}
 
    private static class  AsyncTaskBd<T> extends  AsyncTask<Supplier<T>, Void, T> {
 

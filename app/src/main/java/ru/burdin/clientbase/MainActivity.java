@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Toast;
 
@@ -58,10 +59,6 @@ private  AlarmManager alarmManager;
         default:
         SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
         }
-if (Preferences.getBoolean(this, Preferences.START_ACTIVITY_LIST_SESSION, false)) {
-    Intent intent = new Intent(this, ListSessionActivity.class) ;
-    startActivity(intent);
-}
 
      }
 
@@ -150,7 +147,10 @@ startActivity(intent);
 Инфо
  */
     public void onClickButtonInfo(View view) {
-                    Intent intent = new Intent(this, InfoActivity.class);
+        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+// Sets the MIME type to match the Contacts Provider
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        //                    Intent intent = new Intent(this, InfoActivity.class);
     startActivity(intent);
     }
 }

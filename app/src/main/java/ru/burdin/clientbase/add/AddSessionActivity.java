@@ -233,8 +233,9 @@ contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                             record.getComment(),
 record.getEvent_id(),
                             record.getNotNotification(),
-                            record.getOneLine()
-                    ))) {
+                            record.getOneLine(),
+                    record.getPrice()
+                            ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
 SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(0), SendSMS.TEMPLETS.get(0)), record, radioGroupMessange.getCheckedRadioButtonId());
 if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK) == TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR) {
