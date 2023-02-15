@@ -147,10 +147,7 @@ startActivity(intent);
 Инфо
  */
     public void onClickButtonInfo(View view) {
-        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-// Sets the MIME type to match the Contacts Provider
-        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        //                    Intent intent = new Intent(this, InfoActivity.class);
+                            Intent intent = new Intent(this, InfoActivity.class);
     startActivity(intent);
     }
 }

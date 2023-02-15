@@ -99,7 +99,6 @@ protected void onCreate(Bundle savedInstanceState) {
         Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
     calendarSetting = CalendarSetting.load(this);
-        if (savedInstanceState == null) {
             dateAndTime =Calendar.getInstance();
                             switch (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)){
                     case TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK:
@@ -110,12 +109,6 @@ protected void onCreate(Bundle savedInstanceState) {
                     default:
                         SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
                 }
-
-
-        }else  {
-        dateAndTime = new GregorianCalendar();
-dateAndTime.setTimeInMillis(savedInstanceState.getLong("dateAndTime"));
-            }
 indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
         textViewDay = findViewById(R.id.textViewDate);
                 textViewTime = findViewById(R.id.textViewTime);
@@ -335,14 +328,28 @@ super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
     @Override
     public void onBackPressed() {
-
-        super.onBackPressed();
+    dateAndTime.setTimeInMillis(new  Date().getTime());
+    textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
+    super.onBackPressed();
     }
+
+    @Override
+    protected void onUserLeaveHint() {
+        dateAndTime.setTimeInMillis(new  Date().getTime());
+        textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
+    super.onUserLeaveHint();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
 Intent intent = new Intent(this, MainActivity.class);
 startActivity(intent);
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

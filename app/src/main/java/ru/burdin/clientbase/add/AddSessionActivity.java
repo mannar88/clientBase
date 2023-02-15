@@ -50,6 +50,7 @@ private  TextView textViewSetUser;
 private EditText editTextSetPrices;
 private  EditText editTextSetTimeFinish;
 private  EditText editTextSetComment;
+private  EditText editTextPay;
 private CheckBox checkBoxNotNotification;
 private  CheckBox checkBoxOneLine;
 private  int index = -1;
@@ -77,7 +78,8 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
-radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
+editTextPay = findViewById(R.id.editTextAddSessionPay);
+    radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
 radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
 radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
 radioButtonWhatsApp = findViewById(R.id.radioButtonAddSessionWAthsApp);
@@ -188,6 +190,7 @@ public void onClickButtonSessionSave(View view) {
         contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
         contentValues.put(Bd.COLUMN_ONE_IN_LINE, record.getOneLine());
         contentValues.put(Bd.COLUMN_not_notification, record.getNotNotification());
+        contentValues.put(Bd.COLUMN_PAY, record.getPrice());
         if (indexRecord != -1) {
             if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId()) == 1) {
     bd.getRecords().get(indexRecord).setStart(record.getStart());
@@ -249,6 +252,7 @@ if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_
                     }
 
             } else{
+
             Toast.makeText(getApplicationContext(), "Запись пересекается с другим клиентом!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -326,6 +330,7 @@ resultTime = resultTime + procedure.getTimeEnd();
 }
     editTextSetPrices.setText(Double.toString(result));
     editTextSetTimeFinish.setText(Long.toString(TimeUnit.MILLISECONDS.toMinutes(resultTime)));
+    editTextPay.setText(Double.toString(result));
     }
 
     @Override
