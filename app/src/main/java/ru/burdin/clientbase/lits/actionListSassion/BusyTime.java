@@ -6,7 +6,7 @@ import android.content.Intent;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.StaticClass;
-import ru.burdin.clientbase.cards.CardSessionActivity;
+import ru.burdin.clientbase.cards.cardSession.CardSessionActivity;
 import ru.burdin.clientbase.models.Record;
 
 public class BusyTime implements Consumer <Record> {

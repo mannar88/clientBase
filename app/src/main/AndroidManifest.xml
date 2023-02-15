@@ -48,7 +48,7 @@
         <activity android:name=".StatActivity" />
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".lits.ListHistoryAndRecordActivity" />
-        <activity android:name=".cards.CardSessionActivity" />
+        <activity android:name=".cards.cardSession.CardSessionActivity" />
         <activity android:name=".lits.ListExpensesActivity" />
         <activity android:name=".add.AddSessionActivity"/>
         <activity

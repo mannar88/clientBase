@@ -3,25 +3,20 @@ package ru.burdin.clientbase.lits;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +36,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.MainActivity;
-import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.lits.actionListSassion.BusyTime;
 import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
@@ -51,7 +44,7 @@ import ru.burdin.clientbase.lits.actionListSassion.HistoryNewSession;
 import ru.burdin.clientbase.lits.actionListSassion.TransferSession;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
-import ru.burdin.clientbase.cards.CardSessionActivity;
+import ru.burdin.clientbase.cards.cardSession.CardSessionActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
@@ -83,6 +76,8 @@ private CalendarSetting calendarSetting;
 private  int indexListRecord;
 public  static  final  int CLASS_INDEX = 2;
 private  Activity activity;
+private  boolean focus;
+
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -328,18 +323,21 @@ super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
     @Override
     public void onBackPressed() {
-    dateAndTime.setTimeInMillis(new  Date().getTime());
-    textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
+        dateAndTime.setTimeInMillis(new Date().getTime());
+        textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
     super.onBackPressed();
     }
 
     @Override
     protected void onUserLeaveHint() {
-        dateAndTime.setTimeInMillis(new  Date().getTime());
-        textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
-    super.onUserLeaveHint();
+        super.onUserLeaveHint();
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+focus = hasFocus;
+}
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {

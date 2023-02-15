@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -23,7 +22,7 @@ import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.analytics.Analytics;
-import ru.burdin.clientbase.cards.CardSessionActivity;
+import ru.burdin.clientbase.cards.cardSession.CardSessionActivity;
 import ru.burdin.clientbase.models.Record;
 
 public class ListHistoryAndRecordActivity extends AppCompatActivity {

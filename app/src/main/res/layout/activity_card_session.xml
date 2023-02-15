@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".cards.CardSessionActivity">
+    tools:context=".cards.cardSession.CardSessionActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -37,8 +37,17 @@ android:onClick="onClickTextViewCardSessionNameUser"
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewCardSessionTimeEnd"
+        android:id="@+id/textViewCardSessionPay"
+        android:onClick="onClickTextViewtextViewCardSessionPay"
         app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionPrice"
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCardSessionTimeEnd"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionPay"
         />
 
     <TextView

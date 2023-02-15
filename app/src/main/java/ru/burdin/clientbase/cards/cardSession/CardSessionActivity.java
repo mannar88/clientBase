@@ -1,4 +1,4 @@
-package ru.burdin.clientbase.cards;
+package ru.burdin.clientbase.cards.cardSession;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,9 +11,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.analytics.Analytics;
+import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
@@ -53,6 +57,7 @@ public class CardSessionActivity extends AppCompatActivity {
     private  TextView textViewNameUser;
     private     TextView textViewProcedure;
     private  TextView textViewPrice;
+protected   TextView textViewPay;
     private  TextView textViewTimeEnd;
     private  TextView textViewComment;
 private  TextView textViewPlaceOnTheList;
@@ -65,7 +70,7 @@ public  static  final  String TRANSFER = "transfer";
 public  static  final  int TRANSFER_INT = 67;
 Activity context;
 DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
-
+private  CardSession cardSession;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +99,14 @@ DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
+    textViewPay = findViewById(R.id.textViewCardSessionPay);
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
 textViewPlaceOnTheList = findViewById(R.id.textvIewCardSessionPlaceOnTheList);
 checkBoxPlaceOnTheList = findViewById(R.id.checkBoxCardSessionPlaceOnTheList);
 checkBoxNotNotification = findViewById(R.id.checkBoxCardSessionNotNotification);
     this.context = this;
+cardSession = new CardSession(this, bd);
 }
 
     @Override
@@ -111,7 +118,6 @@ checkBoxNotNotification = findViewById(R.id.checkBoxCardSessionNotNotification);
     @Override
     protected void onResume() {
         super.onResume();
-Toast.makeText(this, record.getPay() + "", Toast.LENGTH_SHORT).show();
         checkBoxPlaceOnTheList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -149,6 +155,7 @@ int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getI
         textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
         textViewProcedure.setText("Услуги: " + record.getProcedure());
         textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
+        textViewPay.setText( "Оплачено: " + StaticClass.priceToString(record.getPay()) + ", кликнете что-бы изменить");
         textViewTimeEnd.setText("Продолжительность услуги: " + TimeUnit.MILLISECONDS.toMinutes(record.getEnd()) + " минут");
         textViewComment.setText("Комментарии: "+  record.getComment());
 textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
@@ -387,7 +394,15 @@ if (requestCode == SendSMS.PERMISSION_SMS) {
 
     @Override
     public void onBackPressed() {
-
-        super.onBackPressed();
+finish();
+//        super.onBackPressed();
     }
+/*
+Открывает диалог с оплатой
+ */
+    public void onClickTextViewtextViewCardSessionPay(View view) {
+    cardSession.pay(record);
+    }
+
+
 }

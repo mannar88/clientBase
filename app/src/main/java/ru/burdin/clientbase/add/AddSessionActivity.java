@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -157,8 +159,27 @@ public  void  onClickSetUser (View view) {
             if (records.size() == 0 || record.getStart() <= records.get(records.size() - 1).getStart()) {
                 checkBoxOneLine.setEnabled(false);
             }
-        }
-    }
+        editTextPay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+if (charSequence.length() == 0 || charSequence.toString().equalsIgnoreCase("ноль")) {
+    editTextPay.setText(StaticClass.priceToString(0.0));
+}
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        })
+;        }
+
+}
 
     /*
     Сохраняет  или редактирует запись в БД и в списке
@@ -174,6 +195,7 @@ public void onClickButtonSessionSave(View view) {
         }
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
+        record.setPay(Double.valueOf(editTextPay.getText().toString()));
         record.setComment(editTextSetComment.getText().toString());
         record.setOneLine(StaticClass.booleaInInt(checkBoxOneLine.isChecked()));
         record.setNotNotification(StaticClass.booleaInInt(checkBoxNotNotification.isChecked()));
@@ -185,12 +207,12 @@ public void onClickButtonSessionSave(View view) {
         contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
         contentValues.put(Bd.COLUMN_ID_USER, record.getIdUser());
         contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
-        contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
+        contentValues.put(Bd.COLUMN_PRICE, record.getPay());
         contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
         contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
         contentValues.put(Bd.COLUMN_ONE_IN_LINE, record.getOneLine());
         contentValues.put(Bd.COLUMN_not_notification, record.getNotNotification());
-        contentValues.put(Bd.COLUMN_PAY, record.getPrice());
+        contentValues.put(Bd.COLUMN_PAY, record.getPay());
         if (indexRecord != -1) {
             if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId()) == 1) {
     bd.getRecords().get(indexRecord).setStart(record.getStart());
@@ -198,6 +220,7 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setIdUser(record.getIdUser());
     bd.getRecords().get(indexRecord).setProcedure(record.getProcedure());
     bd.getRecords().get(indexRecord).setPrice(record.getPrice());
+    bd.getRecords().get(indexRecord).setPay(record.getPay());
     bd.getRecords().get(indexRecord).setComment(record.getComment());
     bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
 bd.getRecords().get(indexRecord).setOneLine(record.getOneLine());
@@ -237,7 +260,7 @@ contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
 record.getEvent_id(),
                             record.getNotNotification(),
                             record.getOneLine(),
-                    record.getPrice()
+                    record.getPay()
                             ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
 SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(0), SendSMS.TEMPLETS.get(0)), record, radioGroupMessange.getCheckedRadioButtonId());
