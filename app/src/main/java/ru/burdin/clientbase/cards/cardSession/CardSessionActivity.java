@@ -51,25 +51,23 @@ import ru.burdin.clientbase.setting.Preferences;
 public class CardSessionActivity extends AppCompatActivity {
 
     private Record record;
-    private User user;
     private Bd bd;
-    private TextView textViewDate;
-    private  TextView textViewNameUser;
-    private     TextView textViewProcedure;
-    private  TextView textViewPrice;
+    protected TextView textViewDate;
+    protected   TextView textViewNameUser;
+    protected      TextView textViewProcedure;
+    protected   TextView textViewPrice;
 protected   TextView textViewPay;
-    private  TextView textViewTimeEnd;
-    private  TextView textViewComment;
-private  TextView textViewPlaceOnTheList;
-private  CheckBox checkBoxPlaceOnTheList;
-private CheckBox checkBoxNotNotification;
-    private  int indexUser;
+protected  TextView textViewSaldo;
+protected   TextView textViewTimeEnd;
+    protected   TextView textViewComment;
+protected   TextView textViewPlaceOnTheList;
+protected   CheckBox checkBoxPlaceOnTheList;
+protected CheckBox checkBoxNotNotification;
 private  long recordId = -1;
 private CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
 public  static  final  int TRANSFER_INT = 67;
 Activity context;
-DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
 private  CardSession cardSession;
 
 @Override
@@ -100,6 +98,7 @@ private  CardSession cardSession;
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewPay = findViewById(R.id.textViewCardSessionPay);
+   textViewSaldo = findViewById(R.id.textViewCardSessionSaldo);
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
 textViewPlaceOnTheList = findViewById(R.id.textvIewCardSessionPlaceOnTheList);
@@ -112,8 +111,7 @@ cardSession = new CardSession(this, bd);
     @Override
     protected void onStart() {
         super.onStart();
-        setScreenInfo(record);
-}
+cardSession.setScreenInfo(record);}
 
     @Override
     protected void onResume() {
@@ -123,10 +121,10 @@ cardSession = new CardSession(this, bd);
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         ContentValues contentValues = new ContentValues();
     contentValues.put(Bd.COLUMN_ONE_IN_LINE, StaticClass.booleaILong(b));
-        int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
+        int [] arr = Analytics.placeOnTheList(bd.getRecords(), bd.getUsers().get(cardSession.getIndexUser(record)).getId(), record.getId());
     if (arr[2] > 1&&bd.update(bd.TABLE_SESSION, contentValues, record.getId()) == 1){
 record.setOneLine(StaticClass.booleaInInt(b));
-        arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
+        arr = Analytics.placeOnTheList(bd.getRecords(),bd.getUsers().get(cardSession.getIndexUser(record)).getId(), record.getId());
 textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
         }
     }
@@ -142,37 +140,16 @@ record.setNotNotification(res);
             }
     }
 });
-    }
-
-/*
-    Устанавливает информацию на экран
-     */
-    private  void  setScreenInfo (Record record) {
-        indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
-        user = bd.getUsers().get(indexUser);
-int [] arr = Analytics.placeOnTheList(bd.getRecords(), user.getId(), record.getId());
-        textViewDate.setText("Время записи: "  + dateFormat.format(new Date(record.getStart())));
-        textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
-        textViewProcedure.setText("Услуги: " + record.getProcedure());
-        textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
-        textViewPay.setText( "Оплачено: " + StaticClass.priceToString(record.getPay()) + ", кликнете что-бы изменить");
-        textViewTimeEnd.setText("Продолжительность услуги: " + TimeUnit.MILLISECONDS.toMinutes(record.getEnd()) + " минут");
-        textViewComment.setText("Комментарии: "+  record.getComment());
-textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
-checkBoxPlaceOnTheList.setChecked(StaticClass.intInBoolean(record.getOneLine()));
-if (arr[2] == 1){
-checkBoxPlaceOnTheList.setChecked(true);
-    checkBoxPlaceOnTheList.setEnabled(false);
+cardSession.setScreenInfo(record);
 }
-checkBoxNotNotification.setChecked(StaticClass.longInBoolean(record.getNotNotification()));
-    }
+
 
     /*
     Открывает карточку клиента
      */
     public void onClickTextViewCardSessionNameUser(View view) {
         Intent intent = new Intent(this, CardUserActivity.class);
-        intent.putExtra(Bd.TABLE,indexUser );
+        intent.putExtra(Bd.TABLE, cardSession.getIndexUser(record));
         startActivity(intent);
      }
 
@@ -332,11 +309,11 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
                 Toast.makeText(this, "Запись дублирована", Toast.LENGTH_LONG).show();
             break;
                 case AddSessionActivity.CLASS_INDEX:
-                setScreenInfo(record);
+                cardSession.setScreenInfo(record);
                     Toast.makeText(getApplicationContext(), "Запись изменена", Toast.LENGTH_SHORT).show();
             break;
                 case TRANSFER_INT:
-            setScreenInfo(record);
+cardSession.setScreenInfo (record);
 Toast.makeText(this, "Запись успешно перенесена", Toast.LENGTH_SHORT).show();
 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 builder.setTitle("Уведомить клиента о переносе?");

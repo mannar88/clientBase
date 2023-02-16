@@ -207,7 +207,7 @@ public void onClickButtonSessionSave(View view) {
         contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
         contentValues.put(Bd.COLUMN_ID_USER, record.getIdUser());
         contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
-        contentValues.put(Bd.COLUMN_PRICE, record.getPay());
+        contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
         contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
         contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
         contentValues.put(Bd.COLUMN_ONE_IN_LINE, record.getOneLine());

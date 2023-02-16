@@ -14,6 +14,7 @@ import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.internal.Util;
@@ -181,5 +182,15 @@ activity.startActivity(
     public int compareTo(Object o) {
     o = (User)o;
         return  this.getSurname().compareToIgnoreCase(((User) o).surname);
+    }
+
+    public  double saldo (List <Record> records) {
+        double price = 0.0;
+double pay = 0.0;
+for (Record record:records) {
+    price = price +record.getPrice();
+    pay = pay + record.getPay();
+        }
+        return  pay - price;
     }
 }
