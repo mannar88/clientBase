@@ -6,29 +6,68 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 
 public class ListClient {
 
 private Map<String, List <User>>userMap  = new HashMap<>();
-
-public   ListClient(List <User> users, List <Record> records)
+private  Map <String, List<User>> mapFiltr = new HashMap<>();
+private Bd bbd;
+public   ListClient(List <User> users, List <Record> records, Bd bd)
 {
-this.userMap.put("Сортировка по алфавиту", users);
+this.bbd = bd;
+    this.userMap.put("Сортировка по алфавиту", users);
 this.userMap.put("Сортировка  по сеансам", sortSession(users, records));
+this.mapFiltr.put("Фильтр: Показать всё", users);
+    this.mapFiltr.put("Фильтр: показать с отрицательным балансом", saldoDef(users));
+this.mapFiltr.put("Фильтр: показать с положительным балансом", saldoPlus(users));
 }
+/*
+Фильтр с положительным балансом
+ */
+    private List<User> saldoPlus(List<User> users) {
+        List <User> result = new ArrayList<>();
+        for (User user:users) {
+            if (user.saldo(Analytics.listRecords(bbd.getRecords(),user.getId())) > 0.0) {
+                result.add(user);
+            }
+        }
+        return  result;
+    }
 
+    /*
+    ПОтдает ключи от сортировки
+     */
 public  String[] getKeysString() {
     return  userMap.keySet().toArray(new String[userMap.size()]);
 }
 
-public  List <User> getListUsers (String key) {
+/*
+отдает ключи фильтра
+ */
+public  String[] keysFiltr() {
+    return  mapFiltr.keySet().toArray(new  String[mapFiltr.size()]);
+}
+
+    public  List <User> getListUsers (String key) {
     return  userMap.get(key);
 }
 
 /*
+Отдает значение фильтра по ключу
+ */
+public  List <User> getMapFiltrVelues(String key, String sort) {
+    this.mapFiltr.put("Фильтр: Показать всё", userMap.get(sort));
+    this.mapFiltr.put("Фильтр: показать с отрицательным балансом", saldoDef(userMap.get(sort)));
+    this.mapFiltr.put("Фильтр: показать с положительным балансом", saldoPlus(userMap.get(sort)));
+    return  mapFiltr.get(key);
+}
+
+    /*
 Сортировка по сеансам
  */
 
@@ -46,6 +85,16 @@ for (User user:users) {
         result.add(user);
     }
 }
+return  result;
+}
+
+private  List <User> saldoDef (List<User> users) {
+    List <User> result = new ArrayList<>();
+    for (User user:users) {
+        if (user.saldo(Analytics.listRecords(bbd.getRecords(),user.getId())) < 0.0) {
+            result.add(user);
+        }
+    }
 return  result;
 }
 }

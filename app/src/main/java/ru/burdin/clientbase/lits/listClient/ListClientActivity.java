@@ -45,6 +45,8 @@ private EditText editTextSerch;
 private  RecyclerView recyclerViewClient;
 Spinner spinnerSort;
 private ArrayAdapter <String> adapter;
+private  Spinner spinnerFiltr;
+private  ArrayAdapter arrayAdapterFiltr;
 private  ListClient listClient;
 
 @Override
@@ -67,12 +69,16 @@ private  ListClient listClient;
         } catch (Exception e) {
 
         }
- listClient = new ListClient(bd.getUsers(), bd.getRecords());
+ listClient = new ListClient(bd.getUsers(), bd.getRecords(), bd);
         recyclerViewClient = findViewById(R.id.list);
         spinnerSort = findViewById(R.id.spinerListClientSort);
     adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClient.getKeysString());
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 spinnerSort.setAdapter(adapter);
+spinnerFiltr = findViewById(R.id.spinerListClientFiltr);
+arrayAdapterFiltr = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClient.keysFiltr());
+    arrayAdapterFiltr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+spinnerFiltr.setAdapter(arrayAdapterFiltr);
     textViewCount = findViewById(R.id.textCountUsers);
 editTextSerch = findViewById(R.id.editTextListClientSearsh);
 users = listClient.getListUsers((String) spinnerSort.getSelectedItem());
@@ -148,6 +154,7 @@ updateList();
         updateList();
 spinnerSortSetOnItemSelectedListener();
         listenerSearch();
+    spinnerFiltrSetOnItemSelectedListener();
     }
 
     /*
@@ -159,6 +166,7 @@ spinnerSortSetOnItemSelectedListener();
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 users = listClient.getListUsers(listClient.getKeysString()[i]);
                 editTextSerch.setText("");
+                users = listClient.getMapFiltrVelues((String) spinnerFiltr.getSelectedItem(), listClient.getKeysString()[i]);
                 updateList();
             }
 
@@ -168,8 +176,26 @@ spinnerSortSetOnItemSelectedListener();
             }
         });
     }
+/*
+Слушатель спинера фильтра
+ */
+private void spinnerFiltrSetOnItemSelectedListener() {
+    spinnerFiltr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-    /*
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+users = listClient.getMapFiltrVelues(listClient.keysFiltr()[i], (String) spinnerSort.getSelectedItem());
+updateList();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    });
+                                          }
+
+        /*
         Установка листа клиентов
          */
     public   void  updateList () {
