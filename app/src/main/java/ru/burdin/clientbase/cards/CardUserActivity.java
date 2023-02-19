@@ -25,6 +25,7 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.lits.ListHistoryAndRecordActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
@@ -35,6 +36,7 @@ public class CardUserActivity extends AppCompatActivity {
     private TextView textViewNameAndSurname;
     private TextView textViewPhone;
     private TextView textViewComment;
+private  TextView textViewInfoRecords;
     private User user;
     private int stak = -1;
 
@@ -54,6 +56,7 @@ public class CardUserActivity extends AppCompatActivity {
         textViewNameAndSurname = findViewById(R.id.cardNameAndSurname);
         textViewPhone = findViewById(R.id.cardPhone);
         textViewComment = findViewById(R.id.textVuiwComment);
+        textViewInfoRecords = findViewById(R.id.textCardUserInfoRecords);
         stak = getIntent().getExtras().getInt(Bd.TABLE);
         user = bd.getUsers().get(stak);
     }
@@ -71,7 +74,13 @@ public class CardUserActivity extends AppCompatActivity {
         if (user != null) {
             textViewNameAndSurname.setText(user.getSurname() + " " + user.getName());
             textViewPhone.setText(user.getPhone());
-            textViewComment.setText(user.getComment());
+            textViewComment.setText("Комментарий: " + user.getComment());
+            List<Record> records = Analytics.listRecords(bd.getRecords(), user.getId());
+            double balans = 0.0;
+            for (Record record : records) {
+                balans = balans + record.getPay();
+            }
+            textViewInfoRecords.setText("Сальдо баланса: " + StaticClass.priceToString(user.saldo(records)) + ". Всего заработано: " + StaticClass.priceToString(balans) + ". Всего сеансов: " + records.size());
         }
     }
 

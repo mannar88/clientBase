@@ -231,6 +231,33 @@ MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUse
                 user.send(activity);
                 }
             });
+
+builder.setNeutralButton("Отправить напоминалку", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(activity);
+        builder1.setPositiveButton("WhatsApp", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+try {
+        SendSMS.send(activity, Preferences.getString(activity, SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)), record, R.id.radioButtonAddSessionWAthsApp);
+    }catch (Exception e) {
+    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+}
+    }
+        });
+        builder1.setNegativeButton("SMS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                SendSMS.send(getApplicationContext(), Preferences.getString(getApplicationContext(), SendSMS.KEY_PREFERENSES.get(1), SendSMS.TEMPLETS.get(1)),record, R.id.radioButtonAddSessionSMS);
+Toast.makeText(getApplicationContext(), "Напоминалка отправлена по SMS, клиенту: " + user.getSurname() + " " + user.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    builder.setCancelable(true);
+        builder1.create().show();
+    }
+});
             builder.create().show();
 
         }

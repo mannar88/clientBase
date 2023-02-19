@@ -35,6 +35,7 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.analytics.Analytics;
+import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.listClient.ListClientActivity;
@@ -135,10 +136,10 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
 Открыть список клиентов для выбора
  */
 public  void  onClickSetUser (View view) {
-    Intent intent = new Intent(this, ListClientActivity.class);
-   intent.putExtra(AddSessionActivity.class.getName(), AddSessionActivity.class.getName());
-    startActivityForResult(intent,StaticClass.LIST_USERS);
-}
+        Intent intent = new Intent(this, ListClientActivity.class);
+        intent.putExtra(AddSessionActivity.class.getName(), AddSessionActivity.class.getName());
+        startActivityForResult(intent, StaticClass.LIST_USERS);
+    }
 
     @Override
     protected void onResume() {
@@ -178,7 +179,21 @@ if (charSequence.length() == 0 || charSequence.toString().equalsIgnoreCase("но
             }
         })
 ;        }
-
+//Слушатель долгого нажатия выбора клиента
+textViewSetUser.setOnLongClickListener(new View.OnLongClickListener() {
+    @Override
+    public boolean onLongClick(View view) {
+if (userIndex > -1) {
+    Intent intent = new Intent(getApplicationContext(), CardUserActivity.class);
+    intent.putExtra(ListClientActivity.class.getName(), userIndex);
+    startActivity(intent);
+}
+        return true;
+    }
+});
+if (userIndex > -1) {
+    textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName() + ". Удерживайте, чтобы открыть карточку клиента или просто кликнете, чтобы сменить клиента");
+}
 }
 
     /*
@@ -302,7 +317,7 @@ if (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_
         if (resultCode == RESULT_OK) {
         if (requestCode == StaticClass.LIST_USERS) {
              userIndex = data.getIntExtra(ListClientActivity.class.getName(), -1);
-                                     textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
+
         }
 
         if (requestCode == StaticClass.LIST_PROCEDURES) {
@@ -368,4 +383,7 @@ if (requestCode == SendSMS.PERMISSION_SMS) {
 }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+
+
 }

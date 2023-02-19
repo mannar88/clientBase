@@ -76,7 +76,7 @@ intent.putExtra(StaticClass.KEY, StaticClass.IISTORUNEWRECORD);
      */
     private  void  updatelistHistory () {
 DateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
-        Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(dateFormat.format(records.get(MyAdapter.count).getStartDay()) + ", " + records.get(MyAdapter.count).getProcedure() + ", " + StaticClass.priceToString(records.get(MyAdapter.count).getPrice()));
+        Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(dateFormat.format(records.get(MyAdapter.count).getStartDay()) + ", " + records.get(MyAdapter.count).getProcedure() + ", " + StaticClass.priceToString(records.get(MyAdapter.count).getPrice()) + ". Оплачено: " + records.get(MyAdapter.count).getPay());
 MyAdapter myAdapter = new MyAdapter(this, records, onUserClickListener, consumer);
     recyclerView.setAdapter(myAdapter);
     }

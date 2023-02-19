@@ -128,8 +128,17 @@ bd.getExpenses().sort(Comparator.reverseOrder());
 
                 @Override
                 public void onLongClick(Expenses expenses, int position) {
+AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+builder.setNegativeButton("Дублировать", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+   editTextNameExpenses.setText(expenses.getName());
+   editTextPriceExpenses.setText(StaticClass.priceToString(expenses.getPrice()));
 
-                }
+    }
+});
+            builder.create().show();
+            }
             }, consumer);
         recyclerViewExpenses.setAdapter(myAdapter);
         }

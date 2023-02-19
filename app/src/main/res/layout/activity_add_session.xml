@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/textViewSetupUser"
         android:onClick="onClickSetUser"
+        android:longClickable="true"
         app:layout_constraintTop_toBottomOf="@+id/textViewSetupTime"
         android:text="Выбрать клиента"
         />
