@@ -36,6 +36,7 @@ import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.cards.CardUserActivity;
+import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.listClient.ListClientActivity;
@@ -253,7 +254,9 @@ SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(2), S
 } else {
             if (!bd.getRecords().contains(record) || Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
 try {
-    long evant = calendarSetting.addRecordCalender(record, textViewSetUser.getText().toString());
+    User user = bd.getUsers().get(userIndex);
+    String text = user.getSurname() + " " + user.getName();
+    long evant = calendarSetting.addRecordCalender(record,text );
     if (evant > 0) {
         record.setEvent_id(evant);
     }

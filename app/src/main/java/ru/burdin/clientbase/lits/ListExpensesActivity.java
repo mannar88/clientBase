@@ -103,7 +103,7 @@ public void onClickButtonSetExpenses(View view) {
         устанавливает список расходов
          */
         private  void  updateListExpenses () {
-            Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(DateFormat.getDateInstance(FULL).format(new Date(bd.getExpenses().get(MyAdapter.count).getTime())) + " " + bd.getExpenses().get(MyAdapter.count).getName() + " " + bd.getExpenses().get(MyAdapter.count).getPrice());
+            Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(DateFormat.getDateInstance(FULL).format(new Date(bd.getExpenses().get(MyAdapter.count).getTime())) + " " + bd.getExpenses().get(MyAdapter.count).getName() + " " + bd.getExpenses().get(MyAdapter.count).getPrice() + ". Кликнете, что-бы удалить или удерживайте, что-бы дублировать");
 bd.getExpenses().sort(Comparator.reverseOrder());
             MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener<Expenses>() {
             @Override
