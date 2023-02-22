@@ -372,6 +372,7 @@ resultTime = resultTime + procedure.getTimeEnd();
     editTextSetPrices.setText(Double.toString(result));
     editTextSetTimeFinish.setText(Long.toString(TimeUnit.MILLISECONDS.toMinutes(resultTime)));
     editTextPay.setText(Double.toString(result));
+    editTextPay.setSelection(editTextPay.length());
     }
 
     @Override

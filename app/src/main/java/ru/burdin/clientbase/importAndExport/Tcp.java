@@ -14,7 +14,7 @@ import java.net.Socket;
 
 import ru.burdin.clientbase.R;
 
-public class Tcp extends AsyncTask <Void, Void,String> {
+public class Tcp extends AsyncTask <String, Void,String> {
     Socket socket;
     BufferedReader in;
     PrintWriter out;
@@ -23,12 +23,12 @@ public class Tcp extends AsyncTask <Void, Void,String> {
     }
 
     @Override
-    protected String doInBackground(Void... voids){
+    protected String doInBackground(String... strings){
 String result = "Test";
         try {
             socket = new Socket("78.153.4.192", 2016);
             if (socket.isConnected()) {
-                send("test=test" + "\r\n\r\n");
+                send(strings[0] + "\r\n\r\n");
                 result = getString();
 
                 result = result == null ? "Ничего нету" : result;

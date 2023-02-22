@@ -54,6 +54,7 @@ public  int getIndexUser (Record record) {
          TextView textViewPay = viewPay.findViewById(R.id.textViewCardSessionPay);
           Button buttonPay = viewPay.findViewById(R.id.buttonCardSessionPay);
           editTextPay.setText(StaticClass.priceToString(record.getPay()));
+editTextPay.setSelection(editTextPay.length());
           builder.setView(viewPay);
           Dialog dialog = builder.create();
           double saldo = bd.getUsers().get(getIndexUser(record)).saldo(Analytics.listRecords(bd.getRecords(),record.getIdUser() ));

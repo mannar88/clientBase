@@ -1,6 +1,8 @@
 package ru.burdin.clientbase.importAndExport;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -140,5 +142,27 @@ Toast.makeText(getApplicationContext(), tcp.get(1, TimeUnit.SECONDS), Toast.LENG
     Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
 }
 
+    }
+
+    /*
+    Облачная синхронизация
+     */
+    public void onClickButtonImportExportCloudSync(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton("Войти", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+Intent intent = new Intent(getApplicationContext(), LoginAuthorizingActivity.class);
+startActivity(intent);
+            }
+        });
+        builder.setPositiveButton("Зарегистрироваться", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+startActivity(intent);
+            }
+        });
+        builder.create().show();
     }
 }

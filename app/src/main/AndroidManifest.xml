@@ -28,7 +28,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".setting.interfase.InterFaseSettingActivity"></activity>
+        <activity android:name=".importAndExport.LoginAuthorizingActivity"></activity>
+        <activity android:name=".importAndExport.SignUpActivity" />
+        <activity android:name=".setting.interfase.InterFaseSettingActivity" />
 
         <receiver
             android:name=".notificationSMS.SMSHourNotificationReceiver"
@@ -50,17 +52,17 @@
         <activity android:name=".lits.ListHistoryAndRecordActivity" />
         <activity android:name=".cards.cardSession.CardSessionActivity" />
         <activity android:name=".lits.ListExpensesActivity" />
-        <activity android:name=".add.AddSessionActivity"/>
+        <activity android:name=".add.AddSessionActivity" />
         <activity
-        android:name=".lits.ListSessionActivity"
+            android:name=".lits.ListSessionActivity"
+            android:exported="true"
             android:label="Расписание"
-            android:parentActivityName=".MainActivity"
-            android:exported="true">
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".lits.ListOfProceduresActivity" />
@@ -70,25 +72,24 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="vnd.android.cursor.dir/person" />
                 <data android:mimeType="vnd.android.cursor.dir/contact" />
                 <data android:mimeType="vnd.android.cursor.dir/raw_contact" />
-
             </intent-filter>
-
-                    </activity>
-
+        </activity>
         <activity android:name=".lits.listClient.ListClientActivity" />
         <activity
             android:name=".MainActivity"
-            android:taskAffinity=""
-            android:exported="true">
+            android:exported="true"
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-<category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
