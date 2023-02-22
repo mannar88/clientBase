@@ -148,21 +148,26 @@ Toast.makeText(getApplicationContext(), tcp.get(1, TimeUnit.SECONDS), Toast.LENG
     Облачная синхронизация
      */
     public void onClickButtonImportExportCloudSync(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setNegativeButton("Войти", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-Intent intent = new Intent(getApplicationContext(), LoginAuthorizingActivity.class);
-startActivity(intent);
-            }
-        });
-        builder.setPositiveButton("Зарегистрироваться", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-startActivity(intent);
-            }
-        });
-        builder.create().show();
-    }
+        if (Preferences.getString(this, Preferences.LOGIN_PASSWORD, "false").equals("false")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setNegativeButton("Войти", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(getApplicationContext(), LoginAuthorizingActivity.class);
+                    startActivity(intent);
+                }
+            });
+            builder.setPositiveButton("Зарегистрироваться", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                    startActivity(intent);
+                }
+            });
+            builder.create().show();
+        }else {
+            Intent intent = new Intent(this, CloudSyncActivity.class);
+            startActivity(intent);
+        }
+        }
 }

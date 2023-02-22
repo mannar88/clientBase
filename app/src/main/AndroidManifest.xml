@@ -28,7 +28,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".importAndExport.LoginAuthorizingActivity"></activity>
+        <activity android:name=".importAndExport.CloudSyncActivity"></activity>
+        <activity android:name=".importAndExport.LoginAuthorizingActivity" />
         <activity android:name=".importAndExport.SignUpActivity" />
         <activity android:name=".setting.interfase.InterFaseSettingActivity" />
 

@@ -10,6 +10,8 @@ public class Preferences {
     public static final String PAUSE_SMS = "pauseSMS";
     //Загрузка приложения с списком расписания
     public static final String START_ACTIVITY_LIST_SESSION = "startActivityListSession";
+    //Логин ти пароль
+    public static final String LOGIN_PASSWORD = "loginPassword";
     private static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
     public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";
