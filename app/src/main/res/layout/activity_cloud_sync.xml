@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".importAndExport.CloudSyncActivity">
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/listViewCloudSync"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
