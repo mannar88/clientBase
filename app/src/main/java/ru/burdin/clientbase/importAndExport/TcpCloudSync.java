@@ -97,6 +97,8 @@ out.flush();
         super.onPostExecute(s);
 if (Long.valueOf(s) == context.getDatabasePath(Bd.DATABASE_NAME).length()) {
     Toast.makeText(context.getApplicationContext(), "Ба за загружена на сервер", Toast.LENGTH_SHORT).show();
+}else {
+    Toast.makeText(context.getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 }
 }
 }

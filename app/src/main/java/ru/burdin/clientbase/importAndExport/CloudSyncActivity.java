@@ -24,44 +24,47 @@ public class CloudSyncActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayAdapter arrayAdapter;
 private List<String> stringList = new ArrayList<>();
-
-    @Override
+private  TcpInfoUser tcpInfoUser;
+private  String[] login;
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_sync);
     setTitle("Облачная синхронизация");
     listView = findViewById(R.id.listViewCloudSync);
+        stringListAdd();
         arrayAdapter = new ArrayAdapter <>(this,
                 android.R.layout.simple_list_item_1, stringList
         );
 listView.setAdapter(arrayAdapter);
-    stringListAdd();
-    }
+tcpInfoUser = new TcpInfoUser();
+    tcpInfoUser.execute("dateSync=" + login[0] + "--" + login[1]);
+}
 
     /*
     Заполняет список
      */
 private  void  stringListAdd(){
-    String [] login = Preferences.getString(this, Preferences.LOGIN_PASSWORD, "false").split("--");
+     login = Preferences.getString(this, Preferences.LOGIN_PASSWORD, "false").split("--");
     DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
     stringList.add("Авторизованы как - " + login[0]);
-Tcp tcp = new Tcp();
-tcp.execute("dateSync="+login[0]+"--"+login[1]);
-long date = 0l;
-try {
-         date = Long.valueOf((String) tcp.get(2, TimeUnit.SECONDS));
-    } catch (ExecutionException e) {
-        e.printStackTrace();
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    } catch (TimeoutException e) {
-        e.printStackTrace();
-    }
-stringList.add("Синхронизация доступна до: "+ dateFormat.format(date));
+stringList.add("Синхронизация доступна до: получение информации от сервера");
 }
 
     public void onClickButtonCloudSyncExport(View view) throws ExecutionException {
 TcpCloudSync tcpCloudSync = new TcpCloudSync(this);
 tcpCloudSync.execute((Void) null);
     }
+private  class  TcpInfoUser extends  Tcp {
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+    DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
+    stringList.remove(1);
+    stringList.add(1, "Синхронизация доступна до: " + dateFormat.format(Long.valueOf(s)));
+arrayAdapter.notifyDataSetChanged();
+    }
+}
+
+
 }
