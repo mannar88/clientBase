@@ -60,17 +60,8 @@ try {
 stringList.add("Синхронизация доступна до: "+ dateFormat.format(date));
 }
 
-    public void onClickButtonCloudSyncExport(View view) {
+    public void onClickButtonCloudSyncExport(View view) throws ExecutionException {
 TcpCloudSync tcpCloudSync = new TcpCloudSync(this);
 tcpCloudSync.execute((Void) null);
-        try {
-            Toast.makeText(this, tcpCloudSync.get(2, TimeUnit.SECONDS), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
     }
 }

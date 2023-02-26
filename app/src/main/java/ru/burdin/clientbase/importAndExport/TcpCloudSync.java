@@ -45,9 +45,8 @@ if ("ok".equals(response(in))) {
     File file = context.getDatabasePath(Bd.DATABASE_NAME);
     request(out, String.valueOf(file.length()) +  "\r\n\r\n");
     exportFile(out);
-response(in);
-    res = "ok";
-    }
+res = response(in);
+}
     } catch (IOException e) {
             res = e.getLocalizedMessage();
         }
@@ -93,4 +92,11 @@ out.flush();
     in.close();
     }
 
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+if (Long.valueOf(s) == context.getDatabasePath(Bd.DATABASE_NAME).length()) {
+    Toast.makeText(context.getApplicationContext(), "Ба за загружена на сервер", Toast.LENGTH_SHORT).show();
+}
+}
 }
