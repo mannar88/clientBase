@@ -137,7 +137,7 @@ break;
 Tcp tcp = new Tcp();
 tcp.execute();
 try {
-Toast.makeText(getApplicationContext(), tcp.get(1, TimeUnit.SECONDS), Toast.LENGTH_SHORT).show();
+Toast.makeText(getApplicationContext(), (String)tcp.get(1, TimeUnit.SECONDS), Toast.LENGTH_SHORT).show();
 }catch (Exception e) {
     Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
 }

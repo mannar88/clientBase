@@ -24,7 +24,7 @@ public class Tcp extends AsyncTask <String, Void,String> {
 
     @Override
     protected String doInBackground(String... strings){
-String result = "Test";
+        String result = "Test";
         try {
             socket = new Socket("78.153.4.192", 2016);
             if (socket.isConnected()) {
@@ -33,40 +33,40 @@ String result = "Test";
 
                 result = result == null ? "Ничего нету" : result;
             }
-out.close();
-in.close();
-socket.close();
+            out.close();
+            in.close();
+            socket.close();
         } catch (IOException e) {
-result = e.toString();
+            result = e.toString();
         }
         return  result;
     }
 
     private   String getString () throws IOException {
         String result = null;
-if (!socket.isClosed()) {
-    boolean sendCheck = false;
-    while (!sendCheck) {
-        if (!out.checkError()) {
-            sendCheck = true;
+        if (!socket.isClosed()) {
+            boolean sendCheck = false;
+            while (!sendCheck) {
+                if (!out.checkError()) {
+                    sendCheck = true;
+                }
+                in = new BufferedReader(
+                        new InputStreamReader(socket.getInputStream())
+                );
+                for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
+                    result = str;
+                }
+            }
+        }else {
+            result = "socket для чтения закрыт";
         }
-        in = new BufferedReader(
-                new InputStreamReader(socket.getInputStream())
-        );
-        for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
-            result = str;
-        }
-    }
-    }else {
-    result = "socket для чтения закрыт";
-}
-            return  result;
+        return  result;
     }
 
     private   void   send(String text) throws IOException {
         String result ="";
         if (!socket.isClosed()) {
-             out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
+            out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
             out.print(text);
             out.flush();
             result = "Сообщение ушло";

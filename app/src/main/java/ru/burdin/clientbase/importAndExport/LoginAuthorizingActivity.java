@@ -34,7 +34,7 @@ String result = "";
     String text = "login=" + editTextLogin.getText().toString() + "--" + editTextPass.getText().toString();
 tcp.execute(text);
 try {
-    result = tcp.get(2, TimeUnit.SECONDS);
+    result = (String)tcp.get(2, TimeUnit.SECONDS);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

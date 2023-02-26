@@ -69,7 +69,7 @@ private BdImportExport bdImportExport;
 private  Bd (Context context) {
     this.staticContex = context;
     databaseHelper = new DatabaseHelper(context);
-        sqLiteDatabase = databaseHelper.getReadableDatabase();
+    sqLiteDatabase = databaseHelper.getReadableDatabase();
             collectListUsers();
                     collectProcedures();
         collectRecord();

@@ -3,8 +3,10 @@ package ru.burdin.clientbase.importAndExport;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,7 +49,7 @@ Tcp tcp = new Tcp();
 tcp.execute("dateSync="+login[0]+"--"+login[1]);
 long date = 0l;
 try {
-         date = Long.valueOf(tcp.get(2, TimeUnit.SECONDS));
+         date = Long.valueOf((String) tcp.get(2, TimeUnit.SECONDS));
     } catch (ExecutionException e) {
         e.printStackTrace();
     } catch (InterruptedException e) {
@@ -58,4 +60,17 @@ try {
 stringList.add("Синхронизация доступна до: "+ dateFormat.format(date));
 }
 
+    public void onClickButtonCloudSyncExport(View view) {
+TcpCloudSync tcpCloudSync = new TcpCloudSync(this);
+tcpCloudSync.execute((Void) null);
+        try {
+            Toast.makeText(this, tcpCloudSync.get(2, TimeUnit.SECONDS), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
 }

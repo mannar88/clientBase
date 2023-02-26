@@ -60,7 +60,7 @@ if (check()) {
 Tcp tcp = new Tcp();
 String text ="signUp=" + editTextLogin.getText().toString() + "--" + editTextPass.getText().toString();
 tcp.execute(text);    try {
-    String result    = tcp.get(2, TimeUnit.SECONDS);
+    String result    = (String)tcp.get(2, TimeUnit.SECONDS);
     if ("Login busy".equals(result)) {
             Toast.makeText(this, "Логин занят", Toast.LENGTH_SHORT).show();
         }

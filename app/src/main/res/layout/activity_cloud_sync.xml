@@ -11,4 +11,13 @@
         android:layout_height="wrap_content"
 android:id="@+id/listViewCloudSync"
         />
+<Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+android:id="@+id/buttonCloudSyncExport"
+    android:text="Облачный экспорт"
+    android:onClick="onClickButtonCloudSyncExport"
+    app:layout_constraintTop_toBottomOf="@+id/listViewCloudSync"
+    />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
