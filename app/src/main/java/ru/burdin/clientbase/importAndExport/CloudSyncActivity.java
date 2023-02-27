@@ -1,20 +1,17 @@
 package ru.burdin.clientbase.importAndExport;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.setting.Preferences;
@@ -46,9 +43,9 @@ listView.setAdapter(arrayAdapter);
      */
 private  void  stringListAdd(){
      login = Preferences.getString(this, Preferences.LOGIN_PASSWORD, "false").split("--");
-    DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
     stringList.add("Авторизованы как - " + login[0]);
 stringList.add("Синхронизация доступна до: получение информации от сервера");
+stringList.add("Дата загрузки базы на сервер: получение информации от сервера");
 }
 /*
 Облачный експорт
@@ -73,11 +70,18 @@ public void onClickButtonCloudSyncExport(View view) {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
-        if (s != null && !s.isEmpty()) {
+        DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, hh:mm:ss");
+                if (s != null && !s.isEmpty()) {
+String[]result = s.split("--");
     stringList.remove(1);
-    stringList.add("Синхронизация доступна до: " + dateFormat.format(Long.valueOf(s)));
+    stringList.remove(1);
+    stringList.add( "Синхронизация доступна до: " + dateFormat.format(Long.valueOf(result[0])));
+    if (Long.valueOf(result[1]) > 0) {
+        stringList.add("Дата загрузки базы на сервер: " + dateFormat1.format(Long.valueOf(result[1])));
+    }else {
+        stringList.add("Дата загрузки базы на сервер: да ничё там еще нету");
+    }
     arrayAdapter.notifyDataSetChanged();
 }
         }
