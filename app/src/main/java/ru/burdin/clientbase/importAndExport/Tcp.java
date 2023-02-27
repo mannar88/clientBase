@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -15,64 +18,98 @@ import java.net.Socket;
 import ru.burdin.clientbase.R;
 
 public class Tcp extends AsyncTask <String, Void,String> {
-    Socket socket;
-    BufferedReader in;
-    PrintWriter out;
+
+    private  Socket socket;
+private  DataInputStream in;
+private DataOutputStream out;
+
+
     public  Tcp () {
 
     }
 
     @Override
-    protected String doInBackground(String... strings){
-        String result = "Test";
+    protected String doInBackground(String... strings) {
+        String result = "начало работы ";
         try {
             socket = new Socket("78.153.4.192", 2016);
-            if (socket.isConnected()) {
-                send(strings[0] + "\r\n\r\n");
-                result = getString();
-
-                result = result == null ? "Ничего нету" : result;
-            }
-            out.close();
-            in.close();
-            socket.close();
-        } catch (IOException e) {
-            result = e.toString();
+         socket.setSoTimeout(10000) ;
+            result = result + " " + socket.isClosed();
+            out = new DataOutputStream(socket.getOutputStream());
+ in = new DataInputStream(socket.getInputStream());
+                    result = result + "Пошло соеденение";
+                    out.writeUTF(strings[0]);
+out.flush();
+result = in.readUTF();
+                }catch (IOException e) {
+                    result = result + " " +  e.getLocalizedMessage();
+            }finally {
+//        if (socket != null) {
+//            try {
+//                socket.close();
+//            } catch (IOException e) {
+//result = result + " " + e.getLocalizedMessage();
+//            }
+//        if (out != null) {
+//            try {
+//                out.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        if (in != null){
+//            try {
+//                in.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        }
+//        }
         }
-        return  result;
+                    return  result;
+            }
+
+
+    private   String getString (BufferedReader in) throws IOException {
+            String rst = "пусто";
+            while ((rst =in.readLine()) != null) {
+                if (rst.length() > 0) {
+                                        break;
+                }
+            }
+return  rst;
     }
 
-    private   String getString () throws IOException {
-        String result = null;
-        if (!socket.isClosed()) {
-            boolean sendCheck = false;
-            while (!sendCheck) {
-                if (!out.checkError()) {
-                    sendCheck = true;
-                }
-                in = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream())
-                );
-                for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
-                    result = str;
-                }
-            }
-        }else {
-            result = "socket для чтения закрыт";
-        }
-        return  result;
-    }
-
-    private   void   send(String text) throws IOException {
+     private   void   send(String text, PrintWriter out) throws IOException {
         String result ="";
-        if (!socket.isClosed()) {
-            out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
-            out.print(text);
+            out.print(text+ "\r\n\r\n");
             out.flush();
             result = "Сообщение ушло";
-        }else {
-            result = "Socket для отправки закрыт";
-        }
     }
+
+    public  void close () {
+        if (out != null) {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        if (socket != null) {
+
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        }
 
 }

@@ -37,7 +37,7 @@ private  String[] login;
                 android.R.layout.simple_list_item_1, stringList
         );
 listView.setAdapter(arrayAdapter);
-tcpInfoUser = new TcpInfoUser();
+ tcpInfoUser = new TcpInfoUser();
     tcpInfoUser.execute("dateSync=" + login[0] + "--" + login[1]);
 }
 
@@ -50,21 +50,36 @@ private  void  stringListAdd(){
     stringList.add("Авторизованы как - " + login[0]);
 stringList.add("Синхронизация доступна до: получение информации от сервера");
 }
-
-    public void onClickButtonCloudSyncExport(View view) throws ExecutionException {
-TcpCloudSync tcpCloudSync = new TcpCloudSync(this);
-tcpCloudSync.execute((Void) null);
+/*
+Облачный експорт
+ */
+public void onClickButtonCloudSyncExport(View view) {
+    TcpCloudSync tcpCloudSync = new TcpCloudSync(this, TcpCloudSync.EXPORT);
+    tcpCloudSync.execute((Void) null);
+}
+/*
+Облачный импорт
+ */
+    public void onClickButtonCloudSyncImport(View view) {
+        TcpCloudSync tcpCloudSync = new TcpCloudSync(this, TcpCloudSync.IMPORT);
+        tcpCloudSync.execute((Void) null);
     }
-private  class  TcpInfoUser extends  Tcp {
+
+    public void onClickButtonCloudSyncClose(View view) {
+    tcpInfoUser.close();
+    }
+
+    private  class  TcpInfoUser extends  Tcp {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-    DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
+Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
+        if (s != null && !s.isEmpty()) {
     stringList.remove(1);
-    stringList.add(1, "Синхронизация доступна до: " + dateFormat.format(Long.valueOf(s)));
-arrayAdapter.notifyDataSetChanged();
-    }
+    stringList.add("Синхронизация доступна до: " + dateFormat.format(Long.valueOf(s)));
+    arrayAdapter.notifyDataSetChanged();
 }
-
-
+        }
+    }
 }

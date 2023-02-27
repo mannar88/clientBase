@@ -11,13 +11,30 @@
         android:layout_height="wrap_content"
 android:id="@+id/listViewCloudSync"
         />
-<Button
+
+    <Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+        android:id="@+id/buttonCloudSyncImport"
+        android:text="Облачный импорт"
+        android:onClick="onClickButtonCloudSyncImport"
+        app:layout_constraintTop_toBottomOf="@+id/listViewCloudSync"
+        />
+    <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 android:id="@+id/buttonCloudSyncExport"
     android:text="Облачный экспорт"
     android:onClick="onClickButtonCloudSyncExport"
-    app:layout_constraintTop_toBottomOf="@+id/listViewCloudSync"
+    app:layout_constraintTop_toBottomOf="@+id/buttonCloudSyncImport"
     />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonCloudSyncClose"
+        android:text="Сбросить соединение"
+        android:onClick="onClickButtonCloudSyncClose"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCloudSyncExport"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
