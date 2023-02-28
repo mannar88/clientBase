@@ -186,7 +186,7 @@ textViewSetUser.setOnLongClickListener(new View.OnLongClickListener() {
     public boolean onLongClick(View view) {
 if (userIndex > -1) {
     Intent intent = new Intent(getApplicationContext(), CardUserActivity.class);
-    intent.putExtra(ListClientActivity.class.getName(), userIndex);
+    intent.putExtra(Bd.TABLE, userIndex);
     startActivity(intent);
 }
         return true;
