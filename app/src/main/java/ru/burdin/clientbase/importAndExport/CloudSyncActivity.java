@@ -1,5 +1,7 @@
 package ru.burdin.clientbase.importAndExport;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,7 +14,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
+import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.setting.Preferences;
 
@@ -23,18 +28,30 @@ public class CloudSyncActivity extends AppCompatActivity {
 private List<String> stringList = new ArrayList<>();
 private  TcpInfoUser tcpInfoUser;
 private  String[] login;
+private  Bd bd;
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_sync);
     setTitle("Облачная синхронизация");
+    try {
+        bd = Bd.load(this);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    } catch (TimeoutException e) {
+        e.printStackTrace();
+    }
     listView = findViewById(R.id.listViewCloudSync);
         stringListAdd();
         arrayAdapter = new ArrayAdapter <>(this,
                 android.R.layout.simple_list_item_1, stringList
         );
 listView.setAdapter(arrayAdapter);
- tcpInfoUser = new TcpInfoUser();
+login = Preferences.getString(this, Preferences.LOGIN_PASSWORD, "false").split("--");
+tcpInfoUser = new TcpInfoUser();
     tcpInfoUser.execute("dateSync=" + login[0] + "--" + login[1]);
 }
 
@@ -51,27 +68,31 @@ stringList.add("Дата загрузки базы на сервер: получ
 Облачный експорт
  */
 public void onClickButtonCloudSyncExport(View view) {
-    TcpCloudSync tcpCloudSync = new TcpCloudSync(this, TcpCloudSync.EXPORT);
+    TcpExportDb tcpCloudSync = new TcpExportDb(this, TcpCloudSync.EXPORT);
     tcpCloudSync.execute((Void) null);
 }
 /*
 Облачный импорт
  */
     public void onClickButtonCloudSyncImport(View view) {
-        TcpCloudSync tcpCloudSync = new TcpCloudSync(this, TcpCloudSync.IMPORT);
+        ImportDb tcpCloudSync = new ImportDb(this, TcpCloudSync.IMPORT);
         tcpCloudSync.execute((Void) null);
     }
 
     public void onClickButtonCloudSyncClose(View view) {
-    tcpInfoUser.close();
+        SharedPreferences.Editor editor = Preferences.getSharedPreferences(this).edit();
+    editor.remove(Preferences.LOGIN_PASSWORD);
+    editor.apply();
+    finish();
     }
+
 
     private  class  TcpInfoUser extends  Tcp {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
-        DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, hh:mm:ss");
+        DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, HH:mm:ss");
                 if (s != null && !s.isEmpty()) {
 String[]result = s.split("--");
     stringList.remove(1);
@@ -86,4 +107,48 @@ String[]result = s.split("--");
 }
         }
     }
+
+    private  class  ImportDb extends TcpCloudSync {
+
+        public ImportDb(Context context, String select) {
+            super(context, select);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if ("true".equals(s)) {
+Toast.makeText(getApplicationContext(), "База загружена", Toast.LENGTH_SHORT).show();
+                try {
+                    bd.reStart();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+private  class  TcpExportDb extends  TcpCloudSync {
+    public TcpExportDb(Context context, String select) {
+        super(context, select);
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+    if ("true".equals(s)) {
+        Toast.makeText(getApplicationContext(),"Красава! База улетела как вазилином смазанная", Toast.LENGTH_SHORT).show();
+         tcpInfoUser = new TcpInfoUser();
+        tcpInfoUser.execute("dateSync=" + login[0] + "--" + login[1]);
+    }else {
+        Toast.makeText(getApplicationContext(), "Что-то пошло не так" + " " + s, Toast.LENGTH_SHORT).show();
+    }
+
+    }
+}
 }

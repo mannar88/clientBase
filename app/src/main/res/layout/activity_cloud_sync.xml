@@ -33,7 +33,7 @@ android:id="@+id/buttonCloudSyncExport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 android:id="@+id/buttonCloudSyncClose"
-        android:text="Сбросить соединение"
+        android:text="Выйти из аккунта"
         android:onClick="onClickButtonCloudSyncClose"
         app:layout_constraintTop_toBottomOf="@+id/buttonCloudSyncExport"
         />

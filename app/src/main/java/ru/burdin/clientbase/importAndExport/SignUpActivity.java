@@ -57,26 +57,9 @@ return "";
  */
     public void onClickButtonSignUpSave(View view) {
 if (check()) {
-Tcp tcp = new Tcp();
+TcpReg tcp = new TcpReg();
 String text ="signUp=" + editTextLogin.getText().toString() + "--" + editTextPass.getText().toString();
-tcp.execute(text);    try {
-    String result    = (String)tcp.get(2, TimeUnit.SECONDS);
-    if ("Login busy".equals(result)) {
-            Toast.makeText(this, "Логин занят", Toast.LENGTH_SHORT).show();
-        }
-if ("Ok".equals(result)) {
-    Toast.makeText(this, "Регистрация прошла успешна", Toast.LENGTH_SHORT).show();
-    Intent intent = new Intent(getApplicationContext(), LoginAuthorizingActivity.class);
-    startActivity(intent);
-finish();
-}
-} catch (ExecutionException e) {
-        e.printStackTrace();
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    } catch (TimeoutException e) {
-        e.printStackTrace();
-    }
+tcp.execute(text);
 }
     }
 
@@ -97,4 +80,20 @@ return  false;
     return  result;
     }
 
+private  class  TcpReg extends  Tcp{
+
+    @Override
+    protected void onPostExecute(String s) {
+        if ("true".equals(s)) {
+            Toast.makeText(getApplicationContext(), "Логин занят", Toast.LENGTH_SHORT).show();
+        }
+        if ("false".equals(s)) {
+            Toast.makeText(getApplicationContext(), "Регистрация прошла успешна", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), LoginAuthorizingActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+    }
+}
 }

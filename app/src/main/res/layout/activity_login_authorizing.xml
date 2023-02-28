@@ -11,12 +11,14 @@
     android:layout_height="wrap_content"
     android:id="@+id/editTextLoginAuthorizingLogin"
 android:hint="Логин"
+    android:imeOptions="actionNext"
     />
 <EditText
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/editTextLoginAuthorizingPass"
     android:hint="Пароль"
+    android:imeOptions="actionGo"
     app:layout_constraintTop_toBottomOf="@+id/editTextLoginAuthorizingLogin"
     />
 

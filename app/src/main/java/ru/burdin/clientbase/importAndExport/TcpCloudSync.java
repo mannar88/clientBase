@@ -24,6 +24,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
@@ -51,6 +52,9 @@ private  String select;
         if (EXPORT.equals(select)) {
             res = exportDb(socket, out, in);
         }
+    if (IMPORT.equals(select)){
+        res = eimportDb(socket, out, in);
+    }
     }catch (SocketTimeoutException e) {
         res = "По ходу дела сервак лежит, надо пожаловаться криворукому разработчику";
     } catch (IOException e) {
@@ -59,6 +63,49 @@ private  String select;
     return res;
 }
 
+/*
+Импорт БД
+ */
+    private String eimportDb(Socket socket, DataOutputStream out, DataInputStream in) throws IOException {
+        String res = null;
+        String login = "importBd="+Preferences.getString(context.getApplicationContext(), Preferences.LOGIN_PASSWORD, "false");
+        out.writeUTF(login);
+        res = in.readUTF();
+        if (res.equals("ok")) {
+        long size = in.readLong();
+        byte [] bytes = new byte[(int) size];
+            for (int i = 0; i < bytes.length; i++) {
+                bytes[i] = in.readByte();
+            }
+long newBd = readBd(bytes);
+        if (size == newBd) {
+            res = "true";
+        }else {
+            res = "Что-то пошло не так";
+            }
+        }
+        return  res;
+        }
+
+        /*
+        Запись базы
+         */
+
+    private long readBd(byte[] bytes) {
+try (FileOutputStream ot = new FileOutputStream(context.getDatabasePath(Bd.DATABASE_NAME))){
+    ot.write(bytes);
+    ot.flush();
+} catch (FileNotFoundException e) {
+    e.printStackTrace();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+    return  context.getDatabasePath(Bd.DATABASE_NAME).length();
+    }
+
+    /*
+    Экспорт БД
+     */
     private String exportDb(Socket socket, DataOutputStream out, DataInputStream in) throws IOException {
 String res = null;
         String login = "exportBd="+Preferences.getString(context.getApplicationContext(), Preferences.LOGIN_PASSWORD, "false");

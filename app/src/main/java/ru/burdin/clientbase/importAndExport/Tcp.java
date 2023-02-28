@@ -19,11 +19,6 @@ import ru.burdin.clientbase.R;
 
 public class Tcp extends AsyncTask <String, Void,String> {
 
-    private  Socket socket;
-private  DataInputStream in;
-private DataOutputStream out;
-
-
     public  Tcp () {
 
     }
@@ -31,40 +26,16 @@ private DataOutputStream out;
     @Override
     protected String doInBackground(String... strings) {
         String result = "начало работы ";
-        try {
-            socket = new Socket("78.153.4.192", 2016);
-         socket.setSoTimeout(10000) ;
-            result = result + " " + socket.isClosed();
-            out = new DataOutputStream(socket.getOutputStream());
- in = new DataInputStream(socket.getInputStream());
-                    result = result + "Пошло соеденение";
+        try ( Socket socket = new Socket("78.153.4.192", 2016);
+                         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+ DataInputStream in = new DataInputStream(socket.getInputStream());
+        ){
+ socket.setSoTimeout(10000) ;
                     out.writeUTF(strings[0]);
 out.flush();
 result = in.readUTF();
                 }catch (IOException e) {
-                    result = result + " " +  e.getLocalizedMessage();
-            }finally {
-//        if (socket != null) {
-//            try {
-//                socket.close();
-//            } catch (IOException e) {
-//result = result + " " + e.getLocalizedMessage();
-//            }
-//        if (out != null) {
-//            try {
-//                out.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        if (in != null){
-//            try {
-//                in.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        }
-//        }
+                    result =  e.getLocalizedMessage();
         }
                     return  result;
             }
@@ -87,29 +58,5 @@ return  rst;
             result = "Сообщение ушло";
     }
 
-    public  void close () {
-        if (out != null) {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        if (socket != null) {
-
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        }
 
 }
