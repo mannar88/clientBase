@@ -57,6 +57,7 @@ private  EditText editTextSetComment;
 private  EditText editTextPay;
 private CheckBox checkBoxNotNotification;
 private  CheckBox checkBoxOneLine;
+private  TextView textViewInfoPay;
 private  int index = -1;
 private Record record;
     private  static Bd bd;
@@ -82,8 +83,11 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
-editTextPay = findViewById(R.id.editTextAddSessionPay);
-    radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
+    editTextPay = findViewById(R.id.editTextAddSessionPay);
+editTextPay.setText(StaticClass.priceToString(0));
+    textViewInfoPay = findViewById(R.id.textViewAddSessionPay);
+    payVisibility();
+radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
 radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
 radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
 radioButtonWhatsApp = findViewById(R.id.radioButtonAddSessionWAthsApp);
@@ -132,10 +136,18 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
     }
     updateProcedure();
 }
-
 /*
-Открыть список клиентов для выбора
+Установка доступности оплаты
  */
+    private void payVisibility() {
+    int acces = Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true)? View.VISIBLE:View.GONE;
+    editTextPay.setVisibility(acces);
+    textViewInfoPay.setVisibility(acces);
+    }
+
+    /*
+    Открыть список клиентов для выбора
+     */
 public  void  onClickSetUser (View view) {
         Intent intent = new Intent(this, ListClientActivity.class);
         intent.putExtra(AddSessionActivity.class.getName(), AddSessionActivity.class.getName());
@@ -211,7 +223,8 @@ public void onClickButtonSessionSave(View view) {
         }
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
-        record.setPay(Double.valueOf(editTextPay.getText().toString()));
+String pay = Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true)? editTextPay.getText().toString(): editTextSetPrices.getText().toString();
+record.setPay(Double.valueOf(pay));
         record.setComment(editTextSetComment.getText().toString());
         record.setOneLine(StaticClass.booleaInInt(checkBoxOneLine.isChecked()));
         record.setNotNotification(StaticClass.booleaInInt(checkBoxNotNotification.isChecked()));

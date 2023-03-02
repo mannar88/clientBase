@@ -1,5 +1,9 @@
 package ru.burdin.clientbase.lits.listClient;
 
+import android.content.Context;
+import android.view.View;
+import android.widget.Spinner;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,6 +15,7 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class ListClient {
 
@@ -97,4 +102,11 @@ private  List <User> saldoDef (List<User> users) {
     }
 return  result;
 }
+/*
+установка доступности оплаты
+ */
+    public void visibilityPay(Context context, Spinner filtr) {
+    int acsees = Preferences.getBoolean(context, Preferences.SET_CHECK_BOX_PAY, true)? View.VISIBLE:View.GONE;
+    filtr.setVisibility(acsees);
+    }
 }

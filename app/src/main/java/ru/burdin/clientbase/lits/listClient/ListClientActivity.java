@@ -82,6 +82,7 @@ spinnerFiltr.setAdapter(arrayAdapterFiltr);
     textViewCount = findViewById(R.id.textCountUsers);
 editTextSerch = findViewById(R.id.editTextListClientSearsh);
 users = listClient.getListUsers((String) spinnerSort.getSelectedItem());
+listClient.visibilityPay(this, spinnerFiltr);
 }
 
 

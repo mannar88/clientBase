@@ -24,6 +24,7 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.cards.cardSession.CardSessionActivity;
 import ru.burdin.clientbase.models.Record;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class ListHistoryAndRecordActivity extends AppCompatActivity {
 
@@ -76,7 +77,9 @@ intent.putExtra(StaticClass.KEY, StaticClass.IISTORUNEWRECORD);
      */
     private  void  updatelistHistory () {
 DateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
-        Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(dateFormat.format(records.get(MyAdapter.count).getStartDay()) + ", " + records.get(MyAdapter.count).getProcedure() + ", " + StaticClass.priceToString(records.get(MyAdapter.count).getPrice()) + ". Оплачено: " + records.get(MyAdapter.count).getPay());
+Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(
+        Preferences.getBoolean(getApplicationContext(), Preferences.SET_CHECK_BOX_PAY, true)? dateFormat.format(records.get(MyAdapter.count).getStartDay()) + ", " + records.get(MyAdapter.count).getProcedure() + ", " + StaticClass.priceToString(records.get(MyAdapter.count).getPrice()) + ". Оплачено: " + records.get(MyAdapter.count).getPay():dateFormat.format(records.get(MyAdapter.count).getStartDay()) + ", " + records.get(MyAdapter.count).getProcedure() + ", " + StaticClass.priceToString(records.get(MyAdapter.count).getPrice())
+        );
 MyAdapter myAdapter = new MyAdapter(this, records, onUserClickListener, consumer);
     recyclerView.setAdapter(myAdapter);
     }

@@ -55,8 +55,8 @@ android:id="@+id/buttonStatistick"
     android:id="@+id/buttonSetting"
     android:onClick="onClickButtonSetting"
     android:text="Настройки"
-    app:layout_constraintTop_toBottomOf="@+id/buttonListExpenses"
-    />
+        app:layout_constraintTop_toBottomOf="@id/buttonImportExport"
+        />
 
     <Button
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@ android:id="@+id/buttonStatistick"
         android:id="@+id/buttonImportExport"
         android:text="Импорт экспорт"
         android:onClick="onClickButtonImportExport"
-        app:layout_constraintTop_toBottomOf="@id/buttonSetting"
+        app:layout_constraintTop_toBottomOf="@+id/buttonListExpenses"
         />
 
     <Button
@@ -73,7 +73,7 @@ android:id="@+id/buttonStatistick"
         android:id="@+id/buttonInfo"
         android:text="Поблагодарить разработчика и другая информация"
         android:onClick="onClickButtonInfo"
-app:layout_constraintTop_toBottomOf="@+id/buttonImportExport"
+app:layout_constraintTop_toBottomOf="@+id/buttonSetting"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

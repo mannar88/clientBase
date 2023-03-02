@@ -12,6 +12,8 @@ public class Preferences {
     public static final String START_ACTIVITY_LIST_SESSION = "startActivityListSession";
     //Логин ти пароль
     public static final String LOGIN_PASSWORD = "loginPassword";
+    //Установка флажка оплаты в настройках
+    public static final String SET_CHECK_BOX_PAY = "setCheckBoxPay";
     private static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
     public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";

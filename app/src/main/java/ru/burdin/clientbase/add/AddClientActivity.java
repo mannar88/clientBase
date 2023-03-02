@@ -2,7 +2,10 @@ package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -128,7 +131,7 @@ if (editTextPhone.getText().length() > 9 || editTextPhone.getText().length() == 
 Поменять местами имя и фамилия
  */
     public void onClickButtonAddClientExchange(View view) {
-    String exchange = editTextSurname.getText().toString();
+                String exchange = editTextSurname.getText().toString();
     editTextSurname.setText(editTextName.getText().toString());
     editTextName.setText(exchange);
     }

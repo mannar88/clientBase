@@ -6,7 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".setting.SettingActivity">
 
-    <CheckBox
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+        <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/checkBoxSettingCalender"
@@ -122,4 +131,14 @@ android:id="@+id/checkBoxSettingIntersectionRecods"
         app:layout_constraintTop_toBottomOf="@id/spinnerSettingInterval"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        android:id="@+id/checkBoxSettingPay"
+        android:text="Ввести учет оплаты"
+                app:layout_constraintTop_toBottomOf="@id/checkBoxSettingIntersectionRecods"
+         />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>

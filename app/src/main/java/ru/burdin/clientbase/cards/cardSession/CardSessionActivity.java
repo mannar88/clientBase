@@ -63,6 +63,7 @@ protected   TextView textViewTimeEnd;
 protected   TextView textViewPlaceOnTheList;
 protected   CheckBox checkBoxPlaceOnTheList;
 protected CheckBox checkBoxNotNotification;
+protected  TextView textViewInfoPay;
 private  long recordId = -1;
 private CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
@@ -99,6 +100,7 @@ private  CardSession cardSession;
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewPay = findViewById(R.id.textViewCardSessionPay);
    textViewSaldo = findViewById(R.id.textViewCardSessionSaldo);
+
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
 textViewPlaceOnTheList = findViewById(R.id.textvIewCardSessionPlaceOnTheList);
@@ -106,7 +108,10 @@ checkBoxPlaceOnTheList = findViewById(R.id.checkBoxCardSessionPlaceOnTheList);
 checkBoxNotNotification = findViewById(R.id.checkBoxCardSessionNotNotification);
     this.context = this;
 cardSession = new CardSession(this, bd);
+cardSession.visibilityPay();
 }
+
+
 
     @Override
     protected void onStart() {

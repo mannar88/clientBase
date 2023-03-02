@@ -41,6 +41,8 @@ private  CheckBox checkBoxSettingIntersectionRecod;
     private Bd bd;
 private  WorkScheduleSetting workScheduleSetting;
 private  static List<String> nameCalendars;
+private  CheckBox checkBoxPay;
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,9 @@ private  static List<String> nameCalendars;
     checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
 checkBoxSettingIntersectionRecod = findViewById(R.id.checkBoxSettingIntersectionRecods);
-        workScheduleSetting = new WorkScheduleSetting(this);
+checkBoxPay = findViewById(R.id.checkBoxSettingPay);
+checkBoxPay.setChecked(Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true));
+workScheduleSetting = new WorkScheduleSetting(this);
         calendars = CalendarSetting.load(this);
  nameCalendars = new ArrayList<>(calendars.getNameCalendar());
                 arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nameCalendars);
@@ -88,7 +92,8 @@ calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
     @Override
     public void onBackPressed() {
 Preferences.set(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, checkBoxSettingIntersectionRecod.isChecked());
-        super.onBackPressed();
+Preferences.set(this, Preferences.SET_CHECK_BOX_PAY, checkBoxPay.isChecked());
+super.onBackPressed();
     }
 
     /*

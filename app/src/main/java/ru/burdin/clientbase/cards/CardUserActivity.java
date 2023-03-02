@@ -29,6 +29,7 @@ import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.lits.ListHistoryAndRecordActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class CardUserActivity extends AppCompatActivity {
 
@@ -57,8 +58,17 @@ private  TextView textViewInfoRecords;
         textViewPhone = findViewById(R.id.cardPhone);
         textViewComment = findViewById(R.id.textVuiwComment);
         textViewInfoRecords = findViewById(R.id.textCardUserInfoRecords);
+        visibility();
         stak = getIntent().getExtras().getInt(Bd.TABLE);
         user = bd.getUsers().get(stak);
+    }
+
+    /*
+    устанавливает доступность оплаты
+     */
+    private void visibility() {
+    int acess = Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true)? View.VISIBLE:View.GONE;
+    textViewInfoRecords.setVisibility(acess);
     }
 
     @Override
