@@ -2,10 +2,7 @@ package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -14,14 +11,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Comparator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class AddClientActivity extends AppCompatActivity {
 
@@ -47,7 +43,7 @@ private CheckBox checkBoxRecord;
         editTextComment = findViewById(R.id.editTextComment);
         editTextComment.setText("");
 checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
-            bd = Bd.load(getApplicationContext());
+bd = Bd.load(getApplicationContext());
         index = getIntent().getIntExtra(Bd.TABLE, -1);
         getIntent().removeExtra(Bd.TABLE);
         if (index > -1) {
@@ -63,7 +59,23 @@ checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
         }else {
             editTextPhone.setText(getIntent().getStringExtra(StaticClass.NUMBER_PHONE));
         }
+        saveContactIntent();
+
     }
+
+    /*
+Сохраняет контакт, пришедший из Intent
+ */
+    private void saveContactIntent() {
+        if (getIntent().getAction() != null && (getIntent().getAction().equals(Intent.ACTION_INSERT) || getIntent().getAction().equals(Intent.ACTION_INSERT_OR_EDIT))) {
+            Bundle bundle = getIntent().getExtras();
+            editTextName.setText(bundle.getString("name"));
+            editTextPhone.setText(bundle.getString("phone"));
+editTextPhone.setSelection(editTextPhone.length());
+editTextName.setSelection(editTextName.length());
+        }
+
+        }
 
     public void buttonSaveC(View view) {
             if (editTextPhone.getText().length() > 0 || editTextSurname.getText().length() > 0 || editTextName.getText().length() > 0) {
@@ -74,7 +86,7 @@ checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
                 contentValues.put(Bd.COLUMN_PHONE, notNull(editTextPhone));
                 contentValues.put(Bd.COLUMN_COMMENT, notNull(editTextComment));
                 if (index == -1) {
-                    long id = bd.add(Bd.TABLE, contentValues);
+                    long id = bd.add(Bd.TABLE, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
                     if (id > 0) {
                         if (bd.getUsers().add(new User(id, notNull(editTextName), notNull(editTextSurname), notNull(editTextPhone), notNull(editTextComment)))) {
                             bd.getUsers().sort(Comparator.naturalOrder());
@@ -88,7 +100,7 @@ checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
                         }
                     }
                 } else {
-                    if (bd.update(Bd.TABLE, contentValues, user.getId()) == 1) {
+                    if (bd.update(Bd.TABLE, contentValues, user.getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
                         bd.getUsers().get(index).setName(editTextName.getText().toString());
                         bd.getUsers().get(index).setSurname(editTextSurname.getText().toString());
                         bd.getUsers().get(index).setPhone(editTextPhone.getText().toString());
@@ -123,25 +135,8 @@ if (editTextPhone.getText().length() > 9 || editTextPhone.getText().length() == 
 Поменять местами имя и фамилия
  */
     public void onClickButtonAddClientExchange(View view) {
-        Uri uri = getIntent().getData();
-        String[] projection = {
-//                ContactsContract.CommonDataKinds.Phone.NUMBER,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-                };
-        Cursor cursor = this.getContentResolver().query(uri, projection,
-            null, null, null);
-
-                cursor.moveToFirst();
-//
-//        int numberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-//        String number = cursor.getString(numberColumnIndex);
-//
-        int nameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-        String name = cursor.getString(nameColumnIndex);
-        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
-        cursor.close();
-        //                String exchange = editTextSurname.getText().toString();
-//    editTextSurname.setText(editTextName.getText().toString());
-//    editTextName.setText(exchange);
+                    String exchange = editTextSurname.getText().toString();
+    editTextSurname.setText(editTextName.getText().toString());
+    editTextName.setText(exchange);
     }
 }

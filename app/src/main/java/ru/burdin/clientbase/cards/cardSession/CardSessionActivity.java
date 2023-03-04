@@ -25,10 +25,12 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -118,7 +120,7 @@ cardSession.setScreenInfo(record);}
         ContentValues contentValues = new ContentValues();
     contentValues.put(Bd.COLUMN_ONE_IN_LINE, StaticClass.booleaILong(b));
         int [] arr = Analytics.placeOnTheList(bd.getRecords(), bd.getUsers().get(cardSession.getIndexUser(record)).getId(), record.getId());
-    if (arr[2] > 1&&bd.update(bd.TABLE_SESSION, contentValues, record.getId()) == 1){
+    if (arr[2] > 1&&bd.update(bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1){
 record.setOneLine(StaticClass.booleaInInt(b));
         arr = Analytics.placeOnTheList(bd.getRecords(),bd.getUsers().get(cardSession.getIndexUser(record)).getId(), record.getId());
 textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
@@ -131,7 +133,7 @@ textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", кур
         ContentValues contentValues = new ContentValues();
     long res = StaticClass.booleaILong(b);
     contentValues.put(Bd.COLUMN_not_notification, res);
-    if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId()) == 1) {
+    if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
 record.setNotNotification(res);
             }
     }
@@ -192,7 +194,7 @@ doubPacket(times, longs);
     Пакетное время для дублирования
      */
     private  void  doubPacket (String[] times, long [] longs) {
-Set<Long> longHashSet = new HashSet<>();
+Set<Long> longHashSet = new TreeSet<>();
     boolean [] booleans = new  boolean[times.length];
 AlertDialog.Builder builder = new AlertDialog.Builder(this);builder.setMultiChoiceItems(times, booleans, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
@@ -210,8 +212,9 @@ if (!b && longHashSet.contains(longs[i])){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (longHashSet.size() > 0) {
-for (Long l : longHashSet) {
-    Consumer<Record> doubleSession = new DoubleSession(getApplicationContext(), StaticClass.indexList(recordId, bd.getRecords()), calendarSetting);
+long max =  longHashSet.stream().max(Comparator.naturalOrder()).get();
+                    for (Long l : longHashSet) {
+    Consumer<Record> doubleSession = new DoubleSession(getApplicationContext(), StaticClass.indexList(recordId, bd.getRecords()), calendarSetting, max == l? true:false);
 doubleSession.accept(new Record(l));
 }
     Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
@@ -281,7 +284,7 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
     метод удаления сеанса
      */
     private  boolean   delete () {
-        int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
+        int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
         if (resultDelete == 1) {
             long id = bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
             if (calendarSetting.delete(id) == 0) {

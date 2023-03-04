@@ -48,7 +48,7 @@ if (!bd.getRecords().contains(record)||record.equals(record1) || Preferences.get
 ContentValues contentValues = new ContentValues();
 contentValues.put(Bd.COLUMN_TIME, record.getStart());
 contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
-if (bd.update(Bd.TABLE_SESSION, contentValues, id) == 1) {
+if (bd.update(Bd.TABLE_SESSION, contentValues, id, Preferences.getBoolean(context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
     record1.setEnd(record.getEnd());
     record1.setStart(record.getStart());
     int indUser = StaticClass.indexList(record1.getIdUser(), bd.getUsers());

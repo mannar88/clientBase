@@ -319,7 +319,7 @@ private  void setConsumerHashMap() {
 //Если запись уже существует
     consumerHashMap.put(StaticClass.CARDSESSION, new BusyTime(this));
     // Дублирование
-    consumerHashMap.put(StaticClass.DUPLICATION, new DoubleSession(this, indexListRecord, calendarSetting));
+    consumerHashMap.put(StaticClass.DUPLICATION, new DoubleSession(this, indexListRecord, calendarSetting, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)));
 // Перенос
 consumerHashMap.put(StaticClass.TRANSFER, new TransferSession(getApplicationContext(), getIntent().getLongExtra(CardSessionActivity.TRANSFER, 1), calendarSetting));
 //Новая запись из истории

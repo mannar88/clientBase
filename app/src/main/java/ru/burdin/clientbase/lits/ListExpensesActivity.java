@@ -28,6 +28,7 @@ import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Expenses;
+import ru.burdin.clientbase.setting.Preferences;
 
 import static java.text.DateFormat.FULL;
 import static java.text.DateFormat.getDateInstance;
@@ -79,7 +80,7 @@ public void onClickButtonSetExpenses(View view) {
                 contentValues.put(Bd.COLUMN_TIME, date.getTimeInMillis());
                 contentValues.put(Bd.COLUMN_NAME, editTextNameExpenses.getText().toString());
                 contentValues.put(Bd.COLUMN_PRICE, Double.valueOf(editTextPriceExpenses.getText().toString()));
-                long result = bd.add(Bd.TABLE_EXPENSES, contentValues);
+                long result = bd.add(Bd.TABLE_EXPENSES, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
                 if (result > 0) {
                     bd.getExpenses().add(new Expenses(result, date.getTimeInMillis(), editTextNameExpenses.getText().toString(), Double.valueOf(editTextPriceExpenses.getText().toString())));
                     editTextNameExpenses.setText("");
@@ -104,7 +105,7 @@ bd.getExpenses().sort(Comparator.reverseOrder());
     builder.setPositiveButton("Минимизировать расходы всегда приятно. Удалить", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
-            int res = bd.delete(Bd.TABLE_EXPENSES, bd.getExpenses().get(position).getId());
+            int res = bd.delete(Bd.TABLE_EXPENSES, bd.getExpenses().get(position).getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
             if (res > 0) {
                 bd.getExpenses().remove(position);
                 updateListExpenses();

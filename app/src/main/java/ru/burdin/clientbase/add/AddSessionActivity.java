@@ -235,7 +235,7 @@ record.setPay(Double.valueOf(pay));
         contentValues.put(Bd.COLUMN_not_notification, record.getNotNotification());
         contentValues.put(Bd.COLUMN_PAY, record.getPay());
         if (indexRecord != -1) {
-            if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId()) == 1) {
+            if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
     bd.getRecords().get(indexRecord).setStart(record.getStart());
     bd.getRecords().get(indexRecord).setEnd(record.getEnd());
     bd.getRecords().get(indexRecord).setIdUser(record.getIdUser());
@@ -272,7 +272,7 @@ try {
     Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 }
 contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
-                long res = bd.add(Bd.TABLE_SESSION, contentValues);
+                long res = bd.add(Bd.TABLE_SESSION, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
                 if (res > -1) {
                     if (bd.getRecords().add(new Record(res, record.getStart(),
                             record.getEnd(),

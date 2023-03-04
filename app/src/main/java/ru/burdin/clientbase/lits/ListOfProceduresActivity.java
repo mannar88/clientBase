@@ -29,6 +29,7 @@ import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Procedure;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class ListOfProceduresActivity extends AppCompatActivity {
 
@@ -73,7 +74,7 @@ public  void  buttonAddProcedur (View view) {
 //      contentValues.put(Bd.COLUMN_TIME_END, Long.valueOf(editTextTimeEnd.getText().toString()) * 60000);
         long t = Long.valueOf(editTextTimeEnd.getText().toString());
         contentValues.put(Bd.COLUMN_TIME_END,  TimeUnit.MINUTES.toMillis(t));
-        long id =   bd.add(Bd.TABLE_PROCEDURE, contentValues);
+        long id =   bd.add(Bd.TABLE_PROCEDURE, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
         if (id > 0) {
             bd.getProcedures().add(new Procedure(id, editTextName.getText().toString(), Double.valueOf(editTextPrice.getText().toString()), TimeUnit.MINUTES.toMillis(Long.valueOf(editTextTimeEnd.getText().toString()))));
             hideKeyboard(this);
@@ -117,7 +118,7 @@ private  void  recyclerViewUpdate () {
                 builder.setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        bd.delete(Bd.TABLE_PROCEDURE, processes.get(position).getId());
+                        bd.delete(Bd.TABLE_PROCEDURE, processes.get(position).getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
                         bd.getProcedures().remove(position);
                         recyclerViewUpdate();
                     }

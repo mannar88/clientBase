@@ -77,6 +77,9 @@ private  Bd (Context context) {
 bdImportExport = new BdImportExport(context.getDatabasePath(Bd.DATABASE_NAME).getPath());
 }
 
+/*
+Список расходов
+ */
     public List<Expenses> getExpenses() {
         return expenses;
     }
@@ -125,14 +128,23 @@ public void  reStart () throws InterruptedException, ExecutionException, Timeout
     load(staticContex);
 }
 
+/*
+Список клиентов
+ */
     public  List<User> getUsers() {
     return  users;
     }
 
+    /*
+    Список услуг
+     */
     public List<Procedure> getProcedures() {
         return procedures;
     }
 
+    /*
+    Список сеансов
+     */
     public  List<Record> getRecords() {
 records.forEach(
         record -> record.setPlaceInLine(0)
@@ -155,7 +167,7 @@ return records;
     /*
 Добавить
  */
-    public  long  add (String table, ContentValues contentValues) {
+    public  long  add (String table, ContentValues contentValues, boolean autoExport) {
 AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
 
         long  result = 0;
@@ -168,18 +180,18 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
         } catch (InterruptedException | TimeoutException e) {
             Toast.makeText(staticContex.getApplicationContext(), "Не удалось добавить в базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
-        autoExport(result);
+        autoExport(result, autoExport);
                 return  result;
 }
 
 /*
 Автоматическиий экспорт БД на устройство
  */
-private  void  autoExport (Long result ) {
+private  void  autoExport (Long result , boolean autoExport) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (result != 0 && Preferences.getBoolean(staticContex, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) {
+                if (result != 0 && autoExport) {
                     try {
                         bdImportExport.exportBd();
                     } catch (ExecutionException e) {
@@ -244,7 +256,7 @@ while (cursorExpenses.moveToNext()) {
 cursorExpenses.close();
 }
 
-public  int delete (String table, long id) {
+public  int delete (String table, long id, boolean autoExport) {
 AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
     int result = 0;
@@ -256,11 +268,11 @@ AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     } catch (InterruptedException | TimeoutException e) {
         Toast.makeText(staticContex.getApplicationContext(), "Не удалось удалить из  базы " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
-    autoExport((long)result);
+    autoExport((long)result, autoExport);
     return  result;
 }
 
-public     int update  (String table, ContentValues contentValues, long id) {
+public     int update  (String table, ContentValues contentValues, long id, boolean autoExport) {
     AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     Supplier <Integer> supplier =()-> sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
 
@@ -275,7 +287,7 @@ public     int update  (String table, ContentValues contentValues, long id) {
     } catch (TimeoutException e) {
         Toast.makeText(staticContex.getApplicationContext(), "Не удалось обновить базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
-    autoExport((long)result);
+    autoExport((long)result, autoExport);
         return result;
 }
 

@@ -38,6 +38,7 @@ import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 import static com.parse.Parse.getApplicationContext;
 
@@ -299,7 +300,7 @@ try {
           }
       }
 contentValues.put(Bd.COLUMN_PHONE, phone);
- long id = bd.add(Bd.TABLE, contentValues);
+ long id = bd.add(Bd.TABLE, contentValues, Preferences.getBoolean(activity.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
   if (id > 0) {
       User user = new User(id, contentValues.getAsString(Bd.COLUMN_NAME) + "", contentValues.getAsString(Bd.COLUMN_SURNAME), phone, "");
   bd.getUsers().add(user);

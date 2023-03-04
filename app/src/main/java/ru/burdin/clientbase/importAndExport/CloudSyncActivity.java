@@ -43,6 +43,8 @@ private  Button buttonExport;
     listView = findViewById(R.id.listViewCloudSync);
     buttonImport = findViewById(R.id.buttonCloudSyncImport);
     buttonExport = findViewById(R.id.buttonCloudSyncExport);
+    buttonExport.setEnabled(false);
+    buttonImport.setEnabled(false);
     stringListAdd();
         arrayAdapter = new ArrayAdapter <>(this,
                 android.R.layout.simple_list_item_1, stringList
@@ -93,9 +95,8 @@ public void onClickButtonCloudSyncExport(View view) {
             DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, HH:mm:ss");
             if ("Сервер не доступен".equals(s)) {
 Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-            buttonImport.setEnabled(false);
-            buttonExport.setEnabled(false);
-            } else {
+                        } else {
+
                 if (s != null && !s.isEmpty()) {
                     String[] result = s.split("--");
                     stringList.remove(1);
@@ -108,6 +109,8 @@ Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                     }
                     arrayAdapter.notifyDataSetChanged();
                 }
+            buttonExport.setEnabled(true);
+                buttonImport.setEnabled(true);
             }
         }
     }
