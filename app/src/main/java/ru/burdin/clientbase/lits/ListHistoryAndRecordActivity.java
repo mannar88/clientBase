@@ -39,16 +39,7 @@ private  List <List<Record>> numberOfCourse;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_history_and_record);
-        try {
             bd = Bd.load(getApplicationContext());
-        } catch (InterruptedException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (TimeoutException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
-
         textViewListHistoryRecord = findViewById(R.id.textViewListHistoryRecord);
     recyclerView = findViewById(R.id.listHistory);
     intentCardSession = new Intent( this, CardSessionActivity.class);

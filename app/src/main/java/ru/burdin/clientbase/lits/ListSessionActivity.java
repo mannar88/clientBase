@@ -42,6 +42,7 @@ import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
 import ru.burdin.clientbase.lits.actionListSassion.FreeSession;
 import ru.burdin.clientbase.lits.actionListSassion.HistoryNewSession;
 import ru.burdin.clientbase.lits.actionListSassion.TransferSession;
+import ru.burdin.clientbase.notificationSMS.LoadAlarmMananger;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.cards.cardSession.CardSessionActivity;
@@ -84,26 +85,13 @@ protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_list_session);
         setTitle("");
         activity = this;
-    try {
         bd = Bd.load(getApplicationContext());
-    } catch (InterruptedException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (ExecutionException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (TimeoutException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
     calendarSetting = CalendarSetting.load(this);
-            dateAndTime =Calendar.getInstance();
-                            switch (Preferences.getInt(this, Preferences.APP_PREFERENSES_CHECK_SMS_NOTIFICATION_1, TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK)){
-                    case TemplatesActivity.RADIO_DUTTON_TEMPLETES_NOTIFICATION_NOT_CHECK:
-                        break;
-                    case TemplatesActivity.RADIO_BUTTON_TEMPLETES_MOTIFICATION_HOUR:
-                        SendSMS.multiStartSMSAlarms(this, bd.getRecords());
-                        break;
-                    default:
-                        SendSMS.startAlarm(this, Preferences.getString(this, Preferences.TIME_SMS_NOTIFICATION, "00:00"));
-                }
+    if (savedInstanceState == null) {
+        LoadAlarmMananger loadAlarmMananger = new LoadAlarmMananger(this);
+        loadAlarmMananger.execute();
+    }
+    dateAndTime =Calendar.getInstance();
 indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
         textViewDay = findViewById(R.id.textViewDate);
                 textViewTime = findViewById(R.id.textViewTime);

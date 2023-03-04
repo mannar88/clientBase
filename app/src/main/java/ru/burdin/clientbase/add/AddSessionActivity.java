@@ -97,15 +97,7 @@ radioGroupMessange.check(radioButtonNotChck.getId());
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
 if (savedInstanceState == null) {
-    try {
         bd = Bd.load(this);
-    } catch (InterruptedException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (ExecutionException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (TimeoutException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
 
     procedures = new ArrayList<>();
     }else  {

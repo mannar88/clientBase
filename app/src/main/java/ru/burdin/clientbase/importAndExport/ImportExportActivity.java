@@ -30,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.notificationSMS.LoadAlarmMananger;
 import ru.burdin.clientbase.setting.Preferences;
 
 public class ImportExportActivity extends AppCompatActivity {
@@ -44,15 +45,7 @@ private Activity activity;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_export);
 bdExportImport = new BdImportExport(getDatabasePath(Bd.DATABASE_NAME).getPath());
-    try {
         bd = Bd.load(this);
-    } catch (InterruptedException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (ExecutionException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (TimeoutException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
     checkBoxAutoExport = findViewById(R.id.checkBoxImportExportAutoExport);
 checkBoxAutoExport.setChecked(Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
 activity = this;
@@ -81,7 +74,8 @@ checkBoxAutoExport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChange
             try {
                 Toast.makeText(getApplicationContext(), bdExportImport.inport(), Toast.LENGTH_SHORT).show();
                 bd.reStart();
-
+                LoadAlarmMananger loadAlarmMananger = new LoadAlarmMananger(getApplicationContext());
+                loadAlarmMananger.execute();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

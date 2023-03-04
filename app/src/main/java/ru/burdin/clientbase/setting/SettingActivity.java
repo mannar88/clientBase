@@ -48,15 +48,7 @@ private  CheckBox checkBoxPay;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seting);
         setTitle("Настройки");
-    try {
         bd = Bd.load(this);
-    } catch (InterruptedException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (ExecutionException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (TimeoutException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
     checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
 checkBoxSettingIntersectionRecod = findViewById(R.id.checkBoxSettingIntersectionRecods);

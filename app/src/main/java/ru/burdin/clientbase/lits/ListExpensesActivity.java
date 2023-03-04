@@ -45,16 +45,7 @@ private Activity activity;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_expenses);
-    try {
         bd = Bd.load(getApplicationContext());
-    } catch (InterruptedException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (ExecutionException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    } catch (TimeoutException e) {
-        Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
-
     textViewTime = findViewById(R.id.textViewSetupTimeExpenses);
         editTextNameExpenses = findViewById(R.id.editTextSetupNameExpenses);
         editTextPriceExpenses = findViewById(R.id.editTextSetupPriceExpenses);

@@ -54,16 +54,7 @@ private  ListClient listClient;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_client);
          intent = new Intent(this, CardUserActivity.class);
-        try {
             bd = Bd.load(getApplicationContext());
-
-        } catch (InterruptedException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (TimeoutException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
         try {
             addSession = getIntent().getExtras().getString(AddSessionActivity.class.getName());
         } catch (Exception e) {

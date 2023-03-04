@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.notificationSMS.LoadAlarmMananger;
 import ru.burdin.clientbase.setting.Preferences;
 
 public class CloudSyncActivity extends AppCompatActivity {
@@ -29,23 +31,19 @@ private List<String> stringList = new ArrayList<>();
 private  TcpInfoUser tcpInfoUser;
 private  String[] login;
 private  Bd bd;
+private Button buttonImport;
+private  Button buttonExport;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_sync);
     setTitle("Облачная синхронизация");
-    try {
         bd = Bd.load(this);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    } catch (ExecutionException e) {
-        e.printStackTrace();
-    } catch (TimeoutException e) {
-        e.printStackTrace();
-    }
     listView = findViewById(R.id.listViewCloudSync);
-        stringListAdd();
+    buttonImport = findViewById(R.id.buttonCloudSyncImport);
+    buttonExport = findViewById(R.id.buttonCloudSyncExport);
+    stringListAdd();
         arrayAdapter = new ArrayAdapter <>(this,
                 android.R.layout.simple_list_item_1, stringList
         );
@@ -88,23 +86,29 @@ public void onClickButtonCloudSyncExport(View view) {
 
 
     private  class  TcpInfoUser extends  Tcp {
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
-        DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, HH:mm:ss");
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
+            DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, HH:mm:ss");
+            if ("Сервер не доступен".equals(s)) {
+Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            buttonImport.setEnabled(false);
+            buttonExport.setEnabled(false);
+            } else {
                 if (s != null && !s.isEmpty()) {
-String[]result = s.split("--");
-    stringList.remove(1);
-    stringList.remove(1);
-    stringList.add( "Синхронизация доступна до: " + dateFormat.format(Long.valueOf(result[0])));
-    if (Long.valueOf(result[1]) > 0) {
-        stringList.add("Дата загрузки базы на сервер: " + dateFormat1.format(Long.valueOf(result[1])));
-    }else {
-        stringList.add("Дата загрузки базы на сервер: да ничё там еще нету");
-    }
-    arrayAdapter.notifyDataSetChanged();
-}
+                    String[] result = s.split("--");
+                    stringList.remove(1);
+                    stringList.remove(1);
+                    stringList.add("Синхронизация доступна до: " + dateFormat.format(Long.valueOf(result[0])));
+                    if (Long.valueOf(result[1]) > 0) {
+                        stringList.add("Дата загрузки базы на сервер: " + dateFormat1.format(Long.valueOf(result[1])));
+                    } else {
+                        stringList.add("Дата загрузки базы на сервер: да ничё там еще нету");
+                    }
+                    arrayAdapter.notifyDataSetChanged();
+                }
+            }
         }
     }
 
@@ -127,6 +131,8 @@ Toast.makeText(getApplicationContext(), "База загружена", Toast.LEN
                 } catch (TimeoutException e) {
                     e.printStackTrace();
                 }
+                LoadAlarmMananger loadAlarmMananger = new LoadAlarmMananger(getApplicationContext());
+                loadAlarmMananger.execute();
             }else {
                 Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
             }

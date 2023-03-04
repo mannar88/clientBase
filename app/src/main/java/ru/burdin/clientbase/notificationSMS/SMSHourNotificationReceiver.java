@@ -19,15 +19,8 @@ public class SMSHourNotificationReceiver extends BroadcastReceiver {
     private Bd bd;
     @Override
     public void onReceive(Context context, Intent intent) {
-        try {
+
             bd = Bd.load(context.getApplicationContext());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
         long id  = intent.getLongExtra("id", -1);
     if (id != -1) {
         int index = StaticClass.indexList(id, bd.getRecords());

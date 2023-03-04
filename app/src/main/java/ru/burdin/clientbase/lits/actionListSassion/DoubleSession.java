@@ -28,16 +28,7 @@ public   static boolean checkDouble;
 
     public  DoubleSession (Context context, int indexListRecord,  CalendarSetting calendarSetting) {
         this.context = context;
-        try {
             bd = Bd.load(context);
-        } catch (InterruptedException e) {
-            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (TimeoutException e) {
-            Toast.makeText(context.getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
-
         this.indexListRecord = indexListRecord;
     this.calendarSetting = calendarSetting;
     }

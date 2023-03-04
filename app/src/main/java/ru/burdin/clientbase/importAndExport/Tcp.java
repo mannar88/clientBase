@@ -35,7 +35,7 @@ public class Tcp extends AsyncTask <String, Void,String> {
 out.flush();
 result = in.readUTF();
                 }catch (IOException e) {
-                    result =  e.getLocalizedMessage();
+result = "Сервер не доступен";
         }
                     return  result;
             }

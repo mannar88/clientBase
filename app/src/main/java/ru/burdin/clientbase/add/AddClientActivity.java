@@ -47,15 +47,7 @@ private CheckBox checkBoxRecord;
         editTextComment = findViewById(R.id.editTextComment);
         editTextComment.setText("");
 checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
-        try {
             bd = Bd.load(getApplicationContext());
-        } catch (InterruptedException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №1" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №2" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        } catch (TimeoutException e) {
-            Toast.makeText(getApplicationContext(), "Не удалось открыть базу данных  №3" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
         index = getIntent().getIntExtra(Bd.TABLE, -1);
         getIntent().removeExtra(Bd.TABLE);
         if (index > -1) {
@@ -131,8 +123,25 @@ if (editTextPhone.getText().length() > 9 || editTextPhone.getText().length() == 
 Поменять местами имя и фамилия
  */
     public void onClickButtonAddClientExchange(View view) {
-                String exchange = editTextSurname.getText().toString();
-    editTextSurname.setText(editTextName.getText().toString());
-    editTextName.setText(exchange);
+        Uri uri = getIntent().getData();
+        String[] projection = {
+//                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+                };
+        Cursor cursor = this.getContentResolver().query(uri, projection,
+            null, null, null);
+
+                cursor.moveToFirst();
+//
+//        int numberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+//        String number = cursor.getString(numberColumnIndex);
+//
+        int nameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        String name = cursor.getString(nameColumnIndex);
+        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+        cursor.close();
+        //                String exchange = editTextSurname.getText().toString();
+//    editTextSurname.setText(editTextName.getText().toString());
+//    editTextName.setText(exchange);
     }
 }
