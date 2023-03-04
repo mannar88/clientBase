@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ private  String[] login;
 private  Bd bd;
 private Button buttonImport;
 private  Button buttonExport;
+private CheckBox checkBoxAutoExport;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ private  Button buttonExport;
     buttonExport = findViewById(R.id.buttonCloudSyncExport);
     buttonExport.setEnabled(false);
     buttonImport.setEnabled(false);
+    checkBoxAutoExport = findViewById(R.id.checkBoxCloudSyncAutoExport);
+    checkBoxAutoExport.setChecked(Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
     stringListAdd();
         arrayAdapter = new ArrayAdapter <>(this,
                 android.R.layout.simple_list_item_1, stringList
@@ -87,13 +91,22 @@ public void onClickButtonCloudSyncExport(View view) {
     }
 
 
+    @Override
+    public void onBackPressed() {
+Preferences.set(this,Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, checkBoxAutoExport.isChecked());
+        super.onBackPressed();
+    }
+
     private  class  TcpInfoUser extends  Tcp {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
             DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, HH:mm:ss");
-            if ("Сервер не доступен".equals(s)) {
+            if ("Сервер не доступен".equals(s)
+|| "Истекло время ожидания".equals(s)
+            || "ошибка соединения".equals(s)
+            ) {
 Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                         } else {
 

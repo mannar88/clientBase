@@ -25,13 +25,14 @@ public class DoubleSession implements Consumer<Record> {
     private CalendarSetting calendarSetting;
 public   static boolean checkDouble;
 public  boolean autoExport = false;
-
-    public  DoubleSession (Context context, int indexListRecord,  CalendarSetting calendarSetting, boolean autoExport) {
+private  boolean exportCloud = false;
+    public  DoubleSession (Context context, int indexListRecord,  CalendarSetting calendarSetting, boolean autoExport, boolean exportCloud) {
         this.context = context;
             bd = Bd.load(context);
         this.indexListRecord = indexListRecord;
     this.calendarSetting = calendarSetting;
     this.autoExport = autoExport;
+    this.exportCloud = exportCloud;
     }
 
     @Override
@@ -56,7 +57,7 @@ public  boolean autoExport = false;
             contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
             contentValues.put(Bd.COLUMN_EVENT_ID, recordDup.getEvent_id());
             contentValues.put(Bd.COLUMN_PAY, recordDup.getPay());
-            long id = bd.add(Bd.TABLE_SESSION, contentValues, autoExport);
+            long id = bd.add(Bd.TABLE_SESSION, contentValues,autoExport, exportCloud);
             if (id > 0) {
                 if (bd.getRecords().add(new Record(
                         id,

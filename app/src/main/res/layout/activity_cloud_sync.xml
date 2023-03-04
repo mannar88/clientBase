@@ -12,14 +12,23 @@
 android:id="@+id/listViewCloudSync"
         />
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/checkBoxCloudSyncAutoExport"
+    android:text="Автоматический экспорт базы на сервер после изменения"
+        app:layout_constraintTop_toBottomOf="@+id/listViewCloudSync"
+        />
+
     <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
         android:id="@+id/buttonCloudSyncImport"
         android:text="Облачный импорт"
         android:onClick="onClickButtonCloudSyncImport"
-        app:layout_constraintTop_toBottomOf="@+id/listViewCloudSync"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxCloudSyncAutoExport"
         />
+
     <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

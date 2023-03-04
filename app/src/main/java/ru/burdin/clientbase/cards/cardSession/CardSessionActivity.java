@@ -120,7 +120,7 @@ cardSession.setScreenInfo(record);}
         ContentValues contentValues = new ContentValues();
     contentValues.put(Bd.COLUMN_ONE_IN_LINE, StaticClass.booleaILong(b));
         int [] arr = Analytics.placeOnTheList(bd.getRecords(), bd.getUsers().get(cardSession.getIndexUser(record)).getId(), record.getId());
-    if (arr[2] > 1&&bd.update(bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1){
+    if (arr[2] > 1&&bd.update(bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(context.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1){
 record.setOneLine(StaticClass.booleaInInt(b));
         arr = Analytics.placeOnTheList(bd.getRecords(),bd.getUsers().get(cardSession.getIndexUser(record)).getId(), record.getId());
 textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
@@ -133,7 +133,7 @@ textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", кур
         ContentValues contentValues = new ContentValues();
     long res = StaticClass.booleaILong(b);
     contentValues.put(Bd.COLUMN_not_notification, res);
-    if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
+    if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(context.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
 record.setNotNotification(res);
             }
     }
@@ -212,12 +212,12 @@ if (!b && longHashSet.contains(longs[i])){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (longHashSet.size() > 0) {
-long max =  longHashSet.stream().max(Comparator.naturalOrder()).get();
                     for (Long l : longHashSet) {
-    Consumer<Record> doubleSession = new DoubleSession(getApplicationContext(), StaticClass.indexList(recordId, bd.getRecords()), calendarSetting, max == l? true:false);
+    Consumer<Record> doubleSession = new DoubleSession(getApplicationContext(), StaticClass.indexList(recordId, bd.getRecords()), calendarSetting,false, false);
 doubleSession.accept(new Record(l));
 }
     Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
+                bd.autoExport(1l, Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
                 }else {
                     Toast.makeText(getApplicationContext(), "Ниччего не выбрано", Toast.LENGTH_SHORT).show();
                 }
@@ -284,7 +284,7 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
     метод удаления сеанса
      */
     private  boolean   delete () {
-        int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
+        int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
         if (resultDelete == 1) {
             long id = bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
             if (calendarSetting.delete(id) == 0) {

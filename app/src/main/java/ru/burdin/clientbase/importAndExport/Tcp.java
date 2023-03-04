@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import ru.burdin.clientbase.R;
 
@@ -26,15 +27,19 @@ public class Tcp extends AsyncTask <String, Void,String> {
     @Override
     protected String doInBackground(String... strings) {
         String result = "начало работы ";
-        try ( Socket socket = new Socket("78.153.4.192", 2016);
-                         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
- DataInputStream in = new DataInputStream(socket.getInputStream());
-        ){
- socket.setSoTimeout(10000) ;
-                    out.writeUTF(strings[0]);
-out.flush();
-result = in.readUTF();
-                }catch (IOException e) {
+        try (Socket socket = new Socket("78.153.4.192", 2016);
+             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+             DataInputStream in = new DataInputStream(socket.getInputStream());
+        ) {
+            socket.setSoTimeout(10000);
+            out.writeUTF(strings[0]);
+            out.flush();
+            result = in.readUTF();
+        }catch (SocketTimeoutException e){
+            result = "Истекло время ожидания";
+        } catch (ConnectException e){
+result = "ошибка соединения";
+    }        catch (IOException e) {
 result = "Сервер не доступен";
         }
                     return  result;

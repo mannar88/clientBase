@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -55,10 +56,12 @@ private  String select;
     if (IMPORT.equals(select)){
         res = eimportDb(socket, out, in);
     }
-    }catch (SocketTimeoutException e) {
-        res = "По ходу дела сервак лежит, надо пожаловаться криворукому разработчику";
-    } catch (IOException e) {
-        res = "Ошибка IO " + e.getLocalizedMessage();
+    }catch (SocketTimeoutException e){
+res = "Истекло время ожидания";
+    } catch (ConnectException e){
+res = "ошибка соединения";
+    }        catch (IOException e) {
+res = "Сервер не доступен";
     }
     return res;
 }

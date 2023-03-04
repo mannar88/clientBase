@@ -86,7 +86,7 @@ editTextName.setSelection(editTextName.length());
                 contentValues.put(Bd.COLUMN_PHONE, notNull(editTextPhone));
                 contentValues.put(Bd.COLUMN_COMMENT, notNull(editTextComment));
                 if (index == -1) {
-                    long id = bd.add(Bd.TABLE, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false));
+                    long id = bd.add(Bd.TABLE, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
                     if (id > 0) {
                         if (bd.getUsers().add(new User(id, notNull(editTextName), notNull(editTextSurname), notNull(editTextPhone), notNull(editTextComment)))) {
                             bd.getUsers().sort(Comparator.naturalOrder());
@@ -100,7 +100,7 @@ editTextName.setSelection(editTextName.length());
                         }
                     }
                 } else {
-                    if (bd.update(Bd.TABLE, contentValues, user.getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
+                    if (bd.update(Bd.TABLE, contentValues, user.getId(), Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
                         bd.getUsers().get(index).setName(editTextName.getText().toString());
                         bd.getUsers().get(index).setSurname(editTextSurname.getText().toString());
                         bd.getUsers().get(index).setPhone(editTextPhone.getText().toString());

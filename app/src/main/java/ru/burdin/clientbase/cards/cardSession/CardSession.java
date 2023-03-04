@@ -86,7 +86,7 @@ class CardSession {
                 }
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(Bd.COLUMN_PAY, result);
-                if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(activity.context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
+                if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(activity.context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
                     record.setPay(result);
                     dialog.cancel();
                     Toast.makeText(activity.getApplicationContext(), "Сохранено: " + StaticClass.priceToString(result), Toast.LENGTH_SHORT).show();

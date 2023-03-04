@@ -95,11 +95,11 @@ builder.setMessage("Вы уверены, что хотите удалить ка
 builder.setPositiveButton("Уверен, как никогда. Удалить", new DialogInterface.OnClickListener() {
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
-        if (bd.delete(Bd.TABLE, user.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
+        if (bd.delete(Bd.TABLE, user.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
             List <Record> deleteRecord = new ArrayList<>();
             for (Record record : bd.getRecords()) {
                 if (record.getIdUser() == user.getId()) {
-                    if (bd.delete(Bd.TABLE_SESSION, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false)) == 1) {
+                    if (bd.delete(Bd.TABLE_SESSION, record.getId(), Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
                         deleteRecord.add(record);
                     }
                 }

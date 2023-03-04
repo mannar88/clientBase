@@ -27,6 +27,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.importAndExport.BdImportExport;
+import ru.burdin.clientbase.importAndExport.Tcp;
+import ru.burdin.clientbase.importAndExport.TcpCloudSync;
 import ru.burdin.clientbase.models.Expenses;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
@@ -167,7 +169,7 @@ return records;
     /*
 Добавить
  */
-    public  long  add (String table, ContentValues contentValues, boolean autoExport) {
+    public  long  add (String table, ContentValues contentValues, boolean autoExport, boolean exportCloud) {
 AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
 
         long  result = 0;
@@ -180,14 +182,14 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
         } catch (InterruptedException | TimeoutException e) {
             Toast.makeText(staticContex.getApplicationContext(), "Не удалось добавить в базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
-        autoExport(result, autoExport);
+        autoExport(result, autoExport, exportCloud);
                 return  result;
 }
 
 /*
 Автоматическиий экспорт БД на устройство
  */
-private  void  autoExport (Long result , boolean autoExport) {
+public   void autoExport (Long result , boolean autoExport, boolean cloud) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -199,12 +201,17 @@ private  void  autoExport (Long result , boolean autoExport) {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    if(result != 0 && cloud) {
+                        AutoExportCloud autoExportCloud = new AutoExportCloud(staticContex, TcpCloudSync.EXPORT);
+                        autoExportCloud.execute();
+                    }
+
                 }
             }
         };
 Thread thread = new Thread(runnable);
 thread.start();
-    }
+}
 
 /*
 Сбор в список клиентов
@@ -256,7 +263,10 @@ while (cursorExpenses.moveToNext()) {
 cursorExpenses.close();
 }
 
-public  int delete (String table, long id, boolean autoExport) {
+/*
+удаление
+ */
+public  int delete (String table, long id, boolean autoExport, boolean exportCloud) {
 AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
     int result = 0;
@@ -268,11 +278,11 @@ AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     } catch (InterruptedException | TimeoutException e) {
         Toast.makeText(staticContex.getApplicationContext(), "Не удалось удалить из  базы " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
-    autoExport((long)result, autoExport);
+    autoExport((long)result, autoExport, exportCloud);
     return  result;
 }
 
-public     int update  (String table, ContentValues contentValues, long id, boolean autoExport) {
+public     int update  (String table, ContentValues contentValues, long id, boolean autoExport, boolean exportCloud) {
     AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     Supplier <Integer> supplier =()-> sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
 
@@ -287,7 +297,7 @@ public     int update  (String table, ContentValues contentValues, long id, bool
     } catch (TimeoutException e) {
         Toast.makeText(staticContex.getApplicationContext(), "Не удалось обновить базу " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
-    autoExport((long)result, autoExport);
+    autoExport((long)result, autoExport, exportCloud);
         return result;
 }
 
@@ -369,4 +379,11 @@ if (i < 8) {
            return suppliers[0].get();
        }
    }
-    }
+
+   private  class  AutoExportCloud extends  TcpCloudSync {
+
+       public AutoExportCloud(Context context, String select) {
+           super(context, select);
+       }
+   }
+}
