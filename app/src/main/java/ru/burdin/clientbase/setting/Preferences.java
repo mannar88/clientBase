@@ -16,6 +16,11 @@ public class Preferences {
     public static final String SET_CHECK_BOX_PAY = "setCheckBoxPay";
     //Автоматический экспорт бд на сервер
     public static final String SET_CHECK_VOX_AUTO_EXPORT_BD = "auto_export_cloud";
+    //Время автоматического экспорта на облауко
+    public static final String TIME_EXPORT_CLOUD = "time_export_cloud";
+    //Время в лонгах для экспорта на облако
+    public static final String TIME_NG_EXPORT_CLOUD = "time_long_export_cloud";
+
     private static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
     public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";
@@ -40,6 +45,8 @@ public  static  final String APP_PREFERENSES_CHECK_LINEPHONE ="line_phone";
 public  final  static  String APP_PREFERENSES_CHECK_AUTO_IMPORT = "auto_import";
 //Булевое разрешение пересечения записи
 public  static  final  String APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD ="checkBoxSettingIntersectionRecod";
+//разрешение облачного экспорта по расписанию
+public static final String SET_CHECK_BOX_EXPORT_schedule = "set_export_cloud_schedule";
 
 
     public  static SharedPreferences  getSharedPreferences (Context context) {
@@ -86,4 +93,4 @@ public  static Long getLong (Context context,  String key, long other) {
     }
 
 
-}
+    }

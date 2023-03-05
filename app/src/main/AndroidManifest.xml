@@ -32,11 +32,12 @@
         <activity android:name=".importAndExport.LoginAuthorizingActivity" />
         <activity android:name=".importAndExport.SignUpActivity" />
         <activity android:name=".setting.interfase.InterFaseSettingActivity" />
-
+<receiver android:name=".importAndExport.AutoExportSchedule"
+android:exported="false"
+    />
         <receiver
             android:name=".notificationSMS.SMSHourNotificationReceiver"
-            android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <receiver
             android:name=".notificationSMS.SMSNotificationReceiver"
             android:exported="false">

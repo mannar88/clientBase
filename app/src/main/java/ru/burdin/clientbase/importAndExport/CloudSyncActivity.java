@@ -1,13 +1,18 @@
 package ru.burdin.clientbase.importAndExport;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -35,6 +43,11 @@ private  Bd bd;
 private Button buttonImport;
 private  Button buttonExport;
 private CheckBox checkBoxAutoExport;
+private  CheckBox checkBoxExportSchedule;
+private Spinner spinnerExportTime;
+private  ArrayAdapter arrayAdapterSpinnerTime;
+private Map <String, Long> mapTimeExport = new TreeMap<>();
+public  final  static  int ALARM_ID = 40;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +62,37 @@ private CheckBox checkBoxAutoExport;
     buttonImport.setEnabled(false);
     checkBoxAutoExport = findViewById(R.id.checkBoxCloudSyncAutoExport);
     checkBoxAutoExport.setChecked(Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
-    stringListAdd();
+    checkBoxExportSchedule = findViewById(R.id.checkBoxCloudSyncExportSchedule);
+    checkBoxExportSchedule.setChecked(Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_EXPORT_schedule, false));
+spinnerExportTime = findViewById(R.id.spinnerCloudSyncExportTime);
+mapPut();
+arrayAdapterSpinnerTime= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,mapTimeExport.keySet().toArray(new String[mapTimeExport.size()]));
+    arrayAdapterSpinnerTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+spinnerExportTime.setAdapter(arrayAdapterSpinnerTime);
+spinnerExportTime.setEnabled(checkBoxExportSchedule.isChecked());
+spinnerExportTime.setSelection(new  ArrayList<String >(mapTimeExport.keySet()).indexOf(Preferences.getString(this, Preferences.TIME_EXPORT_CLOUD, "00:00")));
+stringListAdd();
         arrayAdapter = new ArrayAdapter <>(this,
-                android.R.layout.simple_list_item_1, stringList
-        );
+                android.R.layout.simple_list_item_1, stringList);
 listView.setAdapter(arrayAdapter);
 login = Preferences.getString(this, Preferences.LOGIN_PASSWORD, "false").split("--");
 tcpInfoUser = new TcpInfoUser();
     tcpInfoUser.execute("dateSync=" + login[0] + "--" + login[1]);
+}
+
+/*
+Собирает в мапу время
+ */
+private  void  mapPut(){
+DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    for (int i = 0; i < 24; i++) {
+        calendar.add(Calendar.HOUR, 1);
+        mapTimeExport.put(dateFormat.format(calendar.getTime()), calendar.getTimeInMillis());
+    }
+
 }
 
     /*
@@ -69,7 +105,7 @@ stringList.add("Синхронизация доступна до: получен
 stringList.add("Дата загрузки базы на сервер: получение информации от сервера");
 }
 /*
-Облачный експорт
+Облачный экспорт
  */
 public void onClickButtonCloudSyncExport(View view) {
     TcpExportDb tcpCloudSync = new TcpExportDb(this, TcpCloudSync.EXPORT);
@@ -86,6 +122,10 @@ public void onClickButtonCloudSyncExport(View view) {
     public void onClickButtonCloudSyncClose(View view) {
         SharedPreferences.Editor editor = Preferences.getSharedPreferences(this).edit();
     editor.remove(Preferences.LOGIN_PASSWORD);
+editor.remove(Preferences.SET_CHECK_BOX_EXPORT_schedule);
+editor.remove(Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD);
+editor.remove(Preferences.TIME_EXPORT_CLOUD);
+editor.remove(Preferences.TIME_NG_EXPORT_CLOUD);
     editor.apply();
     finish();
     }
@@ -94,7 +134,33 @@ public void onClickButtonCloudSyncExport(View view) {
     @Override
     public void onBackPressed() {
 Preferences.set(this,Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, checkBoxAutoExport.isChecked());
-        super.onBackPressed();
+Preferences.set(this, Preferences.SET_CHECK_BOX_EXPORT_schedule, checkBoxExportSchedule.isChecked());
+Preferences.set(this, Preferences.TIME_EXPORT_CLOUD, (String) spinnerExportTime.getSelectedItem());
+Preferences.set(this, Preferences.TIME_NG_EXPORT_CLOUD, mapTimeExport.get(spinnerExportTime.getSelectedItem()));
+        Intent intentNewTime = new Intent(this, AutoExportSchedule.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, ALARM_ID, intentNewTime, PendingIntent.FLAG_MUTABLE);
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+if (checkBoxExportSchedule.isChecked()) {
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP,Preferences.getLong(this, Preferences.TIME_NG_EXPORT_CLOUD, mapTimeExport.get("00:00")),
+            pendingIntent);
+DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY, HH:mm");
+
+}else {
+alarmManager.cancel(pendingIntent);
+}
+super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    checkBoxExportSchedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            spinnerExportTime.setEnabled(b);
+        }
+    });
     }
 
     private  class  TcpInfoUser extends  Tcp {

@@ -1,5 +1,7 @@
 package ru.burdin.clientbase.notificationSMS;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.importAndExport.AutoExportSchedule;
+import ru.burdin.clientbase.importAndExport.CloudSyncActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.TemplatesActivity;
@@ -42,6 +46,17 @@ if (Preferences.getInt(context.getApplicationContext(), Preferences.APP_PREFEREN
     }else {
     SendSMS.startAlarm(context.getApplicationContext(), Preferences.getString(context.getApplicationContext(), Preferences.TIME_SMS_NOTIFICATION, "00:"));
     }
+            Intent intentNewTime = new Intent(context.getApplicationContext(), AutoExportSchedule.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context, CloudSyncActivity.ALARM_ID, intentNewTime, PendingIntent.FLAG_MUTABLE);
+            AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+            if (Preferences.getBoolean(context.getApplicationContext(), Preferences.SET_CHECK_BOX_EXPORT_schedule, false)) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,Preferences.getLong(context.getApplicationContext(), Preferences.TIME_NG_EXPORT_CLOUD, Calendar.getInstance().getTimeInMillis()),
+                        pendingIntent);
+
+            }else {
+                alarmManager.cancel(pendingIntent);
+            }
 
         } else {
 Toast.makeText(context.getApplicationContext(), "Начало отправки SMS уведомлений", Toast.LENGTH_SHORT).show();

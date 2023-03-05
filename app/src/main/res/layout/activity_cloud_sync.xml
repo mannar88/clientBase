@@ -20,13 +20,28 @@ android:id="@+id/listViewCloudSync"
         app:layout_constraintTop_toBottomOf="@+id/listViewCloudSync"
         />
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/checkBoxCloudSyncExportSchedule"
+android:text="Экспорт по расписанию"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxCloudSyncAutoExport"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/spinnerCloudSyncExportTime"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxCloudSyncExportSchedule"
+        />
+
     <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
         android:id="@+id/buttonCloudSyncImport"
         android:text="Облачный импорт"
         android:onClick="onClickButtonCloudSyncImport"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxCloudSyncAutoExport"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerCloudSyncExportTime"
         />
 
     <Button
