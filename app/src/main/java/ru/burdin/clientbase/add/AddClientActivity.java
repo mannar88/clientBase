@@ -15,7 +15,7 @@ import java.util.Comparator;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
-import ru.burdin.clientbase.lits.ListSessionActivity;
+import ru.burdin.clientbase.lits.litsSession.ListSessionActivity;
 import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.setting.Preferences;
 

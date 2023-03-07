@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.Bd;
@@ -23,6 +20,7 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.cards.cardSession.CardSessionActivity;
+import ru.burdin.clientbase.lits.litsSession.ListSessionActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.Preferences;
 

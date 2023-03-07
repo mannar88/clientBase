@@ -68,7 +68,7 @@ android:exported="false"
         </activity>
 
         <activity
-            android:name=".lits.ListSessionActivity"
+            android:name=".lits.litsSession.ListSessionActivity"
             android:exported="true"
             android:label="Расписание"
             android:parentActivityName=".MainActivity">

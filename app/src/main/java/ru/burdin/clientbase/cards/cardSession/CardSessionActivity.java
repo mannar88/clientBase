@@ -11,12 +11,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,15 +22,9 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.analytics.Analytics;
@@ -45,9 +36,8 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
-import ru.burdin.clientbase.lits.ListSessionActivity;
+import ru.burdin.clientbase.lits.litsSession.ListSessionActivity;
 import ru.burdin.clientbase.models.Record;
-import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.setting.Preferences;
 
 public class CardSessionActivity extends AppCompatActivity {

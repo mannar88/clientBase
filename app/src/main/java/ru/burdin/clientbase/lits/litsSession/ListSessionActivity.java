@@ -1,4 +1,4 @@
-package ru.burdin.clientbase.lits;
+package ru.burdin.clientbase.lits.litsSession;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -60,14 +60,14 @@ import static java.text.DateFormat.getDateInstance;
 public class ListSessionActivity extends AppCompatActivity {
 
     private TextView textViewDay;
-  private  TextView textViewTime;
+    TextView textViewTime;
     private   Calendar dateAndTime;
   private   ArrayList <Date> dates;
 private RecyclerView recyclerViewTime;
 private MyAdapter myAdapter;
-private List <Record> recordsEnpty = new ArrayList<>();
+ List <Record> recordsEnpty = new ArrayList<>();
 public  static  final  String SETTIME = "setTime";
-    private  Bd bd;
+      Bd bd;
 private  int countUser;
 private  double sum;
 private CheckBox checkBoxUsers;
@@ -78,6 +78,7 @@ private  int indexListRecord;
 public  static  final  int CLASS_INDEX = 2;
 private  Activity activity;
 private  boolean focus;
+ListSession listSession;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,8 @@ protected void onCreate(Bundle savedInstanceState) {
         setTitle("");
         activity = this;
         bd = Bd.load(getApplicationContext());
-    calendarSetting = CalendarSetting.load(this);
+    listSession = new ListSession(this);
+        calendarSetting = CalendarSetting.load(this);
     if (savedInstanceState == null) {
         LoadAlarmMananger loadAlarmMananger = new LoadAlarmMananger(this);
         loadAlarmMananger.execute();
@@ -175,6 +177,7 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
     protected void onResume() {
         super.onResume();
     recUpdate();
+    listSession.textViewMenu();
     }
 
     /*

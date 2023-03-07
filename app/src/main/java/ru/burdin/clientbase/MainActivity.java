@@ -8,26 +8,19 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.importAndExport.ImportExportActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
-import ru.burdin.clientbase.lits.ListSessionActivity;
+import ru.burdin.clientbase.lits.litsSession.ListSessionActivity;
 import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.notificationSMS.LoadAlarmMananger;
-import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.setting.Preferences;
 import ru.burdin.clientbase.setting.SettingActivity;
-import ru.burdin.clientbase.setting.TemplatesActivity;
 
 public class MainActivity extends AppCompatActivity {
 
