@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
+import ru.burdin.clientbase.lits.litsSession.ListSession;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
@@ -42,7 +44,7 @@ import ru.burdin.clientbase.setting.Preferences;
 
 public class CardSessionActivity extends AppCompatActivity {
 
-    private Record record;
+     Record record;
     private Bd bd;
     protected TextView textViewDate;
     protected   TextView textViewNameUser;
@@ -56,8 +58,9 @@ protected   TextView textViewPlaceOnTheList;
 protected   CheckBox checkBoxPlaceOnTheList;
 protected CheckBox checkBoxNotNotification;
 protected  TextView textViewInfoPay;
+Button buttonDelete;
 private  long recordId = -1;
-private CalendarSetting calendarSetting;
+ CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
 public  static  final  int TRANSFER_INT = 67;
 Activity context;
@@ -83,13 +86,13 @@ private  CardSession cardSession;
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewPay = findViewById(R.id.textViewCardSessionPay);
    textViewSaldo = findViewById(R.id.textViewCardSessionSaldo);
-
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
 textViewPlaceOnTheList = findViewById(R.id.textvIewCardSessionPlaceOnTheList);
 checkBoxPlaceOnTheList = findViewById(R.id.checkBoxCardSessionPlaceOnTheList);
 checkBoxNotNotification = findViewById(R.id.checkBoxCardSessionNotNotification);
-    this.context = this;
+buttonDelete = findViewById(R.id.buttonCardSessionDelete);
+this.context = this;
 cardSession = new CardSession(this, bd);
 cardSession.visibilityPay();
 }
@@ -129,6 +132,7 @@ record.setNotNotification(res);
     }
 });
 cardSession.setScreenInfo(record);
+cardSession.groupDelete();
 }
 
 
@@ -168,6 +172,7 @@ builder.setPositiveButton("Дублировать однократно", new Dia
         Intent intent = new Intent(getApplicationContext(), ListSessionActivity.class);
         intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
         intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
+        intent.putExtra(ListSessionActivity.CALENDAR, record.getStart());
         startActivityForResult(intent,ListSessionActivity.CLASS_INDEX);
     }
 });
@@ -342,6 +347,7 @@ break;
         intent.putExtra(TRANSFER,record.getId());
         intent.putExtra(StaticClass.KEY, StaticClass.TRANSFER);
         intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
+        intent.putExtra(ListSessionActivity.CALENDAR, record.getStart());
         startActivityForResult(intent,TRANSFER_INT);
 
     }

@@ -169,16 +169,9 @@ super.onBackPressed();
             super.onPostExecute(s);
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
             DateFormat dateFormat1 = new SimpleDateFormat("dd.MM.YYYY, HH:mm:ss");
-            if ("Сервер не доступен".equals(s)
-|| "Истекло время ожидания".equals(s)
-            || "ошибка соединения".equals(s)
-            ) {
-Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-                        } else {
-
-                if (s != null && !s.isEmpty()) {
-                    String[] result = s.split("--");
-                    stringList.remove(1);
+                      String[] result = s.split("--");
+                    if (result.length == 2) {
+                      stringList.remove(1);
                     stringList.remove(1);
                     stringList.add("Синхронизация доступна до: " + dateFormat.format(Long.valueOf(result[0])));
                     if (Long.valueOf(result[1]) > 0) {
@@ -187,12 +180,13 @@ Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                         stringList.add("Дата загрузки базы на сервер: да ничё там еще нету");
                     }
                     arrayAdapter.notifyDataSetChanged();
-                }
-            buttonExport.setEnabled(true);
+                buttonExport.setEnabled(true);
                 buttonImport.setEnabled(true);
-            }
-        }
+        }else {
+                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                    }
     }
+        }
 
     private  class  ImportDb extends TcpCloudSync {
 

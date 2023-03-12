@@ -90,13 +90,14 @@ builder.create().show();
         for (Record record:activity.recordsEnpty) {
             if (record.getId() > 0) {
                 if (activity.bd.delete(Bd.TABLE_SESSION, record.getId(), false, false) == 1) {
+activity.calendarSetting.delete(record.getEvent_id());
                     activity.bd.getRecords().remove(record);
         recordList.add(new Record(record));
                 }
             }
         }
         activity.recUpdate();
-        activity.bd.autoExport(1l, Preferences.getBoolean(activity.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_BOX_EXPORT_schedule, false));
+        activity.bd.autoExport(1l, Preferences.getBoolean(activity.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
 if (recordList.size() > 0 && i == 0) {
     Thread thread = new Thread(() ->
     recordList.forEach(this::accept

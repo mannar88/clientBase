@@ -29,7 +29,7 @@ public class AddClientActivity extends AppCompatActivity {
     private User user;
     private int index = -1;
 private CheckBox checkBoxRecord;
-
+private  String addSession = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +43,9 @@ private CheckBox checkBoxRecord;
         editTextComment = findViewById(R.id.editTextComment);
         editTextComment.setText("");
 checkBoxRecord = findViewById(R.id.checkboxAddClientRecord);
+//Проверяем, пришли с записи сеанса
+addSession = getIntent().getExtras().getString(AddSessionActivity.class.getName(), "");
+checkBoxRecord.setEnabled(addSession.equals(AddSessionActivity.class.getName())? false:true);
 bd = Bd.load(getApplicationContext());
         index = getIntent().getIntExtra(Bd.TABLE, -1);
         getIntent().removeExtra(Bd.TABLE);
@@ -78,15 +81,17 @@ editTextName.setSelection(editTextName.length());
         }
 
     public void buttonSaveC(View view) {
-            if (editTextPhone.getText().length() > 0 || editTextSurname.getText().length() > 0 || editTextName.getText().length() > 0) {
+        long id = 0;
+        if (editTextPhone.getText().length() > 0 || editTextSurname.getText().length() > 0 || editTextName.getText().length() > 0) {
             if (check()) {
+
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(Bd.COLUMN_NAME, notNull(editTextName));
                 contentValues.put(Bd.COLUMN_SURNAME, notNull(editTextSurname));
                 contentValues.put(Bd.COLUMN_PHONE, notNull(editTextPhone));
                 contentValues.put(Bd.COLUMN_COMMENT, notNull(editTextComment));
                 if (index == -1) {
-                    long id = bd.add(Bd.TABLE, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
+ id = bd.add(Bd.TABLE, contentValues, Preferences.getBoolean(this, Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(this, Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
                     if (id > 0) {
                         if (bd.getUsers().add(new User(id, notNull(editTextName), notNull(editTextSurname), notNull(editTextPhone), notNull(editTextComment)))) {
                             bd.getUsers().sort(Comparator.naturalOrder());
@@ -107,6 +112,12 @@ editTextName.setSelection(editTextName.length());
                         bd.getUsers().get(index).setComment(editTextComment.getText().toString());
                     }
                     Toast.makeText(getApplicationContext(), "Карточка клиента успешна обновлена", Toast.LENGTH_SHORT).show();
+                }
+                //Если пришли с записи сеанса, передаем id юзера
+                if (addSession.equals(AddSessionActivity.class.getName())) {
+Intent intent = new Intent();
+intent.putExtra(AddSessionActivity.class.getName(), id);
+                    setResult(RESULT_OK, intent);
                 }
                 finish();
             }else {

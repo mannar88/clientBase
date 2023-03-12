@@ -129,7 +129,7 @@ android:id="@+id/textvIewCardSessionPlaceOnTheList"
         android:layout_height="wrap_content"
         android:id="@+id/buttonCardSessionDelete"
         android:onClick="onClickButtonCardSessionDelete"
-        android:text="Удалить запись"
+        android:text="Удалить запись, удерживайте для пакетного удаления"
         app:layout_constraintTop_toBottomOf="@+id/buttonCardSessionRead"
 />
 

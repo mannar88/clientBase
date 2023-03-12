@@ -1,4 +1,4 @@
-package ru.burdin.clientbase.lits;
+package ru.burdin.clientbase.lits.listClient;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -35,6 +35,7 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
+import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.models.User;
@@ -47,7 +48,8 @@ public class SelectAddClient            {
     private  Bd bd;
     private  List<String> resultContact = new ArrayList<>();
     private ListClientActivity activity;
-public  static  final  int PERNISSION_LOG_COLL = 5;
+private  int index = -1;
+    public  static  final  int PERNISSION_LOG_COLL = 5;
 public  static  final  int PERMISSION_PHONE_BOOK = 6;
 private  static  final  String  CLIENT = " клиент ";
 public SelectAddClient(ListClientActivity activity) {
@@ -66,7 +68,8 @@ public SelectAddClient(ListClientActivity activity) {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(activity, AddClientActivity.class);
-                activity.startActivity(intent);
+                intent.putExtra(AddSessionActivity.class.getName(), activity.addSession);
+                activity.startActivityForResult(intent, StaticClass.LIST_USERS);
             }
         });
         builder.setNegativeButton("Взять номер из журнала вызовов", new DialogInterface.OnClickListener() {
@@ -144,7 +147,8 @@ builderColl.setItems(contacts, new DialogInterface.OnClickListener() {
 if (list.get(i).user_id == -1) {
     Intent intent = new Intent(activity, AddClientActivity.class);
     intent.putExtra(StaticClass.NUMBER_PHONE, list.get(i).number);
-    activity.startActivity(intent);
+    intent.putExtra(AddSessionActivity.class.getName(), activity.addSession);
+    activity.startActivityForResult(intent, StaticClass.LIST_USERS);
 }else {
     Intent intent = new Intent(activity, CardUserActivity.class);
     intent.putExtra(Bd.TABLE, StaticClass.indexList(list.get(i).user_id, bd.getUsers()));
@@ -211,7 +215,13 @@ private   void  buttonAddConact (Button button, Map <String, String> map, AlertD
 resultContact.forEach(s -> setContact(s.split(" ", 2), map.get(s)));
                 if (resultContact.size() == 1) {
     Toast.makeText(activity, "Контакт добавлен в Клиентскую базу", Toast.LENGTH_SHORT).show();
-}else {
+if (activity.addSession.equals(AddSessionActivity.class.getName()) && index != -1) {
+    Intent intent = new Intent();
+    intent.putExtra(ListClientActivity.class.getName(), index);
+    activity.setResult(activity.RESULT_OK, intent);
+    activity.finish();
+}
+                }else {
     Toast.makeText(activity, "Контакты успешно добавлены в Клиентскую базу", Toast.LENGTH_SHORT).show();
 }
                 alertDialog.cancel();
@@ -306,8 +316,10 @@ contentValues.put(Bd.COLUMN_PHONE, phone);
   bd.getUsers().add(user);
   bd.getUsers().sort(Comparator.naturalOrder());
   activity.updateList();
+    index = bd.getUsers().indexOf(user);
+}
   }
-  }
+
   /*
 Разрешение
  */

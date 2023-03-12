@@ -1,6 +1,7 @@
 package ru.burdin.clientbase.lits.listClient;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.add.AddSessionActivity;
@@ -31,7 +30,6 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
-import ru.burdin.clientbase.lits.SelectAddClient;
 import ru.burdin.clientbase.models.User;
 
 public class ListClientActivity extends AppCompatActivity {
@@ -40,7 +38,7 @@ public class ListClientActivity extends AppCompatActivity {
     private TextView textViewCount;
     private List<User> users;
 private EditText editTextSerch;
-    private  String addSession = "";
+      String addSession = "";
     private  Intent intent;
 private  RecyclerView recyclerViewClient;
 Spinner spinnerSort;
@@ -215,6 +213,23 @@ MyAdapter.OnUserClickListener <User> onUserClickListener = new MyAdapter.OnUserC
 MyAdapter myAdapter = new MyAdapter(this, users, onUserClickListener, consumer);
 recyclerViewClient.setAdapter(myAdapter);
 textViewCount.setText("Всего клиентов: " +users.size() );
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case  StaticClass.LIST_USERS:
+                if (resultCode == RESULT_OK) {
+                    int index = StaticClass.indexList(data.getLongExtra(AddSessionActivity.class.getName(), 1l), bd.getUsers());
+                    Intent intent = new Intent();
+                    intent.putExtra(ListClientActivity.class.getName(), index);
+                    setResult(RESULT_OK, intent);
+                finish();
+                }
+        break;
+        }
 
     }
 

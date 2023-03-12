@@ -19,6 +19,8 @@ import java.net.SocketTimeoutException;
 import ru.burdin.clientbase.R;
 
 public class Tcp extends AsyncTask <String, Void,String> {
+      public static final String IOEXCEPTION = "Сервер не досупен";
+    public static final String CONNECT_EXCETPION = "Нет связи с сервером";
 
     public  Tcp () {
 
@@ -38,9 +40,9 @@ public class Tcp extends AsyncTask <String, Void,String> {
         }catch (SocketTimeoutException e){
             result = "Истекло время ожидания";
         } catch (ConnectException e){
-result = "ошибка соединения";
+result = CONNECT_EXCETPION;
     }        catch (IOException e) {
-result = "Сервер не доступен";
+            result = IOEXCEPTION;
         }
                     return  result;
             }

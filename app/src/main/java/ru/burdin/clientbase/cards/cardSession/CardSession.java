@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,10 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.Bd;
@@ -130,6 +134,67 @@ class CardSession {
         int acsees = Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_BOX_PAY, true) ? View.VISIBLE : View.GONE;
         activity.textViewSaldo.setVisibility(acsees);
         activity.textViewPay.setVisibility(acsees);
+    }
+
+    /*
+    Пакетное удаление
+     */
+    public void groupDelete() {
+    activity.buttonDelete.setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            List <Record> records = Analytics.listRecords(bd.getRecords(), activity.record.getIdUser());
+records.sort(Comparator.reverseOrder());
+            String[] strings = new  String[records.size()];
+            boolean [] booleans = new  boolean[records.size()];
+            DateFormat dateFormat = new SimpleDateFormat("EEEE, dd-MM-YYYY HH:mm");
+            for (int i = 0; i < records.size(); i++) {
+strings[i] = dateFormat.format(records.get(i).getStartDay())  + ", " + records.get(i).getProcedure() + ", " + String.valueOf(records.get(i).getPrice());
+            }
+            List <Record> deleteRecords = new ArrayList<>(records.size());
+            builder.setMultiChoiceItems(strings, booleans, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+if (b) {
+deleteRecords.add(records.get(i));
+}else {
+    deleteRecords.remove(records.get(i));
+}
+                }
+            });
+            builder.setNegativeButton("Удалить выбранное", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+int result = 0;
+                if (deleteRecords.size() > 0) {
+                    for (Record record:deleteRecords) {
+                        result = result +bd.delete(Bd.TABLE_SESSION, record.getId(), false, false);
+                    activity.calendarSetting.delete(record.getEvent_id());
+                    }
+if (result == deleteRecords.size()) {
+    bd.getRecords().removeAll(deleteRecords);
+Toast.makeText(activity.getApplicationContext(), "Записи удалены", Toast.LENGTH_SHORT).show();
+    activity.finish();
+bd.autoExport(1l, Preferences.getBoolean(activity.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false));
+}
+                }
+                }
+            });
+            builder.setPositiveButton("Выбрать все", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    for (int j = 0; j < booleans.length; j++) {
+                        booleans[j] = true;
+                         }
+                    deleteRecords.addAll(records);
+builder.create().show();
+                }
+            });
+            builder.create().show();
+            return true;
+        }
+    });
     }
 }
 

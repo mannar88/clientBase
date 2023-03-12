@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -59,6 +60,8 @@ import static java.text.DateFormat.getDateInstance;
 
 public class ListSessionActivity extends AppCompatActivity {
 
+    //Время для календаря
+    public static final String CALENDAR ="calendar";
     private TextView textViewDay;
     TextView textViewTime;
     private   Calendar dateAndTime;
@@ -73,7 +76,7 @@ private  double sum;
 private CheckBox checkBoxUsers;
 private  boolean checbox = false;
 private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
-private CalendarSetting calendarSetting;
+ CalendarSetting calendarSetting;
 private  int indexListRecord;
 public  static  final  int CLASS_INDEX = 2;
 private  Activity activity;
@@ -93,8 +96,10 @@ protected void onCreate(Bundle savedInstanceState) {
         LoadAlarmMananger loadAlarmMananger = new LoadAlarmMananger(this);
         loadAlarmMananger.execute();
     }
-    dateAndTime =Calendar.getInstance();
-indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
+    dateAndTime = new GregorianCalendar();
+    dateAndTime.setTimeInMillis(getIntent().getLongExtra(CALENDAR, new  Date().getTime()));
+getIntent().removeExtra(CALENDAR);
+    indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
         textViewDay = findViewById(R.id.textViewDate);
                 textViewTime = findViewById(R.id.textViewTime);
 textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
@@ -152,7 +157,7 @@ recordsEnpty = bd.getRecords().stream()
         .collect(Collectors.toList());
     sum = recordsEnpty.stream()
         .collect(Collectors.summingDouble(Record::getPrice));
-        textViewTime.setText("Всего записано: " + recordsEnpty.size() + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
+        textViewTime.setText("Всего записано: " + recordsEnpty.size() + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб. Удерживайте, что бы вызвать меню расписания.");
 
         if (!checbox) {
 while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calendarFinish.getTime())) < 0 && dateAndTime.get(Calendar.HOUR_OF_DAY) != 0) {
