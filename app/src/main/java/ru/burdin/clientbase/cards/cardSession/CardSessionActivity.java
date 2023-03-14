@@ -23,15 +23,15 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.analytics.Analytics;
-import ru.burdin.clientbase.cards.CardUserActivity;
+import ru.burdin.clientbase.cards.cardClient.CardClientActivity;
 import ru.burdin.clientbase.lits.actionListSassion.DoubleSession;
-import ru.burdin.clientbase.lits.litsSession.ListSession;
 import ru.burdin.clientbase.notificationSMS.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
@@ -50,8 +50,7 @@ public class CardSessionActivity extends AppCompatActivity {
     protected   TextView textViewNameUser;
     protected      TextView textViewProcedure;
     protected   TextView textViewPrice;
-protected   TextView textViewPay;
-protected  TextView textViewSaldo;
+   CheckBox checkBoxPay;
 protected   TextView textViewTimeEnd;
     protected   TextView textViewComment;
 protected   TextView textViewPlaceOnTheList;
@@ -84,9 +83,9 @@ private  CardSession cardSession;
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
-    textViewPay = findViewById(R.id.textViewCardSessionPay);
-   textViewSaldo = findViewById(R.id.textViewCardSessionSaldo);
-    textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
+checkBoxPay = findViewById(R.id.checkBoxCardSessionPay);
+checkBoxPay.setEnabled((record.getEnd() + record.getStart()) <= new Date().getTime()? true:false);
+textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
 textViewPlaceOnTheList = findViewById(R.id.textvIewCardSessionPlaceOnTheList);
 checkBoxPlaceOnTheList = findViewById(R.id.checkBoxCardSessionPlaceOnTheList);
@@ -133,6 +132,7 @@ record.setNotNotification(res);
 });
 cardSession.setScreenInfo(record);
 cardSession.groupDelete();
+cardSession.pay(record);
 }
 
 
@@ -140,7 +140,7 @@ cardSession.groupDelete();
     Открывает карточку клиента
      */
     public void onClickTextViewCardSessionNameUser(View view) {
-        Intent intent = new Intent(this, CardUserActivity.class);
+        Intent intent = new Intent(this, CardClientActivity.class);
         intent.putExtra(Bd.TABLE, cardSession.getIndexUser(record));
         startActivity(intent);
      }

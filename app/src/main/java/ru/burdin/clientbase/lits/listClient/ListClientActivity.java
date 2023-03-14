@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +26,7 @@ import java.util.function.Consumer;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.StaticClass;
-import ru.burdin.clientbase.cards.CardUserActivity;
+import ru.burdin.clientbase.cards.cardClient.CardClientActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.models.User;
@@ -51,7 +50,7 @@ private  ListClient listClient;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_client);
-         intent = new Intent(this, CardUserActivity.class);
+         intent = new Intent(this, CardClientActivity.class);
             bd = Bd.load(getApplicationContext());
         try {
             addSession = getIntent().getExtras().getString(AddSessionActivity.class.getName());

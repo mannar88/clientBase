@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,56 +53,18 @@ class CardSession {
      Отслеживает оплату
       */
     public void pay(Record record) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = activity.getLayoutInflater();
-
-        View viewPay = inflater.inflate(R.layout.pay, null);
-        EditText editTextPay = viewPay.findViewById(R.id.editTextCardSessionPay);
-        TextView textViewPay = viewPay.findViewById(R.id.textViewCardSessionPay);
-        Button buttonPay = viewPay.findViewById(R.id.buttonCardSessionPay);
-        editTextPay.setText(StaticClass.priceToString(record.getPay()));
-        editTextPay.setSelection(editTextPay.length());
-        builder.setView(viewPay);
-        Dialog dialog = builder.create();
-        double saldo = bd.getUsers().get(getIndexUser(record)).saldo(Analytics.listRecords(bd.getRecords(), record.getIdUser()));
-        if (saldo < 0.0) {
-            textViewPay.setText("Внести всю сумму долга: " + StaticClass.priceToString(saldo));
-            textViewPay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTextPay.setText(StaticClass.priceToString(Math.abs(saldo)));
-                }
-            });
+activity.checkBoxPay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        ContentValues contentValues = new ContentValues();
+    contentValues.put(Bd.COLUMN_PAY, b? record.getPrice():0.0);
+    if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(activity.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
+        record.setPay(b? record.getPrice():0.0);
+    setScreenInfo(record);
+    }
+    }
+});
         }
-        buttonlesten(buttonPay, editTextPay, dialog, record);
-
-        dialog.show();
-    }
-
-    private void buttonlesten(Button button, EditText editText, Dialog dialog, Record record) {
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                double result = 0.0;
-                if (editText.getText().length() == 0) {
-                    result = result;
-                } else {
-                    result = Double.valueOf(editText.getText().toString());
-                }
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(Bd.COLUMN_PAY, result);
-                if (bd.update(Bd.TABLE_SESSION, contentValues, record.getId(), Preferences.getBoolean(activity.context.getApplicationContext(), Preferences.APP_PREFERENSES_CHECK_AUTO_IMPORT, false), Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_VOX_AUTO_EXPORT_BD, false)) == 1) {
-                    record.setPay(result);
-                    dialog.cancel();
-                    Toast.makeText(activity.getApplicationContext(), "Сохранено: " + StaticClass.priceToString(result), Toast.LENGTH_SHORT).show();
-                    activity.textViewPay.setText("Оплачено: " + StaticClass.priceToString(record.getPay()) + ", кликнете что-бы изменить");
-                    activity.textViewSaldo.setText("Общий баланс: " + StaticClass.priceToString(bd.getUsers().get(indexUser).saldo(Analytics.listRecords(bd.getRecords(), record.getIdUser()))));
-                } else {
-                    Toast.makeText(activity.getApplicationContext(), "Что-то тут не то...", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
     /*
    Устанавливает информацию на экран
@@ -114,8 +77,8 @@ class CardSession {
         activity.textViewNameUser.setText("Клиент: " + user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
         activity.textViewProcedure.setText("Услуги: " + record.getProcedure());
         activity.textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
-        activity.textViewPay.setText("Оплачено: " + StaticClass.priceToString(record.getPay()) + ", кликнете что-бы изменить");
-        activity.textViewSaldo.setText("Общий баланс: " + StaticClass.priceToString(bd.getUsers().get(indexUser).saldo(Analytics.listRecords(bd.getRecords(), record.getIdUser()))));
+        activity.checkBoxPay.setChecked(record.getPay() == record.getPrice()? true:false);
+        activity.checkBoxPay.setText(activity.checkBoxPay.isChecked()? "Оплачено":"Оплатить?");
         activity.textViewTimeEnd.setText("Продолжительность услуги: " + TimeUnit.MILLISECONDS.toMinutes(record.getEnd()) + " минут");
         activity.textViewComment.setText("Комментарии: " + record.getComment());
         activity.textViewPlaceOnTheList.setText("Сеанс в курсе: " + arr[0] + ", курс: " + arr[1] + ", всего: " + arr[2] + " из " + arr[3]);
@@ -132,8 +95,7 @@ class CardSession {
      */
     public void visibilityPay() {
         int acsees = Preferences.getBoolean(activity.getApplicationContext(), Preferences.SET_CHECK_BOX_PAY, true) ? View.VISIBLE : View.GONE;
-        activity.textViewSaldo.setVisibility(acsees);
-        activity.textViewPay.setVisibility(acsees);
+activity.checkBoxPay.setVisibility(acsees);
     }
 
     /*

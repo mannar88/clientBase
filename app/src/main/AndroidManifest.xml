@@ -80,7 +80,7 @@ android:exported="false"
             </intent-filter>
         </activity>
         <activity android:name=".lits.ListOfProceduresActivity" />
-        <activity android:name=".cards.CardUserActivity" />
+        <activity android:name=".cards.cardClient.CardClientActivity" />
         <activity
             android:name=".add.AddClientActivity"
             android:exported="true">

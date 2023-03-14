@@ -76,28 +76,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-android:id="@+id/textViewAddSessionPay"
-        android:text="Клиент оплатил"
+        android:id="@+id/textView_info3"
+        android:text="Общая продолжительность в минутах"
         app:layout_constraintTop_toBottomOf="@+id/editTextSetupPrise"
         />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextAddSessionPay"
-        android:inputType="numberDecimal"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAddSessionPay"
-        />
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_info3"
-        android:text="Общая продолжительность в минутах"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddSessionPay"
-        />
-<EditText
+            <EditText
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/editTextSetupTimeFinish"

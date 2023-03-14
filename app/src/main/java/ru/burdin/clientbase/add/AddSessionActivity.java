@@ -34,7 +34,7 @@ import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.analytics.Analytics;
-import ru.burdin.clientbase.cards.CardUserActivity;
+import ru.burdin.clientbase.cards.cardClient.CardClientActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.listClient.ListClientActivity;
 import ru.burdin.clientbase.models.Procedure;
@@ -52,7 +52,6 @@ private  TextView textViewSetUser;
 private EditText editTextSetPrices;
 private  EditText editTextSetTimeFinish;
 private  EditText editTextSetComment;
-private  EditText editTextPay;
 private CheckBox checkBoxNotNotification;
 private  CheckBox checkBoxOneLine;
 private  TextView textViewInfoPay;
@@ -81,10 +80,6 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
-    editTextPay = findViewById(R.id.editTextAddSessionPay);
-editTextPay.setText(StaticClass.priceToString(0));
-    textViewInfoPay = findViewById(R.id.textViewAddSessionPay);
-    payVisibility();
 radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
 radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
 radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
@@ -126,16 +121,8 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
     }
     updateProcedure();
 }
-/*
-Установка доступности оплаты
- */
-    private void payVisibility() {
-    int acces = Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true)? View.VISIBLE:View.GONE;
-    editTextPay.setVisibility(acces);
-    textViewInfoPay.setVisibility(acces);
-    }
 
-    /*
+/*
     Открыть список клиентов для выбора
      */
 public  void  onClickSetUser (View view) {
@@ -163,31 +150,13 @@ public  void  onClickSetUser (View view) {
             if (records.size() == 0 || record.getStart() <= records.get(records.size() - 1).getStart()) {
                 checkBoxOneLine.setEnabled(false);
             }
-        editTextPay.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-if (charSequence.length() == 0 || charSequence.toString().equalsIgnoreCase("ноль")) {
-    editTextPay.setText(StaticClass.priceToString(0.0));
-}
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        })
-;        }
+        }
 //Слушатель долгого нажатия выбора клиента
 textViewSetUser.setOnLongClickListener(new View.OnLongClickListener() {
     @Override
     public boolean onLongClick(View view) {
 if (userIndex > -1) {
-    Intent intent = new Intent(getApplicationContext(), CardUserActivity.class);
+    Intent intent = new Intent(getApplicationContext(), CardClientActivity.class);
     intent.putExtra(Bd.TABLE, userIndex);
     startActivity(intent);
 }
@@ -204,6 +173,8 @@ if (userIndex > -1) {
      */
 public void onClickButtonSessionSave(View view) {
     if ( userIndex > -1 && editTextSetTimeFinish.getText().length() > 0 && editTextSetPrices.getText().length() > 0) {
+        User user = bd.getUsers().get(userIndex);
+        String      text = user.getSurname() + " " + user.getName();
         Record record = new Record(this.record.getStart());
         record.setEnd(TimeUnit.MINUTES.toMillis(Long.valueOf(editTextSetTimeFinish.getText().toString())));
         record.setIdUser(bd.getUsers().get(userIndex).getId());
@@ -213,8 +184,7 @@ public void onClickButtonSessionSave(View view) {
         }
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
-String pay = Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true)? editTextPay.getText().toString(): editTextSetPrices.getText().toString();
-record.setPay(Double.valueOf(pay));
+record.setPay(Preferences.getBoolean(this, Preferences.SET_CHECK_BOX_PAY, true)? 0.0:Double.valueOf(editTextSetPrices.getText().toString()));
         record.setComment(editTextSetComment.getText().toString());
         record.setOneLine(StaticClass.booleaInInt(checkBoxOneLine.isChecked()));
         record.setNotNotification(StaticClass.booleaInInt(checkBoxNotNotification.isChecked()));
@@ -245,7 +215,7 @@ record.setPay(Double.valueOf(pay));
 bd.getRecords().get(indexRecord).setOneLine(record.getOneLine());
 bd.getRecords().get(indexRecord).setNotNotification(record.getNotNotification());
 SendSMS.startHourAlarmMenedjer(this, bd.getRecords().get(indexRecord));
-if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
+if (calendarSetting.update(bd.getRecords().get(indexRecord),text) == 0) {
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
                 setResult(RESULT_OK);
@@ -257,8 +227,6 @@ SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(2), S
 } else {
             if (!bd.getRecords().contains(record) || Preferences.getBoolean(getApplicationContext(), Preferences.APP_PREFERENSES_CHECKBOX_IN_TERSECTIONRECOD, false)) {
 try {
-    User user = bd.getUsers().get(userIndex);
-    String text = user.getSurname() + " " + user.getName();
     long evant = calendarSetting.addRecordCalender(record,text );
     if (evant > 0) {
         record.setEvent_id(evant);
@@ -374,9 +342,7 @@ resultTime = resultTime + procedure.getTimeEnd();
 }
     editTextSetPrices.setText(Double.toString(result));
     editTextSetTimeFinish.setText(Long.toString(TimeUnit.MILLISECONDS.toMinutes(resultTime)));
-    editTextPay.setText(Double.toString(result));
-    editTextPay.setSelection(editTextPay.length());
-    }
+        }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {

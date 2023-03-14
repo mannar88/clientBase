@@ -28,16 +28,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.add.AddSessionActivity;
-import ru.burdin.clientbase.cards.CardUserActivity;
-import ru.burdin.clientbase.lits.listClient.ListClientActivity;
+import ru.burdin.clientbase.cards.cardClient.CardClientActivity;
 import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.setting.Preferences;
 
@@ -150,7 +147,7 @@ if (list.get(i).user_id == -1) {
     intent.putExtra(AddSessionActivity.class.getName(), activity.addSession);
     activity.startActivityForResult(intent, StaticClass.LIST_USERS);
 }else {
-    Intent intent = new Intent(activity, CardUserActivity.class);
+    Intent intent = new Intent(activity, CardClientActivity.class);
     intent.putExtra(Bd.TABLE, StaticClass.indexList(list.get(i).user_id, bd.getUsers()));
 activity.startActivity(intent);
 }

@@ -43,28 +43,18 @@ android:onClick="onClickTextViewCardSessionNameUser"
         app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionProcedures"
         />
 
-    <TextView
+    <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewCardSessionPay"
-        android:onClick="onClickTextViewtextViewCardSessionPay"
+        android:id="@+id/checkBoxCardSessionPay"
         app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionPrice"
         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewCardSessionSaldo"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionPay"
-        />
-
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/textViewCardSessionTimeEnd"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionSaldo"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxCardSessionPay"
         />
 
     <TextView

@@ -1,4 +1,4 @@
-package ru.burdin.clientbase.cards;
+package ru.burdin.clientbase.cards.cardClient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -28,18 +29,21 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.analytics.Analytics;
 import ru.burdin.clientbase.lits.ListHistoryAndRecordActivity;
 import ru.burdin.clientbase.models.Record;
+import ru.burdin.clientbase.models.Transaction;
 import ru.burdin.clientbase.models.User;
 import ru.burdin.clientbase.setting.Preferences;
 
-public class CardUserActivity extends AppCompatActivity {
+public class CardClientActivity extends AppCompatActivity {
 
-    private Bd bd;
-    private TextView textViewNameAndSurname;
-    private TextView textViewPhone;
-    private TextView textViewComment;
-private  TextView textViewInfoRecords;
-    private User user;
+ Bd bd;
+     TextView textViewNameAndSurname;
+ TextView textViewPhone;
+     TextView textViewComment;
+  TextView textViewInfoRecords;
+     User user;
     private int stak = -1;
+double summa;
+private  CardClient cardClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ private  TextView textViewInfoRecords;
         visibility();
         stak = getIntent().getExtras().getInt(Bd.TABLE);
         user = bd.getUsers().get(stak);
+    cardClient = new CardClient(this);
     }
 
     /*
@@ -69,20 +74,22 @@ private  TextView textViewInfoRecords;
     setScreenInfo();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    cardClient.getHistoryTransactions();
+    }
+
     /*
-    Устанавливает на экран информацию об клиенте
-     */
+        Устанавливает на экран информацию об клиенте
+         */
     private  void  setScreenInfo () {
         if (user != null) {
             textViewNameAndSurname.setText(user.getSurname() + " " + user.getName());
             textViewPhone.setText(user.getPhone());
             textViewComment.setText("Комментарий: " + user.getComment());
-            List<Record> records = Analytics.listRecords(bd.getRecords(), user.getId());
-            double balans = 0.0;
-            for (Record record : records) {
-                balans = balans + record.getPay();
-            }
-            textViewInfoRecords.setText("Сальдо баланса: " + StaticClass.priceToString(user.saldo(records)) + ". Всего заработано: " + StaticClass.priceToString(balans) + ". Всего сеансов: " + records.size());
+summa = Transaction.getAllSumma(new  Date().getTime(), user.getId(), bd);
+            textViewInfoRecords.setText("Баланс: " + StaticClass.priceToString(summa));
         }
     }
 
